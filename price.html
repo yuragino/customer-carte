@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>料金等労苦</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <script type="module" src="js/price.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./css/layout.css">
+</head>
+
+<body x-data="priceApp" x-init="init">
+  <header>
+    <div class="header-inner">
+      <h2 カルテ></h2>
+      <ul>
+        <li>当日来店順</li>
+        <li><a href="/image-carte.html">画像で探す</a></li>
+        <li><a href="/form.html">お客様登録</a></li>
+        <li><a href="/price.html">料金登録</a></li>
+      </ul>
+    </div>
+  </header>
+  <main>
+
+    <table>
+      <tr>
+        <td>レンタル&着付</td>
+        <td x-text="">6,800円</td>
+      </tr>
+      <tr>
+        <td>着付のみ(持込)</td>
+        <td x-text="">3,800円</td>
+      </tr>
+      <tr>
+        <td>下駄</td>
+        <td x-text="">500円</td>
+      </tr>
+      <tr>
+        <td>かごバッグ</td>
+        <td x-text="">500円</td>
+      </tr>
+    </table>
+
+  </main>
+
+
+</body>
+
+</html>

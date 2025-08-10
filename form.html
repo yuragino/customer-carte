@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>来店者登録フォーム</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <script type="module" src="/js/form.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./css/layout.css">
+  <style>
+    .form-area {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-info {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-title {
+      width: 120px;
+      height: 100%;
+      padding: 3px;
+      background-color: #f0f0f0;
+    }
+
+    .form-info .notes {
+      display: inline-block;
+      width: 500px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    input[type="file"] {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body x-data="app" x-init="init">
+  <header>
+    <div class="header-inner">
+      <h2 カルテ></h2>
+      <ul>
+        <li>当日来店順</li>
+        <li>画像で探す</li>
+        <li>登録フォーム</li>
+      </ul>
+    </div>
+  </header>
+  <main>
+    <div class="content">
+      <button><a href="/index.html">← 戻る</a></button>
+      <h1>📝 来店者登録フォーム</h1>
+
+      <div class="form-area">
+        <!-- じゃらん -->
+        <div class="form-info">
+          <span class="form-title">じゃらん</span>
+          <label>
+            <input type="checkbox" x-model="isJalan"> じゃらん予約
+          </label>
+        </div>
+
+        <!-- 代表者名 -->
+        <div class="form-info">
+          <span class="form-title">代表者名</span>
+          <input type="text" x-model="leaderName" @input="updateLeaderKana">
+        </div>
+
+        <!-- フリガナ -->
+        <div class="form-info">
+          <span class="form-title">フリガナ</span>
+          <input type="text" x-model="leaderKana">
+        </div>
+
+        <!-- 人数 -->
+        <div class="form-info">
+          <span class="form-title">人数</span>
+          <label>女 <input type="number" min="0" x-model.number="femaleNum" @change="updatePeople"></label>
+          <label>男 <input type="number" min="0" x-model.number="maleNum" @change="updatePeople"></label>
+        </div>
+
+        <!-- 来店日時 -->
+        <div class="form-info">
+          <span class="form-title">来店日時</span>
+          <input type="date" x-model="visitDate">
+          <input type="time" x-model="visitTime" min="09:00" max="18:00" step="900">
+        </div>
+
+        <!-- 来店方法 -->
+        <div class="form-info">
+          <span class="form-title">来店方法</span>
+          <label><input type="radio" value="車" x-model="transport"> 車</label>
+          <label><input type="radio" value="JR" x-model="transport"> JR</label>
+          <label><input type="radio" value="東武" x-model="transport"> 東武</label>
+        </div>
+
+        <!-- 住所 -->
+        <div class="form-info">
+          <span class="form-title">住所</span>
+          <input type="text" x-model="address">
+        </div>
+
+        <!-- 電話番号 -->
+        <div class="form-info">
+          <span class="form-title">電話番号</span>
+          <input type="tel" x-model="tel" placeholder="080-1234-5678">
+        </div>
+
+        <!-- LINE -->
+        <div class="form-info">
+          <span class="form-title">LINE</span>
+          <label><input type="radio" value="教室LINE" x-model="lineType"> 教室LINE</label>
+          <label><input type="radio" value="椿LINE" x-model="lineType"> 椿LINE</label>
+          <label><input type="radio" value="お客様LINE" x-model="lineType"> お客様LINE</label>
+        </div>
+
+        <!-- リピーター -->
+        <div class="form-info">
+          <span class="form-title">リピーター</span>
+          <template x-for="year in RepeaterYears" :key="year">
+            <label>
+              <input type="checkbox" :value="year" x-model="repeatYears"> <span x-text="year"></span>
+            </label>
+          </template>
+        </div>
+
+        <!-- 備考 -->
+        <div class="form-info">
+          <span class="form-title">備考</span>
+          <input type="text" x-model="notes">
+        </div>
+
+      </div>
+
+      <!-- 個人情報入力テーブル -->
+      <table>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <template x-for="(person, index) in people" :key="index">
+              <th x-text="(index + 1) + '人目'"></th>
+            </template>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>名前</td>
+            <template x-for="(person, index) in people" :key="index">
+              <td><input type="text" x-model="person.name"></td>
+            </template>
+          </tr>
+          <tr>
+            <td>性別</td>
+            <template x-for="(person, index) in people" :key="index">
+              <td>
+                <label><input type="radio" :name="'gender'+index" value="女" x-model="person.gender"> 女</label>
+                <label><input type="radio" :name="'gender'+index" value="男" x-model="person.gender"> 男</label>
+              </td>
+            </template>
+          </tr>
+          <tr>
+            <td>着付け種別</td>
+            <template x-for="(person, index) in people" :key="index">
+              <td>
+                <label><input type="radio" :name="'type'+index" value="レンタル&着付" x-model="person.type"> レンタル&着付</label>
+                <label><input type="radio" :name="'type'+index" value="着付のみ" x-model="person.type"> 着付のみ</label>
+              </td>
+            </template>
+          </tr>
+          <tr>
+            <td>オプション</td>
+            <template x-for="(person, index) in people" :key="index">
+              <td>
+                <label><input type="checkbox" value="下駄" x-model="person.options"> 下駄</label><br>
+                <label><input type="checkbox" value="かごバッグ" x-model="person.options"> かごバッグ</label>
+              </td>
+            </template>
+          </tr>
+          <tr>
+            <td>画像アップロード</td>
+            <template x-for="(person, index) in people" :key="index">
+              <td><input type="file" @change="handleFileUpload($event, index)"></td>
+            </template>
+          </tr>
+          <tr>
+            <td>合計（円）</td>
+            <template x-for="(person, index) in people" :key="index">
+              <td x-text="calcPersonTotal(person)"></td>
+            </template>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 合計 -->
+      <h3>グループ合計 <span x-text="calcGroupTotal()"></span> 円</h3>
+
+      <button @click="submitForm">👆 登録する</button>
+  </main>
+</body>
+
+</html>
+
+<!-- Cspell:ignore Jalan -->
