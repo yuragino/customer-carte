@@ -13,50 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="./css/layout.css">
-  <style>
-    .form-area {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .form-info {
-      display: flex;
-      gap: 10px;
-    }
-
-    .form-title {
-      width: 120px;
-      height: 100%;
-      padding: 3px;
-      background-color: #f0f0f0;
-    }
-
-    .form-info .notes {
-      display: inline-block;
-      width: 500px;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    th,
-    td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-
-    th {
-      background: #f0f0f0;
-    }
-
-    input[type="file"] {
-      width: 100%;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/form.css">
 </head>
 
 <body x-data="app" x-init="init">
@@ -234,7 +191,7 @@
 
       <h3>グループ合計 <span x-text="calcGroupTotal()"></span> 円</h3>
 
-      <button @click="submitForm">👆 登録する</button>
+      <button @click="submitForm" class="submit-btn"> 登録する</button>
   </main>
 </body>
 
