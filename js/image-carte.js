@@ -20,10 +20,7 @@ document.addEventListener('alpine:init', () => {
           const data = doc.data();
           // people 配列があることを前提にループ
           if (!data.people) return;
-
           data.people.forEach(person => {
-            // imageUrlがある人だけ抽出
-            // if (person.imageUrl) {
               peopleList.push({
                 groupId: doc.id,
                 id: doc.id + '_' + person.name,  // 識別用キー
@@ -35,7 +32,6 @@ document.addEventListener('alpine:init', () => {
                 visitDate: data.visitDate || '',
                 visitTime: data.visitTime || '',
               });
-            // }
           });
         });
 

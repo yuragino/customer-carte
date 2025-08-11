@@ -49,10 +49,9 @@ th {
   position: relative;
 }
 
-.edit-btn {
+.action-btn {
   position: absolute;
-  bottom: 8px;
-  right: 4px;
+
   background: rgba(255, 255, 255, 0.7);
   border: none;
   cursor: pointer;
@@ -66,6 +65,20 @@ th {
   align-items: center;
 }
 
-.edit-btn i{
+.edit-btn {
+  bottom: 8px;
+  right: 4px;
+}
+
+.delete-btn {
+  bottom: 8px;
+  right: 60px;
+}
+
+.edit-btn i {
   color: green;
+}
+
+.delete-btn i {
+  color: red;
 }

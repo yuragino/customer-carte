@@ -1,10 +1,11 @@
 import { firestore } from "./firebase.js";
-// --- 設定（必要なら変更） ---
-const FIRESTORE_COLLECTION_REGISTRATION = 'reservations'; // 登録保存先
-const FIRESTORE_COLLECTION_PRICING = 'pricing'; // 料金マスタ（doc: 'yukata' を期待）
-const FIRESTORE_COLLECTION_EVENTS = 'eventDates'; // 年度ごとのイベント日（例: docId: '2025', field: 'fireworksDate'）
+const FIRESTORE_COLLECTION_REGISTRATION = 'reservations';
+const FIRESTORE_COLLECTION_PRICING = 'pricing';
+const FIRESTORE_COLLECTION_EVENTS = 'eventDates';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
+    isEdit: false,
+    editDocId: null,
     // --- フォームデータ ---
     formData: {
       isJalan: false,
@@ -41,6 +42,13 @@ document.addEventListener('alpine:init', () => {
       this.cloudinary.apiUrl = `https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/upload`;
       await this.loadPricing();
       await this.loadFireworksDate();
+      const params = new URLSearchParams(window.location.search);
+      const groupId = params.get('group');
+      if (groupId) {
+        this.isEdit = true;
+        this.editDocId = groupId;
+        await this.loadReservationData(groupId);
+      }
       this.generatePeopleRows();
     },
 
@@ -70,6 +78,17 @@ document.addEventListener('alpine:init', () => {
       };
     },
 
+    // 編集モード：既存データ読み込み
+    async loadReservationData(docId) {
+      const docRef = firestore.collection(FIRESTORE_COLLECTION_REGISTRATION).doc(docId);
+      const doc = await docRef.get();
+      if (doc.exists) {
+        const data = doc.data();
+        this.formData = { ...this.formData, ...data };
+        this.people = data.people || [];
+      }
+    },
+
     // --- femaleNum, maleNumからpeople配列を生成 ---
     generatePeopleRows() {
       const totalPeopleCount = Number(this.formData.femaleNum) + Number(this.formData.maleNum);
@@ -80,6 +99,8 @@ document.addEventListener('alpine:init', () => {
         newPeople.push({
           name: existingPerson.name || '',
           gender: existingPerson.gender || gender,
+          weight: existingPerson.weight || null,
+          clothingSize: existingPerson.clothingSize || '', 
           height: existingPerson.height || '',
           footSize: existingPerson.footSize || '',
           type: existingPerson.type || '',
@@ -170,6 +191,8 @@ document.addEventListener('alpine:init', () => {
           people: this.people.map(person => ({
             name: person.name,
             gender: person.gender,
+            weight: person.weight,
+            clothingSize: person.clothingSize,
             height: person.height,
             footSize: person.footSize,
             type: person.type,
@@ -184,10 +207,16 @@ document.addEventListener('alpine:init', () => {
           dataToSave.jalanPrepaidTotal = this.calcGroupJalanPrepaid();
           dataToSave.jalanOnSiteTotal = this.calcGroupJalanOnSite();
         }
-        await firestore.collection("reservations").add(dataToSave);
 
-        alert("登録が完了しました！");
-        this.resetForm();
+        if (this.isEdit && this.editDocId) {
+          await firestore.collection("reservations").doc(this.editDocId).update(dataToSave);
+          alert("更新が完了しました！");
+        } else {
+          dataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await firestore.collection("reservations").add(dataToSave);
+          alert("登録が完了しました！");
+          this.resetForm();
+        }
       } catch (error) {
         console.error("登録エラー:", error);
         alert(error.message || "登録中にエラーが発生しました。");
@@ -197,19 +226,21 @@ document.addEventListener('alpine:init', () => {
 
     // --- 登録後フォームリセット ---
     resetForm() {
-      this.formData.isJalan = false;
-      this.formData.leaderName = '';
-      this.formData.leaderNameKana = '';
-      this.formData.femaleNum = 1;
-      this.formData.maleNum = 1;
-      this.formData.visitDate = '';
-      this.formData.visitTime = '';
-      this.formData.visitMethod = '';
-      this.formData.address = '';
-      this.formData.tel = '';
-      this.formData.lineType = '';
-      this.formData.selectedRepeaterYears = [];
-      this.formData.notes = '';
+      this.formData = {
+        isJalan: false,
+        leaderName: '',
+        leaderNameKana: '',
+        femaleNum: 1,
+        maleNum: 1,
+        visitDate: '',
+        visitTime: '',
+        visitMethod: '',
+        address: '',
+        tel: '',
+        lineType: '',
+        selectedRepeaterYears: [],
+        notes: '',
+      };
       this.people = [];
       this.generatePeopleRows();
     },
