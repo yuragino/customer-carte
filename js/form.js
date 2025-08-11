@@ -60,14 +60,6 @@ document.addEventListener('alpine:init', () => {
       this.formData.visitDate = doc.data().fireworksDate;
     },
 
-    // 入力値をカタカナに変換（全角カタカナにする）
-    convertToKatakana() {
-      this.formData.leaderKana = this.formData.leaderKana
-        .replace(/[\u3041-\u3096]/g, ch =>
-          String.fromCharCode(ch.charCodeAt(0) + 0x60)) // ひらがな→カタカナ
-        .replace(/[^ァ-ヶー]/g, ''); // カタカナと長音符以外は削除
-    },
-
     // --- 料金設定コレクションを全件取得しpricingDataに格納 ---
     async loadPricing() {
       const docRef = firestore.collection('pricing').doc('yukata');

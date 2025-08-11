@@ -19,7 +19,6 @@
 <body x-data="app" x-init="init">
   <header>
     <div class="header-inner">
-      <h2 カルテ></h2>
       <ul>
         <li><a href="/reception.html"></a>受付管理</a></li>
         <li><a href="/image-carte.html">画像で探す</a></li>
@@ -46,13 +45,13 @@
           <!-- 代表者名 -->
           <div class="form-info">
             <span class="form-title">代表者名</span>
-            <input type="text" x-model="formData.leaderName" @input="updateLeaderKana" required>
+            <input type="text" x-model="formData.leaderName" @input="updateLeaderKana">
           </div>
 
           <!-- フリガナ -->
           <div class="form-info">
             <span class="form-title">フリガナ</span>
-            <input type="text" x-model="formData.leaderKana" @input="convertToKatakana">
+            <input type="text" x-model="formData.leaderKana">
           </div>
 
           <!-- 人数 -->
@@ -88,7 +87,7 @@
           <!-- 電話番号 -->
           <div class="form-info">
             <span class="form-title">電話番号</span>
-            <input type="tel" x-model="formData.tel" placeholder="08012345678" required>
+            <input type="tel" x-model="formData.tel" placeholder="08012345678">
           </div>
 
           <!-- LINE -->
@@ -131,7 +130,7 @@
             <tr>
               <td>名前</td>
               <template x-for="(person, index) in people" :key="index">
-                <td><input type="text" x-model="person.name" required></td>
+                <td><input type="text" x-model="person.name"></td>
               </template>
             </tr>
             <tr>
@@ -140,6 +139,24 @@
                 <td>
                   <label><input type="radio" :name="'gender'+index" value="女" x-model="person.gender"> 女</label>
                   <label><input type="radio" :name="'gender'+index" value="男" x-model="person.gender"> 男</label>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>身長（cm）</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <input type="number" min="100" max="250" step="1" x-model.number="person.height">
+                  <span>cm</span>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>足のサイズ（cm）</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <input type="number" min="18" max="40" step="0.5" x-model.number="person.footSize">
+                  <span>cm</span>
                 </td>
               </template>
             </tr>

@@ -51,5 +51,6 @@ margin: 0 auto;
 padding: 10px;
 border-radius: 8px;
 border: none;
-box-shadow: 0 0 4px;
+color: white;
+background-color: rgb(35, 33, 38);
 }
