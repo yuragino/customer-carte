@@ -1,33 +1,6 @@
-/* 戻るボタン */
-button a {
-  color: #2563eb;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-button>a {
-  color: #2563eb;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-button>a:hover {
-  text-decoration: underline;
-}
-
-button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  margin-bottom: 24px;
-  cursor: pointer;
-  padding: 0;
-}
-
 .content-wrapper {
   background: #fff;
-  padding: 30px 25px;
+  padding: 20px 25px 30px;
   border-radius: 10px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   max-width: 900px;
@@ -39,7 +12,7 @@ h1 {
   font-weight: 700;
   font-size: 2rem;
   border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 /* 各フォーム項目のグループ */
@@ -142,9 +115,7 @@ tbody td:first-child {
   width: 80px;
 }
 
-tbody input{
-
-}
+tbody input {}
 
 /* ボタン */
 button.submit-btn {
@@ -169,16 +140,16 @@ button.submit-btn:hover {
 /* 合計表示 */
 .calc-group {
   margin: 20px;
-  font-weight:500;
+  font-weight: 500;
   text-align: center;
 }
 
-.calc-group span{
-display: inline-block;
-width: 150px;
+.calc-group span {
+  display: inline-block;
+  width: 150px;
 }
 
-.sub-calc{
+.sub-calc {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -191,7 +162,7 @@ width: 150px;
   color: #222;
 }
 
-.main-calc > span:first-child {
+.main-calc>span:first-child {
   font-size: 1.2rem;
 }
 
