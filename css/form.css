@@ -67,7 +67,7 @@ input[type="number"],
 input[type="date"],
 input[type="time"],
 input[type="tel"] {
-  padding: 12px 14px;
+  padding: 8px 2px 8px 8px;
   border: 1.5px solid #ddd;
   border-radius: 6px;
   font-size: 1rem;
@@ -102,8 +102,6 @@ input[type="checkbox"],
 input[type="radio"] {
   cursor: pointer;
   accent-color: #0a84ff;
-  /* width: 18px;
-  height: 18px; */
   margin: 0;
 }
 
@@ -142,6 +140,10 @@ tbody td:first-child {
 .short-input {
   display: inline-block;
   width: 80px;
+}
+
+tbody input{
+
 }
 
 /* ボタン */
