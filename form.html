@@ -45,13 +45,13 @@
         <!-- 代表者名 -->
         <div class="form-info">
           <span class="form-title">代表者名</span>
-          <input type="text" x-model="formData.leaderName" @input="updateLeaderKana">
+          <input type="text" x-model="formData.leaderName" @input="updateLeaderKana" placeholder="山田花子">
         </div>
 
         <!-- フリガナ -->
         <div class="form-info">
           <span class="form-title">ふりがな</span>
-          <input type="text" x-model="formData.leaderKana">
+          <input type="text" x-model="formData.leaderKana" placeholder="やまだはなこ">
         </div>
 
         <!-- 人数 -->
@@ -214,8 +214,10 @@
             <td>オプション</td>
             <template x-for="(person, index) in people" :key="index">
               <td>
-                <label><input type="checkbox" value="geta" x-model="person.options">下駄</label>
-                <label><input type="checkbox" value="bag" x-model="person.options">かごバッグ</label>
+                <label><input type="checkbox" value="geta" x-model="person.options">履き物</label>
+                <template x-if="person.gender === '女'">
+                  <label><input type="checkbox" value="bag" x-model="person.options">かごバッグ</label>
+                </template>
               </td>
             </template>
           </tr>
