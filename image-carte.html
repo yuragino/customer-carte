@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
-  <script type="module" src="script.js"></script>
+  <script type="module" src="/js/image-carte.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="./css/card-style.css">
 </head>
 
-<body x-data="kimonoApp" x-init="init">
+<body x-data="app" x-init="init">
   <header>
     <div class="header-inner">
       <ul>
@@ -27,69 +27,41 @@
       </ul>
     </div>
   </header>
-  <main>
-    <!-- カードを表示する場所 -->
-    <div class="list">
-
-      <template x-for="kimonoRecord in sortedKimonoRecords" :key="kimonoRecord['ファイル名']">
-        <div class="card">
-          <div class="image-container" x-data="imageSlider(kimonoRecord)">
-            <template x-for="(driveShareUrl, loopIndex) in allImageUrls" :key="loopIndex">
-              <img :src="convertGoogleDriveUrl(driveShareUrl)" class="kimono-image"
-                x-show="loopIndex === currentImageIndex">
-            </template>
-            <div x-show="allImageUrls.length>1" class="preview-btn">
-              <button class="prev" @click="prev"><i class="fa-solid fa-angles-left"></i></button>
-              <button class="next" @click="next"><i class="fa-solid fa-angles-right"></i></button>
-            </div>
-            <div class="image-label" x-text="fileNumber"></div>
-            <button class="favorite-btn" @click="toggleFavorite(kimonoRecord['ファイル名'])">
-              <i :class="isFavorite(kimonoRecord['ファイル名']) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
-            </button>
-            <!-- 貸出登録ラベル、ボタン -->
-            <div class="status-overlay">
-              <template x-for="rental in rentalsFor(kimonoRecord['ファイル名'])" :key="rental.id">
-                <div class="status-row">
-                  <div class="status-label" x-text="formatRentalDateRange(rental)"></div>
-                  <div x-show="isAdmin">
-                    <button class="rental-btn" @click="cancelRental(rental.id)">貸出解除</button>
-                  </div>
-                </div>
-              </template>
-              <div class="rental-add" x-show="isAdmin">
-                <button class="rental-btn" @click="openRentalModal(kimonoRecord['ファイル名'])">
-                  貸出登録
-                </button>
-              </div>
-            </div>
-          </div>
-          <details>
-            <summary>詳細</summary>
-            <table>
-              <tr>
-                <th>身長</th>
-                <td x-text=""></td>
-              </tr>
-              <tr>
-                <th>足のサイズ</th>
-                <td x-text=""></td>
-              </tr>
-            </table>
-          </details>
+  <main x-data="app">
+  <!-- カードを表示する場所 -->
+  <div class="list">
+    <template x-for="person in peopleWithImage" :key="person.id">
+      <div class="card">
+        <div class="image-container">
+          <img :src="person.imageUrl" alt="写真">
+        </div>
+        <details>
+          <summary>身長・足のサイズ</summary>
           <table>
             <tr>
-              <th>名前</th>
-              <td x-text=""></td>
+              <th>身長</th>
+              <td x-text="person.height + ' cm'"></td>
             </tr>
             <tr>
-              <th>来店日時</th>
-              <td x-text=""></td>
+              <th>足のサイズ</th>
+              <td x-text="person.footSize + ' cm'"></td>
             </tr>
           </table>
-        </div>
-      </template>
-    </div>
-  </main>
+        </details>
+        <table>
+          <tr>
+            <th>名前</th>
+            <td x-text="person.name"></td>
+          </tr>
+          <tr>
+            <th>来店日時</th>
+            <td x-text="formatDateTime(person.visitDate, person.visitTime)"></td>
+          </tr>
+        </table>
+      </div>
+    </template>
+  </div>
+</main>
 </body>
 
 </html>

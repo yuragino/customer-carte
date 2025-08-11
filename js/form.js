@@ -3,8 +3,6 @@ import { firestore } from "/js/firebase.js";
 const FIRESTORE_COLLECTION_REGISTRATION = 'reservations'; // 登録保存先
 const FIRESTORE_COLLECTION_PRICING = 'pricing'; // 料金マスタ（doc: 'yukata' を期待）
 const FIRESTORE_COLLECTION_EVENTS = 'eventDates'; // 年度ごとのイベント日（例: docId: '2025', field: 'fireworksDate'）
-const STORAGE_BASE_PATH = 'reservations_images';
-
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     // --- フォームデータ ---
