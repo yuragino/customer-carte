@@ -133,114 +133,116 @@
         </div>
 
         <!-- 個人情報入力テーブル -->
-        <table>
-          <thead>
-            <tr>
-              <th>項目</th>
-              <template x-for="(person, index) in people" :key="index">
-                <th x-text="(index + 1) + '人目'"></th>
-              </template>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>名前</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td><input type="text" x-model="person.name"></td>
-              </template>
-            </tr>
-            <tr>
-              <td>性別</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td>
-                  <label><input type="radio" :name="'gender'+index" value="女" x-model="person.gender">女</label>
-                  <label><input type="radio" :name="'gender'+index" value="男" x-model="person.gender">男</label>
-                </td>
-              </template>
-            </tr>
-            <tr>
-              <td>体型</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td>
-                  <template x-if="person.gender === '女'">
-                    <div>
-                      <label><input type="radio">S</label>
-                      <label><input type="radio">M</label>
-                      <label><input type="radio">L</label>
-                      <input type="number" x-model="person.clothingSize" class="short-input">
-                      <span>号</span>
-                    </div>
-                  </template>
-                  <template x-if="person.gender === '男'">
-                    <div>
-                      <label><input type="radio">S</label>
-                      <label><input type="radio">M</label>
-                      <label><input type="radio">L</label>
-                      <input type="number" x-model.number="person.weight" class="short-input">
-                      <span>kg</span>
-                    </div>
-                  </template>
-                  <template x-if="!person.gender">
-                    <span>性別を選択してください</span>
-                  </template>
-                </td>
-              </template>
-            </tr>
-            <tr>
-              <td>身長</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td>
-                  <input type="number" min="100" max="250" step="1" x-model.number="person.height" class="short-input">
-                  <span>cm</span>
-                </td>
-              </template>
-            </tr>
-            <tr>
-              <td>足のサイズ</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td>
-                  <input type="number" min="18" max="40" step="0.5" x-model.number="person.footSize"
-                    class="short-input">
-                  <span>cm</span>
-                </td>
-              </template>
-            </tr>
-            <tr>
-              <td>着付け種別</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td>
-                  <label><input type="radio" :name="'type'+index" value="rentalKitsuke"
-                      x-model="person.type">レンタル&着付</label>
-                  <label><input type="radio" :name="'type'+index" value="kitsukeOnly"
-                      x-model="person.type">着付のみ(持込)</label>
-                </td>
-              </template>
-            </tr>
-            <tr>
-              <td>オプション</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td>
-                  <label><input type="checkbox" value="geta" x-model="person.options">履き物</label>
-                  <template x-if="person.gender === '女'">
-                    <label><input type="checkbox" value="bag" x-model="person.options">かごバッグ</label>
-                  </template>
-                </td>
-              </template>
-            </tr>
-            <tr>
-              <td>画像アップロード</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td><input type="file" @change="handleFileUpload($event, index)"></td>
-              </template>
-            </tr>
-            <tr>
-              <td>合計（円）</td>
-              <template x-for="(person, index) in people" :key="index">
-                <td x-text="calcPersonKitsukeTotal(person)+calcPersonOptionTotal(person) "></td>
-              </template>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <template x-for="(person, index) in people" :key="index">
+                  <th x-text="(index + 1) + '人目'"></th>
+                </template>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>名前</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td><input type="text" x-model="person.name"></td>
+                </template>
+              </tr>
+              <tr>
+                <td>性別</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td>
+                    <label><input type="radio" :name="'gender'+index" value="女" x-model="person.gender">女</label>
+                    <label><input type="radio" :name="'gender'+index" value="男" x-model="person.gender">男</label>
+                  </td>
+                </template>
+              </tr>
+              <tr>
+                <td>体型</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td>
+                    <template x-if="person.gender === '女'">
+                      <div>
+                        <label><input type="radio">S</label>
+                        <label><input type="radio">M</label>
+                        <label><input type="radio">L</label>
+                        <input type="number" x-model="person.clothingSize" class="short-input">
+                        <span>号</span>
+                      </div>
+                    </template>
+                    <template x-if="person.gender === '男'">
+                      <div>
+                        <label><input type="radio">S</label>
+                        <label><input type="radio">M</label>
+                        <label><input type="radio">L</label>
+                        <input type="number" x-model.number="person.weight" class="short-input">
+                        <span>kg</span>
+                      </div>
+                    </template>
+                    <template x-if="!person.gender">
+                      <span>性別を選択してください</span>
+                    </template>
+                  </td>
+                </template>
+              </tr>
+              <tr>
+                <td>身長</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td>
+                    <input type="number" min="100" max="250" step="1" x-model.number="person.height" class="short-input">
+                    <span>cm</span>
+                  </td>
+                </template>
+              </tr>
+              <tr>
+                <td>足のサイズ</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td>
+                    <input type="number" min="18" max="40" step="0.5" x-model.number="person.footSize"
+                      class="short-input">
+                    <span>cm</span>
+                  </td>
+                </template>
+              </tr>
+              <tr>
+                <td>着付け種別</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td>
+                    <label><input type="radio" :name="'type'+index" value="rentalKitsuke"
+                        x-model="person.type">レンタル&着付</label>
+                    <label><input type="radio" :name="'type'+index" value="kitsukeOnly"
+                        x-model="person.type">着付のみ(持込)</label>
+                  </td>
+                </template>
+              </tr>
+              <tr>
+                <td>オプション</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td>
+                    <label><input type="checkbox" value="geta" x-model="person.options">履き物</label>
+                    <template x-if="person.gender === '女'">
+                      <label><input type="checkbox" value="bag" x-model="person.options">かごバッグ</label>
+                    </template>
+                  </td>
+                </template>
+              </tr>
+              <tr>
+                <td>画像アップロード</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td><input type="file" @change="handleFileUpload($event, index)"></td>
+                </template>
+              </tr>
+              <tr>
+                <td>合計（円）</td>
+                <template x-for="(person, index) in people" :key="index">
+                  <td x-text="calcPersonKitsukeTotal(person)+calcPersonOptionTotal(person) "></td>
+                </template>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <!-- 合計 -->
         <div class="calc-group">

@@ -79,20 +79,30 @@ input[type="radio"] {
 }
 
 /* テーブル全体 */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 25px;
-  table-layout: fixed;
+}
+
+thead th,
+tbody td {
+  min-width: 180px;
 }
 
 thead th {
   background: #0a84ff;
+  border: 1px solid white;
   color: white;
   font-weight: 700;
   padding: 12px 8px;
   text-align: center;
-  border-radius: 6px 6px 0 0;
+  border-radius: 10px 10px 0 0;
 }
 
 tbody td {
@@ -114,8 +124,6 @@ tbody td:first-child {
   display: inline-block;
   width: 80px;
 }
-
-tbody input {}
 
 /* ボタン */
 button.submit-btn {
