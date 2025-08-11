@@ -165,12 +165,32 @@ button.submit-btn:hover {
 }
 
 /* 合計表示 */
-h3 {
+.calc-group {
+  margin: 20px;
+  font-weight:500;
   text-align: center;
+}
+
+.calc-group span{
+display: inline-block;
+width: 150px;
+}
+
+.sub-calc{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.main-calc {
+  display: block;
+  margin: 20px;
   font-weight: 700;
-  font-size: 1.5rem;
-  margin-bottom: 40px;
   color: #222;
+}
+
+.main-calc > span:first-child {
+  font-size: 1.2rem;
 }
 
 /* レスポンシブ対応 */

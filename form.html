@@ -239,20 +239,15 @@
         </table>
 
         <!-- 合計 -->
-        <template x-if="formData.isJalan">
-          <div class="form-area">
-            <div class="form-info">
-              <span class="form-title">前払い合計</span>
-              <strong x-text="calcGroupJalanPrepaid()"></strong>円
+        <div class="calc-group">
+          <template x-if="formData.isJalan">
+            <div class="sub-calc">
+              <div><span>前払い合計</span> <span x-text="calcGroupJalanPrepaid()"></span> 円</div>
+              <div><span>現地支払合計</span> <span x-text="calcGroupJalanOnSite()"></span> 円</div>
             </div>
-            <div class="form-info">
-              <span class="form-title">現地支払合計</span>
-              <strong x-text="calcGroupJalanOnSite()"></strong> 円
-            </div>
-          </div>
-        </template>
-
-        <h3>グループ合計 <span x-text="calcGroupTotal()"></span> 円</h3>
+          </template>
+          <div class="main-calc"><span>グループ合計</span> <span x-text="calcGroupTotal()"></span> 円
+        </div>
 
         <!-- <button class="submit-btn"> 登録する</button> -->
         <button class="submit-btn" x-text="isEdit ? '更新する' : '登録する'"></button>
