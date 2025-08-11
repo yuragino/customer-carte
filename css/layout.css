@@ -1,10 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: auto;
+  font-family: "Noto Sans JP", sans-serif;
+  user-select: none;
+}
+
+html {
+  font-size: 16px;
+}
+
 body {
-  background: #f9fafb;
+  background: #fafafa;
   color: #333;
 }
 
 header {
-  margin-bottom: 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fafafa;
 }
 
 .header-inner {
@@ -37,4 +54,14 @@ header {
 
 .header-inner ul li a:hover {
   color: #2563eb;
+}
+
+.header-inner .right-side li small {
+  font-size: 0.8rem;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+main {
+  padding: 2rem;
 }

@@ -29,232 +29,235 @@
     </div>
   </header>
   <main>
-    <button><a href="./index.html">← 戻る</a></button>
-    <h1 x-text="isEdit ? '編集' : '新規登録'"></h1>
+    <div class="content-wrapper">
+      <button><a href="./index.html">← 戻る</a></button>
+      <h1 x-text="isEdit ? '編集' : '新規登録'"></h1>
 
-    <form @submit.prevent="submitForm">
-      <div class="form-area">
-        <!-- じゃらん -->
-        <div class="form-info">
-          <span class="form-title">じゃらん</span>
-          <label>
-            <input type="checkbox" x-model="formData.isJalan"> じゃらん予約
-          </label>
-        </div>
-
-        <!-- 代表者名 -->
-        <div class="form-info">
-          <span class="form-title">代表者名</span>
-          <input type="text" x-model="formData.leaderName" @input="updateLeaderKana" placeholder="山田花子">
-        </div>
-
-        <!-- フリガナ -->
-        <div class="form-info">
-          <span class="form-title">ふりがな</span>
-          <input type="text" x-model="formData.leaderKana" placeholder="やまだはなこ">
-        </div>
-
-        <!-- 人数 -->
-        <div class="form-info">
-          <span class="form-title">人数</span>
-          <div class="input-group">
-            <label>女 <input type="number" min="0" x-model.number="formData.femaleNum" @change="generatePeopleRows()"
-                class="short-input"></label>
-            <label>男 <input type="number" min="0" x-model.number="formData.maleNum" @change="generatePeopleRows()"
-                class="short-input"></label>
-          </div>
-        </div>
-
-        <!-- 来店日時 -->
-        <div class="form-info">
-          <span class="form-title">来店日時</span>
-          <div class="input-group">
-            <input type="date" x-model="formData.visitDate">
-            <input type="time" x-model="formData.visitTime">
-          </div>
-        </div>
-
-        <!-- 住所 -->
-        <div class="form-info">
-          <span class="form-title">住所</span>
-          <input type="text" x-model="formData.address">
-        </div>
-
-        <!-- 電話番号 -->
-        <div class="form-info">
-          <span class="form-title">電話番号</span>
-          <input type="tel" x-model="formData.tel" placeholder="08012345678">
-        </div>
-
-        <!-- 来店方法 -->
-        <div class="form-info">
-          <span class="form-title">来店方法</span>
-          <div class="input-group">
-            <label><input type="radio" value="車" x-model="formData.visitMethod">車</label>
-            <label><input type="radio" value="JR" x-model="formData.visitMethod">JR</label>
-            <label><input type="radio" value="東武" x-model="formData.visitMethod">東武</label>
-            <label><input type="radio" value="送迎" x-model="formData.visitMethod">送迎</label>
-          </div>
-        </div>
-
-        <!-- LINE -->
-        <div class="form-info">
-          <span class="form-title">LINE</span>
-          <div class="input-group">
-            <label><input type="radio" value="教室LINE" x-model="formData.lineType"> 教室LINE</label>
-            <label><input type="radio" value="椿LINE" x-model="formData.lineType"> 椿LINE</label>
-            <label><input type="radio" value="お客様LINE" x-model="formData.lineType"> お客様LINE</label>
-          </div>
-        </div>
-
-        <!-- リピーター -->
-        <div class="form-info">
-          <span class="form-title">リピーター</span>
-          <div class="input-group">
-            <template x-for="year in RepeaterYears" :key="year">
-              <label>
-                <input type="checkbox" :value="year" x-model="formData.selectedRepeaterYears">
-                <span x-text="year"></span>
-              </label>
-            </template>
-          </div>
-        </div>
-
-        <!-- 備考 -->
-        <div class="form-info">
-          <span class="form-title">備考</span>
-          <input type="text" x-model="formData.notes">
-        </div>
-      </div>
-
-      <!-- 個人情報入力テーブル -->
-      <table>
-        <thead>
-          <tr>
-            <th>項目</th>
-            <template x-for="(person, index) in people" :key="index">
-              <th x-text="(index + 1) + '人目'"></th>
-            </template>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>名前</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td><input type="text" x-model="person.name"></td>
-            </template>
-          </tr>
-          <tr>
-            <td>性別</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td>
-                <label><input type="radio" :name="'gender'+index" value="女" x-model="person.gender">女</label>
-                <label><input type="radio" :name="'gender'+index" value="男" x-model="person.gender">男</label>
-              </td>
-            </template>
-          </tr>
-          <tr>
-            <td>体型</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td>
-                <template x-if="person.gender === '女'">
-                  <div>
-                    <label><input type="radio">S</label>
-                    <label><input type="radio">M</label>
-                    <label><input type="radio">L</label>
-                    <input type="number" x-model="person.clothingSize" class="short-input">
-                    <span>号</span>
-                  </div>
-                </template>
-                <template x-if="person.gender === '男'">
-                  <div>
-                    <label><input type="radio">S</label>
-                    <label><input type="radio">M</label>
-                    <label><input type="radio">L</label>
-                    <input type="number" x-model.number="person.weight" class="short-input">
-                    <span>kg</span>
-                  </div>
-                </template>
-                <template x-if="!person.gender">
-                  <span>性別を選択してください</span>
-                </template>
-              </td>
-            </template>
-          </tr>
-          <tr>
-            <td>身長（cm）</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td>
-                <input type="number" min="100" max="250" step="1" x-model.number="person.height" class="short-input">
-                <span>cm</span>
-              </td>
-            </template>
-          </tr>
-          <tr>
-            <td>足のサイズ（cm）</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td>
-                <input type="number" min="18" max="40" step="0.5" x-model.number="person.footSize" class="short-input">
-                <span>cm</span>
-              </td>
-            </template>
-          </tr>
-          <tr>
-            <td>着付け種別</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td>
-                <label><input type="radio" :name="'type'+index" value="rentalKitsuke"
-                    x-model="person.type">レンタル&着付</label>
-                <label><input type="radio" :name="'type'+index" value="kitsukeOnly"
-                    x-model="person.type">着付のみ(持込)</label>
-              </td>
-            </template>
-          </tr>
-          <tr>
-            <td>オプション</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td>
-                <label><input type="checkbox" value="geta" x-model="person.options">履き物</label>
-                <template x-if="person.gender === '女'">
-                  <label><input type="checkbox" value="bag" x-model="person.options">かごバッグ</label>
-                </template>
-              </td>
-            </template>
-          </tr>
-          <tr>
-            <td>画像アップロード</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td><input type="file" @change="handleFileUpload($event, index)"></td>
-            </template>
-          </tr>
-          <tr>
-            <td>合計（円）</td>
-            <template x-for="(person, index) in people" :key="index">
-              <td x-text="calcPersonKitsukeTotal(person)+calcPersonOptionTotal(person) "></td>
-            </template>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- 合計 -->
-      <template x-if="formData.isJalan">
+      <form @submit.prevent="submitForm">
         <div class="form-area">
+          <!-- じゃらん -->
           <div class="form-info">
-            <span class="form-title">前払い合計</span>
-            <strong x-text="calcGroupJalanPrepaid()"></strong>円
+            <span class="form-title">じゃらん</span>
+            <label>
+              <input type="checkbox" x-model="formData.isJalan"> じゃらん予約
+            </label>
           </div>
+
+          <!-- 代表者名 -->
           <div class="form-info">
-            <span class="form-title">現地支払合計</span>
-            <strong x-text="calcGroupJalanOnSite()"></strong> 円
+            <span class="form-title">代表者名</span>
+            <input type="text" x-model="formData.leaderName" @input="updateLeaderKana" placeholder="山田花子">
+          </div>
+
+          <!-- フリガナ -->
+          <div class="form-info">
+            <span class="form-title">ふりがな</span>
+            <input type="text" x-model="formData.leaderKana" placeholder="やまだはなこ">
+          </div>
+
+          <!-- 人数 -->
+          <div class="form-info">
+            <span class="form-title">人数</span>
+            <div class="input-group">
+              <label>女 <input type="number" min="0" x-model.number="formData.femaleNum" @change="generatePeopleRows()"
+                  class="short-input"></label>
+              <label>男 <input type="number" min="0" x-model.number="formData.maleNum" @change="generatePeopleRows()"
+                  class="short-input"></label>
+            </div>
+          </div>
+
+          <!-- 来店日時 -->
+          <div class="form-info">
+            <span class="form-title">来店日時</span>
+            <div class="input-group">
+              <input type="date" x-model="formData.visitDate">
+              <input type="time" x-model="formData.visitTime">
+            </div>
+          </div>
+
+          <!-- 住所 -->
+          <div class="form-info">
+            <span class="form-title">住所</span>
+            <input type="text" x-model="formData.address">
+          </div>
+
+          <!-- 電話番号 -->
+          <div class="form-info">
+            <span class="form-title">電話番号</span>
+            <input type="tel" x-model="formData.tel" placeholder="08012345678">
+          </div>
+
+          <!-- 来店方法 -->
+          <div class="form-info">
+            <span class="form-title">来店方法</span>
+            <div class="input-group">
+              <label><input type="radio" value="車" x-model="formData.visitMethod">車</label>
+              <label><input type="radio" value="JR" x-model="formData.visitMethod">JR</label>
+              <label><input type="radio" value="東武" x-model="formData.visitMethod">東武</label>
+              <label><input type="radio" value="送迎" x-model="formData.visitMethod">送迎</label>
+            </div>
+          </div>
+
+          <!-- LINE -->
+          <div class="form-info">
+            <span class="form-title">LINE</span>
+            <div class="input-group">
+              <label><input type="radio" value="教室LINE" x-model="formData.lineType"> 教室LINE</label>
+              <label><input type="radio" value="椿LINE" x-model="formData.lineType"> 椿LINE</label>
+              <label><input type="radio" value="お客様LINE" x-model="formData.lineType"> お客様LINE</label>
+            </div>
+          </div>
+
+          <!-- リピーター -->
+          <div class="form-info">
+            <span class="form-title">リピーター</span>
+            <div class="input-group">
+              <template x-for="year in RepeaterYears" :key="year">
+                <label>
+                  <input type="checkbox" :value="year" x-model="formData.selectedRepeaterYears">
+                  <span x-text="year"></span>
+                </label>
+              </template>
+            </div>
+          </div>
+
+          <!-- 備考 -->
+          <div class="form-info">
+            <span class="form-title">備考</span>
+            <input type="text" x-model="formData.notes">
           </div>
         </div>
-      </template>
 
-      <h3>グループ合計 <span x-text="calcGroupTotal()"></span> 円</h3>
+        <!-- 個人情報入力テーブル -->
+        <table>
+          <thead>
+            <tr>
+              <th>項目</th>
+              <template x-for="(person, index) in people" :key="index">
+                <th x-text="(index + 1) + '人目'"></th>
+              </template>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>名前</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td><input type="text" x-model="person.name"></td>
+              </template>
+            </tr>
+            <tr>
+              <td>性別</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <label><input type="radio" :name="'gender'+index" value="女" x-model="person.gender">女</label>
+                  <label><input type="radio" :name="'gender'+index" value="男" x-model="person.gender">男</label>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>体型</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <template x-if="person.gender === '女'">
+                    <div>
+                      <label><input type="radio">S</label>
+                      <label><input type="radio">M</label>
+                      <label><input type="radio">L</label>
+                      <input type="number" x-model="person.clothingSize" class="short-input">
+                      <span>号</span>
+                    </div>
+                  </template>
+                  <template x-if="person.gender === '男'">
+                    <div>
+                      <label><input type="radio">S</label>
+                      <label><input type="radio">M</label>
+                      <label><input type="radio">L</label>
+                      <input type="number" x-model.number="person.weight" class="short-input">
+                      <span>kg</span>
+                    </div>
+                  </template>
+                  <template x-if="!person.gender">
+                    <span>性別を選択してください</span>
+                  </template>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>身長（cm）</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <input type="number" min="100" max="250" step="1" x-model.number="person.height" class="short-input">
+                  <span>cm</span>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>足のサイズ（cm）</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <input type="number" min="18" max="40" step="0.5" x-model.number="person.footSize"
+                    class="short-input">
+                  <span>cm</span>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>着付け種別</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <label><input type="radio" :name="'type'+index" value="rentalKitsuke"
+                      x-model="person.type">レンタル&着付</label>
+                  <label><input type="radio" :name="'type'+index" value="kitsukeOnly"
+                      x-model="person.type">着付のみ(持込)</label>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>オプション</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td>
+                  <label><input type="checkbox" value="geta" x-model="person.options">履き物</label>
+                  <template x-if="person.gender === '女'">
+                    <label><input type="checkbox" value="bag" x-model="person.options">かごバッグ</label>
+                  </template>
+                </td>
+              </template>
+            </tr>
+            <tr>
+              <td>画像アップロード</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td><input type="file" @change="handleFileUpload($event, index)"></td>
+              </template>
+            </tr>
+            <tr>
+              <td>合計（円）</td>
+              <template x-for="(person, index) in people" :key="index">
+                <td x-text="calcPersonKitsukeTotal(person)+calcPersonOptionTotal(person) "></td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
 
-      <!-- <button class="submit-btn"> 登録する</button> -->
-      <button class="submit-btn" x-text="isEdit ? '更新する' : '登録する'"></button>
-    </form>
+        <!-- 合計 -->
+        <template x-if="formData.isJalan">
+          <div class="form-area">
+            <div class="form-info">
+              <span class="form-title">前払い合計</span>
+              <strong x-text="calcGroupJalanPrepaid()"></strong>円
+            </div>
+            <div class="form-info">
+              <span class="form-title">現地支払合計</span>
+              <strong x-text="calcGroupJalanOnSite()"></strong> 円
+            </div>
+          </div>
+        </template>
+
+        <h3>グループ合計 <span x-text="calcGroupTotal()"></span> 円</h3>
+
+        <!-- <button class="submit-btn"> 登録する</button> -->
+        <button class="submit-btn" x-text="isEdit ? '更新する' : '登録する'"></button>
+      </form>
+    </div>
   </main>
 </body>
 
