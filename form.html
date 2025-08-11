@@ -35,12 +35,14 @@
 
       <form @submit.prevent="submitForm">
         <div class="form-area">
-          <!-- じゃらん -->
+          <!-- 予約方法 -->
           <div class="form-info">
-            <span class="form-title">じゃらん</span>
-            <label>
-              <input type="checkbox" x-model="formData.isJalan"> じゃらん予約
-            </label>
+            <span class="form-title">予約方法</span>
+            <div class="input-group">
+              <label><input type="checkbox" value="じゃらん椿" x-model="formData.reservationMethod" @change="updateIsPrepaid">じゃらん椿</label>
+              <label><input type="checkbox" value="じゃらん教室" x-model="formData.reservationMethod" @change="updateIsPrepaid">じゃらん教室</label>
+              <label><input type="checkbox" value="アソビュー" x-model="formData.reservationMethod" @change="updateIsPrepaid">アソビュー</label>
+            </div>
           </div>
 
           <!-- 代表者名 -->
@@ -87,14 +89,14 @@
             <input type="tel" x-model="formData.tel" placeholder="08012345678">
           </div>
 
-          <!-- 来店方法 -->
+          <!-- 交通手段 -->
           <div class="form-info">
-            <span class="form-title">来店方法</span>
+            <span class="form-title">交通手段</span>
             <div class="input-group">
-              <label><input type="radio" value="車" x-model="formData.visitMethod">車</label>
-              <label><input type="radio" value="JR" x-model="formData.visitMethod">JR</label>
-              <label><input type="radio" value="東武" x-model="formData.visitMethod">東武</label>
-              <label><input type="radio" value="送迎" x-model="formData.visitMethod">送迎</label>
+              <label><input type="radio" value="車" x-model="formData.transportMethod">車</label>
+              <label><input type="radio" value="JR" x-model="formData.transportMethod">JR</label>
+              <label><input type="radio" value="東武" x-model="formData.transportMethod">東武</label>
+              <label><input type="radio" value="送迎" x-model="formData.transportMethod">送迎</label>
             </div>
           </div>
 
@@ -183,7 +185,7 @@
               </template>
             </tr>
             <tr>
-              <td>身長（cm）</td>
+              <td>身長</td>
               <template x-for="(person, index) in people" :key="index">
                 <td>
                   <input type="number" min="100" max="250" step="1" x-model.number="person.height" class="short-input">
@@ -192,7 +194,7 @@
               </template>
             </tr>
             <tr>
-              <td>足のサイズ（cm）</td>
+              <td>足のサイズ</td>
               <template x-for="(person, index) in people" :key="index">
                 <td>
                   <input type="number" min="18" max="40" step="0.5" x-model.number="person.footSize"
@@ -240,17 +242,16 @@
 
         <!-- 合計 -->
         <div class="calc-group">
-          <template x-if="formData.isJalan">
+          <template x-if="formData.isPrepaid">
             <div class="sub-calc">
               <div><span>前払い合計</span> <span x-text="calcGroupJalanPrepaid()"></span> 円</div>
               <div><span>現地支払合計</span> <span x-text="calcGroupJalanOnSite()"></span> 円</div>
             </div>
           </template>
           <div class="main-calc"><span>グループ合計</span> <span x-text="calcGroupTotal()"></span> 円
-        </div>
+          </div>
 
-        <!-- <button class="submit-btn"> 登録する</button> -->
-        <button class="submit-btn" x-text="isEdit ? '更新する' : '登録する'"></button>
+          <button class="submit-btn" x-text="isEdit ? '更新する' : '登録する'"></button>
       </form>
     </div>
   </main>

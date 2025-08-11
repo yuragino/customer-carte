@@ -8,14 +8,15 @@ document.addEventListener('alpine:init', () => {
     editDocId: null,
     // --- フォームデータ ---
     formData: {
-      isJalan: false,
+      isPrepaid: false,
+      reservationMethod: [],
       leaderName: '',
       leaderNameKana: '',
       femaleNum: 1,
       maleNum: 1,
       visitDate: '',
       visitTime: '',
-      visitMethod: '',
+      transportMethod: '',
       address: '',
       tel: '',
       lineType: '',
@@ -35,6 +36,12 @@ document.addEventListener('alpine:init', () => {
       cloudName: 'dxq1xqypx',
       uploadPreset: 'unsigned_preset',
       apiUrl: '',
+    },
+
+    updateIsPrepaid() {
+      this.formData.isPrepaid = this.formData.reservationMethod.some(method =>
+        method.startsWith('じゃらん') || method === 'アソビュー'
+      );
     },
 
     // --- 初期化 ---
@@ -100,7 +107,7 @@ document.addEventListener('alpine:init', () => {
           name: existingPerson.name || '',
           gender: existingPerson.gender || gender,
           weight: existingPerson.weight || null,
-          clothingSize: existingPerson.clothingSize || '', 
+          clothingSize: existingPerson.clothingSize || '',
           height: existingPerson.height || '',
           footSize: existingPerson.footSize || '',
           type: existingPerson.type || '',
@@ -203,7 +210,7 @@ document.addEventListener('alpine:init', () => {
           groupTotal: this.calcGroupTotal(),
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         };
-        if (this.formData.isJalan) {
+        if (this.formData.isPrepaid) {
           dataToSave.jalanPrepaidTotal = this.calcGroupJalanPrepaid();
           dataToSave.jalanOnSiteTotal = this.calcGroupJalanOnSite();
         }
@@ -227,14 +234,14 @@ document.addEventListener('alpine:init', () => {
     // --- 登録後フォームリセット ---
     resetForm() {
       this.formData = {
-        isJalan: false,
+        isPrepaid: false,
         leaderName: '',
         leaderNameKana: '',
         femaleNum: 1,
         maleNum: 1,
         visitDate: '',
         visitTime: '',
-        visitMethod: '',
+        transportMethod: '',
         address: '',
         tel: '',
         lineType: '',
