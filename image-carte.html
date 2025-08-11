@@ -34,7 +34,7 @@
         <div class="card">
           <div class="image-container">
             <img :src="person.imageUrl" alt="写真">
-            <button class="edit-btn">
+            <button class="edit-btn" @click="window.location.href = `/form.html?group=${person.groupId}`">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </div>

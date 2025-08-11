@@ -23,8 +23,9 @@ document.addEventListener('alpine:init', () => {
 
           data.people.forEach(person => {
             // imageUrlがある人だけ抽出
-            if (person.imageUrl) {
+            // if (person.imageUrl) {
               peopleList.push({
+                groupId: doc.id,
                 id: doc.id + '_' + person.name,  // 識別用キー
                 name: person.name || '',
                 height: person.height || '',
@@ -34,7 +35,7 @@ document.addEventListener('alpine:init', () => {
                 visitDate: data.visitDate || '',
                 visitTime: data.visitTime || '',
               });
-            }
+            // }
           });
         });
 
