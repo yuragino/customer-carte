@@ -1,4 +1,4 @@
-import { firestore } from "/js/firebase.js";
+import { firestore } from "./firebase.js";
 // --- 設定（必要なら変更） ---
 const FIRESTORE_COLLECTION_REGISTRATION = 'reservations'; // 登録保存先
 const FIRESTORE_COLLECTION_PRICING = 'pricing'; // 料金マスタ（doc: 'yukata' を期待）

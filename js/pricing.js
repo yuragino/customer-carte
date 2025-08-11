@@ -1,4 +1,4 @@
-import { firestore } from "/js/firebase.js";
+import { firestore } from "./firebase.js";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     pricing: {
