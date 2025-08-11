@@ -28,40 +28,43 @@
     </div>
   </header>
   <main x-data="app">
-  <!-- カードを表示する場所 -->
-  <div class="list">
-    <template x-for="person in peopleWithImage" :key="person.id">
-      <div class="card">
-        <div class="image-container">
-          <img :src="person.imageUrl" alt="写真">
-        </div>
-        <details>
-          <summary>身長・足のサイズ</summary>
+    <!-- カードを表示する場所 -->
+    <div class="list">
+      <template x-for="person in peopleWithImage" :key="person.id">
+        <div class="card">
+          <div class="image-container">
+            <img :src="person.imageUrl" alt="写真">
+            <button class="edit-btn">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </div>
+          <details>
+            <summary>身長・足のサイズ</summary>
+            <table>
+              <tr>
+                <th>身長</th>
+                <td x-text="person.height + ' cm'"></td>
+              </tr>
+              <tr>
+                <th>足のサイズ</th>
+                <td x-text="person.footSize + ' cm'"></td>
+              </tr>
+            </table>
+          </details>
           <table>
             <tr>
-              <th>身長</th>
-              <td x-text="person.height + ' cm'"></td>
+              <th>名前</th>
+              <td x-text="person.name"></td>
             </tr>
             <tr>
-              <th>足のサイズ</th>
-              <td x-text="person.footSize + ' cm'"></td>
+              <th>来店日時</th>
+              <td x-text="formatDateTime(person.visitDate, person.visitTime)"></td>
             </tr>
           </table>
-        </details>
-        <table>
-          <tr>
-            <th>名前</th>
-            <td x-text="person.name"></td>
-          </tr>
-          <tr>
-            <th>来店日時</th>
-            <td x-text="formatDateTime(person.visitDate, person.visitTime)"></td>
-          </tr>
-        </table>
-      </div>
-    </template>
-  </div>
-</main>
+        </div>
+      </template>
+    </div>
+  </main>
 </body>
 
 </html>
