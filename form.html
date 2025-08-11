@@ -38,42 +38,45 @@
           <!-- 予約方法 -->
           <div class="form-info">
             <span class="form-title">予約方法</span>
-            <div class="input-group">
-              <label><input type="checkbox" value="じゃらん椿" x-model="formData.reservationMethod" @change="updateIsPrepaid">じゃらん椿</label>
-              <label><input type="checkbox" value="じゃらん教室" x-model="formData.reservationMethod" @change="updateIsPrepaid">じゃらん教室</label>
-              <label><input type="checkbox" value="アソビュー" x-model="formData.reservationMethod" @change="updateIsPrepaid">アソビュー</label>
+            <div>
+              <label><input type="checkbox" value="じゃらん椿" x-model="formData.reservationMethod"
+                  @change="updateIsPrepaid">じゃらん椿</label>
+              <label><input type="checkbox" value="じゃらん教室" x-model="formData.reservationMethod"
+                  @change="updateIsPrepaid">じゃらん教室</label>
+              <label><input type="checkbox" value="アソビュー" x-model="formData.reservationMethod"
+                  @change="updateIsPrepaid">アソビュー</label>
             </div>
           </div>
 
           <!-- 代表者名 -->
-          <div class="form-info">
-            <span class="form-title">代表者名</span>
-            <input type="text" x-model="formData.leaderName" @input="updateLeaderKana" placeholder="山田花子">
-          </div>
+            <div class="form-info">
+              <span class="form-title">代表者名</span>
+              <input type="text" x-model="formData.leaderName" @input="updateLeaderKana" placeholder="山田花子" id="name">
+            </div>
 
-          <!-- フリガナ -->
+            <!-- フリガナ -->
+            <div class="form-info">
+              <span class="form-title">ふりがな</span>
+              <input type="text" x-model="formData.leaderKana" placeholder="やまだはなこ" id="furigana">
+            </div>
+
+          <!-- 来店日時 -->
           <div class="form-info">
-            <span class="form-title">ふりがな</span>
-            <input type="text" x-model="formData.leaderKana" placeholder="やまだはなこ">
+            <span class="form-title">来店日時</span>
+            <div>
+              <input type="date" x-model="formData.visitDate">
+              <input type="time" x-model="formData.visitTime">
+            </div>
           </div>
 
           <!-- 人数 -->
           <div class="form-info">
             <span class="form-title">人数</span>
-            <div class="input-group">
+            <div>
               <label>女 <input type="number" min="0" x-model.number="formData.femaleNum" @change="generatePeopleRows()"
                   class="short-input"></label>
               <label>男 <input type="number" min="0" x-model.number="formData.maleNum" @change="generatePeopleRows()"
                   class="short-input"></label>
-            </div>
-          </div>
-
-          <!-- 来店日時 -->
-          <div class="form-info">
-            <span class="form-title">来店日時</span>
-            <div class="input-group">
-              <input type="date" x-model="formData.visitDate">
-              <input type="time" x-model="formData.visitTime">
             </div>
           </div>
 
@@ -92,7 +95,7 @@
           <!-- 交通手段 -->
           <div class="form-info">
             <span class="form-title">交通手段</span>
-            <div class="input-group">
+            <div>
               <label><input type="radio" value="車" x-model="formData.transportMethod">車</label>
               <label><input type="radio" value="JR" x-model="formData.transportMethod">JR</label>
               <label><input type="radio" value="東武" x-model="formData.transportMethod">東武</label>
@@ -103,7 +106,7 @@
           <!-- LINE -->
           <div class="form-info">
             <span class="form-title">LINE</span>
-            <div class="input-group">
+            <div>
               <label><input type="radio" value="教室LINE" x-model="formData.lineType"> 教室LINE</label>
               <label><input type="radio" value="椿LINE" x-model="formData.lineType"> 椿LINE</label>
               <label><input type="radio" value="お客様LINE" x-model="formData.lineType"> お客様LINE</label>
@@ -113,7 +116,7 @@
           <!-- リピーター -->
           <div class="form-info">
             <span class="form-title">リピーター</span>
-            <div class="input-group">
+            <div>
               <template x-for="year in RepeaterYears" :key="year">
                 <label>
                   <input type="checkbox" :value="year" x-model="formData.selectedRepeaterYears">
@@ -255,6 +258,13 @@
       </form>
     </div>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    AutoKana.bind("#name", "#furigana");
+  });
+</script>
 </body>
 
 </html>
