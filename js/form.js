@@ -82,6 +82,8 @@ document.addEventListener('alpine:init', () => {
         newPeople.push({
           name: existingPerson.name || '',
           gender: existingPerson.gender || gender,
+          height: existingPerson.height || '',
+          footSize: existingPerson.footSize || '',
           type: existingPerson.type || '',
           options: Array.isArray(existingPerson.options) ? [...existingPerson.options] : [],
           imageFile: existingPerson.imageFile || null,
@@ -134,44 +136,44 @@ document.addEventListener('alpine:init', () => {
       return total;
     },
 
-    async handleFileUpload(event, index) {
+    // ファイル選択時はファイルオブジェクトを保持するだけにする
+    handleFileUpload(event, index) {
       const file = event.target.files[0];
       if (!file) return;
-
-      // ファイルオブジェクトは一旦セット（表示など用）
       this.people[index].imageFile = file;
       this.people[index].imageUrl = ''; // 初期化
-
-      // Cloudinaryにアップロード
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', this.cloudinary.uploadPreset);
-
-      try {
-        const res = await fetch(this.cloudinary.apiUrl, {
-          method: 'POST',
-          body: formData,
-        });
-        const data = await res.json();
-        if (data.error) {
-          alert('画像アップロード失敗: ' + data.error.message);
-          return;
-        }
-        this.people[index].imageUrl = data.secure_url; // URLセット
-      } catch (e) {
-        alert('画像アップロード中にエラーが発生しました');
-      }
     },
 
-    // --- 登録処理 ---
+    // 登録ボタン押した時の処理（submitForm）をasyncにして画像アップロードを待つ
     async submitForm() {
       try {
-        // 登録データを構築
+        // 画像アップロード処理を並列実行し、結果をpeopleのimageUrlにセット
+        await Promise.all(this.people.map(async (person, index) => {
+          if (person.imageFile) {
+            const formData = new FormData();
+            formData.append('file', person.imageFile);
+            formData.append('upload_preset', this.cloudinary.uploadPreset);
+
+            const res = await fetch(this.cloudinary.apiUrl, {
+              method: 'POST',
+              body: formData,
+            });
+            const data = await res.json();
+            if (data.error) {
+              throw new Error(`画像アップロード失敗: ${data.error.message}`);
+            }
+            this.people[index].imageUrl = data.secure_url;
+          }
+        }));
+
+        // 画像アップロードが完了した後Firestoreに保存
         const dataToSave = {
           ...this.formData,
           people: this.people.map(person => ({
             name: person.name,
             gender: person.gender,
+            height: person.height,
+            footSize: person.footSize,
             type: person.type,
             options: person.options,
             imageFileName: person.imageFile ? person.imageFile.name : null,
@@ -185,13 +187,15 @@ document.addEventListener('alpine:init', () => {
           dataToSave.jalanOnSiteTotal = this.calcGroupJalanOnSite();
         }
         await firestore.collection("reservations").add(dataToSave);
+
         alert("登録が完了しました！");
         this.resetForm();
       } catch (error) {
         console.error("登録エラー:", error);
-        alert("登録中にエラーが発生しました。");
+        alert(error.message || "登録中にエラーが発生しました。");
       }
     },
+
 
     // --- 登録後フォームリセット ---
     resetForm() {
