@@ -1,0 +1,50 @@
+/* 画像カードが表示される領域 */
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  max-width: 350px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+}
+
+.card img {
+  border-radius: 8px;
+}
+
+details {
+  margin-top: 0.5rem;
+}
+
+summary {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.3rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+th,
+td {
+  padding: 0.3rem;
+  text-align: left;
+}
+
+th {
+  color: #666;
+  width: 40%;
+}
+
+.image-container {
+  position: relative;
+}
