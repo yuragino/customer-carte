@@ -32,8 +32,15 @@ document.addEventListener('alpine:init', () => {
       geta: 0,
     },
 
+    cloudinary: {
+      cloudName: 'dxq1xqypx',
+      uploadPreset: 'unsigned_preset',
+      apiUrl: '',
+    },
+
     // --- 初期化 ---
     async init() {
+      this.cloudinary.apiUrl = `https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/upload`;
       await this.loadPricing();
       await this.loadFireworksDate();
       this.generatePeopleRows();
@@ -135,11 +142,32 @@ document.addEventListener('alpine:init', () => {
       return total;
     },
 
-    // --- ファイル選択イベント ---
-    handleFileUpload(event, index) {
-      const selectedFile = event.target.files[0];
-      if (selectedFile) {
-        this.people[index].imageFile = selectedFile;
+    async handleFileUpload(event, index) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // ファイルオブジェクトは一旦セット（表示など用）
+      this.people[index].imageFile = file;
+      this.people[index].imageUrl = ''; // 初期化
+
+      // Cloudinaryにアップロード
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', this.cloudinary.uploadPreset);
+
+      try {
+        const res = await fetch(this.cloudinary.apiUrl, {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert('画像アップロード失敗: ' + data.error.message);
+          return;
+        }
+        this.people[index].imageUrl = data.secure_url; // URLセット
+      } catch (e) {
+        alert('画像アップロード中にエラーが発生しました');
       }
     },
 
@@ -155,6 +183,7 @@ document.addEventListener('alpine:init', () => {
             type: person.type,
             options: person.options,
             imageFileName: person.imageFile ? person.imageFile.name : null,
+            imageUrl: person.imageUrl || null,
           })),
           groupTotal: this.calcGroupTotal(),
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
