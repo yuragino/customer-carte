@@ -47,6 +47,9 @@
             <template x-for="imageUrl in customer.imageUrls" :key="imageUrl">
               <img :src="imageUrl" alt="写真">
             </template>
+            <button class="action-btn delete-btn" @click="">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
             <button class="action-btn edit-btn" 
                     @click="window.location.href = `/form.html?group=${customer.groupId}`">
               <i class="fa-solid fa-pen-to-square"></i>

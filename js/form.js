@@ -50,20 +50,76 @@ document.addEventListener('alpine:init', () => {
         location: false,
         parking: false
       },
+      isCanceled: false,
     },
     femaleCount: 1,
     maleCount: 1,
     customers: [], // 顧客詳細データ（人数に応じて動的に生成）
+
+    // --- 編集モードのためのプロパティ ---
+    currentGroupId: null,
 
     // --- レンタルモーダル用の一時データ ---
     newRentalItem: { name: '', price: null },
     currentTargetCustomerIndex: null,
 
     // --- 初期化 ---
-    init() {
-      this.updateCustomerList();
+    async init() {
+      const params = new URLSearchParams(window.location.search);
+      const groupId = params.get('group');
+      this.currentGroupId = groupId;
+
+      if (groupId) {
+        // 編集モード：既存データを読み込む
+        await this.loadFormData(groupId);
+      } else {
+        // 新規登録モード：初期データを設定
+        this.updateCustomerList();
+      }
       this.$watch('femaleCount', () => this.updateCustomerList());
       this.$watch('maleCount', () => this.updateCustomerList());
+    },
+
+    // --- Firestoreからデータを取得し、フォームに反映させるメソッド ---
+    async loadFormData(groupId) {
+      try {
+        const collectionName = `${this.selectedYear}_fireworks`;
+        const docRef = firestore.collection(collectionName).doc(groupId);
+        const doc = await docRef.get();
+
+        if (doc.exists) {
+          const data = doc.data();
+
+          // 代表者情報を反映
+          this.representative = {
+            ...this.representative,
+            ...data.representative
+          };
+          this.femaleCount = data.femaleCount;
+          this.maleCount = data.maleCount;
+
+          // 顧客情報を反映
+          // 画像URLをプレビュー用に変換する
+          const customersWithPreviews = data.customers.map(customer => ({
+            ...customer,
+            // 既存の画像はプレビューURLとして設定
+            imagePreviews: customer.imageUrls || [],
+            imageFiles: [] // 編集時に新しい画像がアップロードされるまで空
+          }));
+
+          this.customers = customersWithPreviews;
+          // UI状態を更新（代表者情報を開いておく）
+          this.isRepresentativeInfoOpen = true;
+
+        } else {
+          alert('指定されたドキュメントが見つかりませんでした。');
+          console.error("No such document!");
+        }
+
+      } catch (error) {
+        console.error("データ取得エラー: ", error);
+        alert('データの読み込みに失敗しました。');
+      }
     },
 
     // --- 算出プロパティ ---
@@ -201,9 +257,7 @@ document.addEventListener('alpine:init', () => {
       this.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
     },
 
-    /**
-         * 画像選択時の処理。プレビューURLとFileオブジェクトの両方を保存する
-         */
+    // 画像選択時の処理。プレビューURLとFileオブジェクトの両方を保存する
     handleImageUpload(event, customerIndex) {
       const files = event.target.files;
       if (!files) return;
@@ -249,8 +303,8 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * フォーム全体のデータを送信する
-     */
+ * フォーム全体のデータを送信する
+ */
     async submitForm() {
       try {
         // 1. 動的な名前を決定
@@ -259,38 +313,48 @@ document.addEventListener('alpine:init', () => {
 
         // 2. 顧客データ内の画像URLを準備
         const processedCustomers = await Promise.all(this.customers.map(async (customer) => {
-          const imageUrls = await Promise.all(
-            customer.imageFiles.map(file => this.uploadImageToCloudinary(file, folderName))
-          );
+          // 新しい画像ファイルがある場合のみ、アップロード処理を実行
+          if (customer.imageFiles && customer.imageFiles.length > 0) {
+            const newImageUrls = await Promise.all(
+              customer.imageFiles.map(file => this.uploadImageToCloudinary(file, folderName))
+            );
 
-          // Firestoreに保存する用の新しい顧客オブジェクトを作成
-          const customerData = { ...customer };
-          delete customerData.imageFiles; // Fileオブジェクトは不要なので削除
-          delete customerData.imagePreviews; // プレビューURLも不要なので削除
-          customerData.imageUrls = imageUrls; // CloudinaryのURLを追加
-
-          return customerData;
+            // Firestoreに保存する用の新しい顧客オブジェクトを作成
+            const customerData = { ...customer };
+            delete customerData.imageFiles;
+            delete customerData.imagePreviews;
+            // 既存のURLを新しいURLで完全に置き換える
+            customerData.imageUrls = newImageUrls;
+            return customerData;
+          } else {
+            // 新しい画像ファイルがない場合は、既存のデータをそのまま返す
+            const customerData = { ...customer };
+            delete customerData.imageFiles;
+            delete customerData.imagePreviews;
+            return customerData;
+          }
         }));
 
         // 3. Firestoreに保存する最終的なデータを作成
         const dataToSave = {
-          isCanceled: this.isCanceled,
           representative: this.representative,
           customers: processedCustomers,
           femaleCount: this.femaleCount,
           maleCount: this.maleCount,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         };
 
-        // 4. Firestoreにデータを追加 (ドキュメントIDは自動生成)
-        await firestore.collection(collectionName).add(dataToSave);
-
-        // 5. 成功アラートを表示
-        alert('登録が完了しました。');
-
-        // 必要であればフォームをリセットする処理をここに追加
-        // window.location.reload(); 
+        // 4. 新規か更新かを判断して、Firestoreにデータを保存
+        if (this.currentGroupId) {
+          // 既存のドキュメントを更新
+          await firestore.collection(collectionName).doc(this.currentGroupId).update(dataToSave);
+          alert('更新が完了しました。');
+        } else {
+          // 新規ドキュメントを追加
+          dataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await firestore.collection(collectionName).add(dataToSave);
+          alert('登録が完了しました。');
+        }
 
       } catch (error) {
         console.error("登録エラー: ", error);

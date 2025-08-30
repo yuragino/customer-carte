@@ -36,17 +36,12 @@
       <nav class="header-nav">
         <a href="./reception.html">受付管理</a>
         <a href="./image-carte.html">画像一覧</a>
-        <a href="#">新規登録</a>
+        <a href="./form.html">新規登録</a>
       </nav>
     </div>
   </header>
-  <div class="cancellation-status" x-data="{ isCanceled: false }">
-    <label for="cancellation-toggle">
-      <input type="checkbox" id="cancellation-toggle" x-model="isCanceled">
-      <span>キャンセルの時はここにチェックをつける</span>
-    </label>
-  </div>
-  <form @submit.prevent="submitForm" :class="{ 'is-canceled': isCanceled }">
+  <div class="cancellation-status" x-show="representative.is-canceled === true">この予約はすでにキャンセルされています</div>
+  <form @submit.prevent="submitForm" :class="{ 'is-canceled': representative.isCanceled }">
     <main>
       <div class="form-section">
         <h2 class="section-title" @click="isRepresentativeInfoOpen = !isRepresentativeInfoOpen">
@@ -254,7 +249,13 @@
       </div>
 
       <div class="submit-container">
-        <button type="submit" class="submit-btn">登録</button>
+        <button type="submit" class="submit-btn" x-text="currentGroupId ? '更新' : '登録'"></button>
+      </div>
+      <div class="cancellation-status" x-show="currentGroupId != null">
+        <label for="cancellation-toggle">
+          <input type="checkbox" id="cancellation-toggle" x-model="representative.isCanceled">
+          <span>キャンセルの時はここにチェックをつける</span>
+        </label>
       </div>
     </main>
   </form>
