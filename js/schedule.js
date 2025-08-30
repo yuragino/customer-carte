@@ -69,8 +69,6 @@ document.addEventListener('alpine:init', () => {
       // 見つかったグループのcustomers配列から、指定されたcustomerIdに一致する顧客のインデックスを見つける
       const foundCustomerIndex = foundGroup.customers.findIndex(customerItem => customerItem.id === customerId);
       if (foundCustomerIndex === -1) return;
-
-      // 変数名を修正：foundGroupとfoundCustomerIndexを使用
       const currentStatus = foundGroup.customers[foundCustomerIndex].status || '受付完了';
       const nextStatus = this.statusCycle[currentStatus];
 
@@ -132,7 +130,16 @@ document.addEventListener('alpine:init', () => {
         '対応完了': 'status-completed',
       };
       return classMap[currentStatus] || 'status-received';
-    }
+    },
+
+    formatTimestamp(timestamp) {
+      if (!timestamp) return '--:--';
+      // FirestoreタイムスタンプオブジェクトをJavaScript Dateオブジェクトに変換
+      const date = timestamp.toDate();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
   }));
 });
 
