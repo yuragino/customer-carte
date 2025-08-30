@@ -69,6 +69,8 @@ document.addEventListener('alpine:init', () => {
       // 見つかったグループのcustomers配列から、指定されたcustomerIdに一致する顧客のインデックスを見つける
       const foundCustomerIndex = foundGroup.customers.findIndex(customerItem => customerItem.id === customerId);
       if (foundCustomerIndex === -1) return;
+
+      // 変数名を修正：foundGroupとfoundCustomerIndexを使用
       const currentStatus = foundGroup.customers[foundCustomerIndex].status || '受付完了';
       const nextStatus = this.statusCycle[currentStatus];
 
@@ -84,13 +86,24 @@ document.addEventListener('alpine:init', () => {
           return;
         }
         const docData = doc.data();
-        // 更新するフィールドへのパスを直接指定する
-        const updateData = {};
-        updateData[`customers.${foundCustomerIndex}.status`] = nextStatus;
-        updateData[`customers.${foundCustomerIndex}.statusTimestamps.${this.statusTimestampKeys[currentStatus]}`] = firebase.firestore.FieldValue.serverTimestamp();
-        updateData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-        // Firestoreに更新を送信
-        await docRef.update(updateData);
+        const updatedCustomers = docData.customers.map(customerData => {
+          if (customerData.id === customerId) {
+            return {
+              ...customerData,
+              status: nextStatus,
+              statusTimestamps: {
+                ...(customerData.statusTimestamps || {}),
+                [this.statusTimestampKeys[currentStatus]]: firebase.firestore.FieldValue.serverTimestamp(),
+              },
+            };
+          }
+          return customerData;
+        });
+        const dataToSave = {
+          customers: updatedCustomers,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        };
+        await docRef.update(dataToSave);
         console.log("Status and timestamp updated successfully!");
       } catch (error) {
         console.error("Error updating status: ", error);
@@ -131,9 +144,9 @@ document.addEventListener('alpine:init', () => {
       };
       return classMap[currentStatus] || 'status-received';
     },
-
+    
     formatTimestamp(timestamp) {
-      if (!timestamp) return '--:--';
+      if (!timestamp) return '';
       // FirestoreタイムスタンプオブジェクトをJavaScript Dateオブジェクトに変換
       const date = timestamp.toDate();
       const hours = String(date.getHours()).padStart(2, '0');
