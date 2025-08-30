@@ -42,15 +42,20 @@
 
   <main>
     <div class="list">
-      <template x-for="customer in customersWithImage" :key="customer.id">
+      <template x-for="(customer, index) in customersWithImage" :key="customer.id">
         <div class="card">
           <div class="image-container">
-            <template x-for="imageUrl in customer.imageUrls" :key="imageUrl">
-              <img :src="imageUrl" alt="写真">
+            <template x-for="(imageUrl, imageIndex) in customer.imageUrls" :key="imageIndex">
+              <img :src="imageUrl" alt="写真" x-show="customer.currentIndex === imageIndex">
             </template>
-            <button class="action-btn delete-btn" @click="">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+            <div x-show="customer.imageUrls.length > 1" class="preview-btn">
+              <button class="prev" @click="prevImage(index)">
+                <i class="fa-solid fa-angles-left"></i>
+              </button>
+              <button class="next" @click="nextImage(index)">
+                <i class="fa-solid fa-angles-right"></i>
+              </button>
+            </div>
             <button class="action-btn edit-btn" @click="window.location.href = `/form.html?group=${customer.groupId}`">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>

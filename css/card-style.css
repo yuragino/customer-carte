@@ -49,9 +49,28 @@ th {
   position: relative;
 }
 
+.preview-btn button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 50%;
+}
+
+.image-container .prev {
+  left: 0;
+}
+
+.image-container .next {
+  right: 0;
+}
+
 .action-btn {
   position: absolute;
-
   background: rgba(255, 255, 255, 0.7);
   border: none;
   cursor: pointer;
