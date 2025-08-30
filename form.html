@@ -40,8 +40,8 @@
       </nav>
     </div>
   </header>
-  <div class="cancellation-status" x-show="representative.is-canceled === true">この予約はすでにキャンセルされています</div>
-  <form @submit.prevent="submitForm" :class="{ 'is-canceled': representative.isCanceled }">
+  <div class="cancellation-status" x-show="representative.isCanceled === true">この予約はすでにキャンセルされています</div>
+  <form @submit.prevent="submitForm">
     <main>
       <div class="form-section">
         <h2 class="section-title" @click="isRepresentativeInfoOpen = !isRepresentativeInfoOpen">

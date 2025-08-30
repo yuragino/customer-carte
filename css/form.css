@@ -284,8 +284,3 @@ input[type="file"] {
   justify-content: center;
   gap: 10px;
 }
-
-.is-canceled {
-  opacity: 0.5; /* フォーム全体を薄く表示 */
-  pointer-events: none; /* クリックや入力ができないようにする */
-}
