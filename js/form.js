@@ -43,6 +43,13 @@ document.addEventListener('alpine:init', () => {
       lineType: '椿LINE',
       selectedRepeaterYears: [],
       notes: '',
+      checkpoints: {
+        yukataRental: false,
+        footwearBag: false,
+        price: false,
+        location: false,
+        parking: false
+      },
     },
     femaleCount: 1,
     maleCount: 1,
@@ -267,6 +274,7 @@ document.addEventListener('alpine:init', () => {
 
         // 3. Firestoreに保存する最終的なデータを作成
         const dataToSave = {
+          isCanceled: this.isCanceled,
           representative: this.representative,
           customers: processedCustomers,
           femaleCount: this.femaleCount,

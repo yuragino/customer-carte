@@ -156,6 +156,7 @@ input[type="file"] {
 .form-table label {
     margin-right: 15px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .small-input {
@@ -322,4 +323,29 @@ input[type="file"] {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+/* --- キャンセル機能のスタイル --- */
+.cancellation-status {
+  max-width: 800px;
+  margin: 0 auto 20px;
+  padding: 15px;
+  background-color: #ffebeb;
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  text-align: center;
+  color: #dc3545;
+}
+
+.cancellation-status label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.is-canceled {
+  opacity: 0.5; /* フォーム全体を薄く表示 */
+  pointer-events: none; /* クリックや入力ができないようにする */
 }

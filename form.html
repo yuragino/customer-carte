@@ -35,8 +35,13 @@
       </nav>
     </div>
   </header>
-
-  <form @submit.prevent="submitForm">
+  <div class="cancellation-status" x-data="{ isCanceled: false }">
+    <label for="cancellation-toggle">
+      <input type="checkbox" id="cancellation-toggle" x-model="isCanceled">
+      <span>キャンセルの時はここにチェックをつける</span>
+    </label>
+  </div>
+  <form @submit.prevent="submitForm" :class="{ 'is-canceled': isCanceled }">
     <main>
       <div class="form-section">
         <h2 class="section-title" @click="isRepresentativeInfoOpen = !isRepresentativeInfoOpen">
@@ -141,6 +146,16 @@
             <tr>
               <th>備考 <span class="badge optional">任意</span></th>
               <td><input type="text" class="full-width" x-model="representative.notes"></td>
+            </tr>
+            <tr>
+              <th>お伝え事項</th>
+              <td>
+                <label><input type="checkbox" x-model="representative.checkpoints.yukataRental"> 浴衣レンタルページ</label>
+                <label><input type="checkbox" x-model="representative.checkpoints.footwearBag"> 履物バッグ</label>
+                <label><input type="checkbox" x-model="representative.checkpoints.price"> 料金</label>
+                <label><input type="checkbox" x-model="representative.checkpoints.location"> 当店の場所</label>
+                <label><input type="checkbox" x-model="representative.checkpoints.parking"> 駐車場</label>
+              </td>
             </tr>
           </table>
         </div>
@@ -253,12 +268,12 @@
       <button class="submit-btn" @click="addRentalItem()">追加登録</button>
     </div>
   </div>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    AutoKana.bind('#sei', '#sei_kana', { katakana: true });
-    AutoKana.bind('#mei', '#mei_kana', { katakana: true });
-  });
-</script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      AutoKana.bind('#sei', '#sei_kana', { katakana: true });
+      AutoKana.bind('#mei', '#mei_kana', { katakana: true });
+    });
+  </script>
 </body>
 
 </html>
