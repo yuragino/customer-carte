@@ -1,68 +1,80 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <title>画像一覧</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <!-- Custom Script -->
   <script type="module" src="./js/image-carte.js"></script>
+  <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+        integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="./css/layout.css">
   <link rel="stylesheet" href="./css/card-style.css">
 </head>
 
 <body x-data="app" x-init="init">
-  <header>
+  <header class="header">
     <div class="header-inner">
-      <ul>
-        <li><a href="./reception.html"></a>受付管理</a></li>
-        <li><a href="./image-carte.html">画像一覧</a></li>
-        <li><a href="./form.html">新規登録</a></li>
-
-      </ul>
+      <h1 class="header-title">画像一覧</h1>
+      <div class="header-controls">
+        <select x-model="selectedYear">
+          <template x-for="year in yearOptions" :key="year">
+            <option :value="year" x-text="year"></option>
+          </template>
+        </select>
+        <span>花火大会</span>
+      </div>
+      <nav class="header-nav">
+        <a href="./reception.html">受付管理</a>
+        <a href="#">画像一覧</a>
+        <a href="./form.html">新規登録</a>
+      </nav>
     </div>
   </header>
-  <main x-data="app">
-    <!-- カードを表示する場所 -->
+
+  <main>
     <div class="list">
-      <template x-for="person in peopleWithImage" :key="person.id">
+      <template x-for="customer in customersWithImage" :key="customer.id">
         <div class="card">
           <div class="image-container">
-            <img :src="person.imageUrl" alt="写真">
-            <button class="action-btn delete-btn" @click="">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-            <button class="action-btn edit-btn" @click="window.location.href = `/form.html?group=${person.groupId}`">
+            <template x-for="imageUrl in customer.imageUrls" :key="imageUrl">
+              <img :src="imageUrl" alt="写真">
+            </template>
+            <button class="action-btn edit-btn" 
+                    @click="window.location.href = `/form.html?group=${customer.groupId}`">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </div>
+
           <details>
             <summary>身長・足のサイズ</summary>
             <table>
               <tr>
                 <th>身長</th>
-                <td x-text="person.height + ' cm'"></td>
+                <td x-text="customer.height + ' cm'"></td>
               </tr>
               <tr>
                 <th>足のサイズ</th>
-                <td x-text="person.footSize + ' cm'"></td>
+                <td x-text="customer.footSize + ' cm'"></td>
               </tr>
             </table>
           </details>
+
           <table>
             <tr>
               <th>名前</th>
-              <td x-text="person.name"></td>
+              <td x-text="customer.name"></td>
             </tr>
             <tr>
-              <th>来店日時</th>
-              <td x-text="formatDateTime(person.visitDate, person.visitTime)"></td>
+              <th>来店時間</th>
+              <td x-text="customer.visitTime"></td>
             </tr>
           </table>
         </div>
@@ -70,5 +82,4 @@
     </div>
   </main>
 </body>
-
 </html>

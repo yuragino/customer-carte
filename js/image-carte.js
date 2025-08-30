@@ -1,60 +1,56 @@
 import { firestore } from "./firebase.js";
-// --- 設定（必要なら変更） ---
-const FIRESTORE_COLLECTION_REGISTRATION = 'reservations'; // 登録保存先
-const FIRESTORE_COLLECTION_PRICING = 'pricing'; // 料金マスタ（doc: 'yukata' を期待）
-const FIRESTORE_COLLECTION_EVENTS = 'eventDates'; // 年度ごとのイベント日（例: docId: '2025', field: 'fireworksDate'）
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    peopleWithImage: [],
+    // --- ヘッダー関連 ---
+    selectedYear: new Date().getFullYear(),
+    get yearOptions() {
+      const currentYear = new Date().getFullYear();
+      return [currentYear, currentYear + 1, currentYear - 1, currentYear - 2, currentYear - 3];
+    },
+
+    customersWithImage: [],
 
     async init() {
+      this.$watch('selectedYear', () => this.loadData());
       await this.loadData();
     },
 
     async loadData() {
       try {
-        const snapshot = await firestore.collection('reservations').get();
-        const peopleList = [];
+        const collectionName = `${this.selectedYear}_fireworks`;
+        const snapshot = await firestore.collection(collectionName).get();
+        const customersList = [];
 
         snapshot.forEach(doc => {
           const data = doc.data();
-          // people 配列があることを前提にループ
-          if (!data.people) return;
-          data.people.forEach(person => {
-              peopleList.push({
+          if (!data.customers) return;
+
+          data.customers.forEach((customer, customerIndex) => {
+            // imageUrls が存在し、空でない場合のみ処理
+            if (customer.imageUrls && customer.imageUrls.length > 0) {
+              customersList.push({
                 groupId: doc.id,
-                id: doc.id + '_' + person.name,  // 識別用キー
-                name: person.name || '',
-                height: person.height || '',
-                footSize: person.footSize || '',
-                imageUrl: person.imageUrl,
-                // 来店日時は親データから補完
-                visitDate: data.visitDate || '',
-                visitTime: data.visitTime || '',
+                // ユニークなキーを生成
+                id: `${doc.id}_${customer.firstName}_${customerIndex}`,
+                // 代表者名と顧客名を連結
+                name: `${customer.lastName}${customer.firstName}`,
+                height: customer.height || '',
+                footSize: customer.footSize || '',
+                imageUrls: customer.imageUrls,
+                // 来店時間を代表者情報から取得
+                visitTime: data.representative.visitTime || '',
               });
+            }
           });
         });
 
-        this.peopleWithImage = peopleList;
+        this.customersWithImage = customersList;
       } catch (error) {
         console.error('データ取得エラー:', error);
         alert('データの取得に失敗しました。');
       }
     },
-
-    formatDateTime(dateStr, timeStr) {
-      if (!dateStr) return '';
-      const d = new Date(dateStr + 'T' + (timeStr || '00:00'));
-      return d.toLocaleString('ja-JP', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    },
-
   }));
 });
-
 // cSpell:ignore jalan kitsuke firestore geta yukata
