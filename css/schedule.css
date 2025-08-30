@@ -1,0 +1,107 @@
+/* schedule.css */
+main {
+  padding: 2rem;
+}
+
+.schedule-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 中央寄せ用クラスの追加 */
+.center-align {
+  text-align: center;
+}
+
+select {
+  padding: 0.4rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+  min-width: 80px;
+}
+
+/* Status Button */
+.status-btn {
+  border: none;
+  border-radius: 1rem;
+  padding: 0.4rem 1rem;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  min-width: 100px;
+  text-align: center;
+}
+
+.status-received {
+  background-color: #6c757d;
+}
+
+/* 受付完了 (グレー) */
+.status-guided {
+  background-color: #007bff;
+}
+
+/* 案内完了 (青) */
+.status-dressing-done {
+  background-color: #28a745;
+}
+
+/* 着付完了 (緑) */
+.status-sent-off {
+  background-color: #fd7e14;
+}
+
+/* 見送り完了 (オレンジ) */
+.status-completed {
+  background-color: #343a40;
+}
+
+/* 対応完了 (ダークグレー) */
+
+/* Icons */
+.gender-icon-male {
+  color: #3498db;
+  margin-left: 0.25rem;
+}
+
+.gender-icon-female {
+  color: #e91e63;
+  margin-left: 0.25rem;
+}
+
+.detail-link {
+  color: #555;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+
+.detail-link:hover {
+  color: #000;
+}

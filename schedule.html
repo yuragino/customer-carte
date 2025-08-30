@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お客様カルテ - 当日スケジュール</title>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <!-- Custom Script -->
+  <script type="module" src="./js/schedule.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="./css/layout.css">
+  <link rel="stylesheet" href="./css/schedule.css">
+</head>
+
+<body x-data="schedulePage">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title">お客様カルテ</h1>
+      <div class="header-controls">
+        <select x-model="selectedYear" @change="fetchSchedule">
+          <template x-for="year in yearOptions" :key="year">
+            <option :value="year" x-text="year"></option>
+          </template>
+        </select>
+        <span>花火大会</span>
+      </div>
+      <nav class="header-nav">
+        <a href="./schedule.html">受付管理</a>
+        <a href="./image-carte.html">画像一覧</a>
+        <a href="./form.html">新規登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="schedule-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="center-align">来店予定</th>
+            <th class="center-align">来店時刻</th>
+            <th>代表者名</th>
+            <th>個人名</th>
+            <th>ブース</th>
+            <th>担当者</th>
+            <th>備考</th>
+            <th class="center-align">ステータス</th>
+            <th class="center-align">詳細</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-if="groups.length === 0">
+            <tr>
+              <td colspan="9" style="text-align: center; padding: 2rem;">
+                該当するデータがありません。
+              </td>
+            </tr>
+          </template>
+
+          <template x-for="group in groups.toReversed()" :key="group.groupId">
+            <template x-for="(customer, index) in group.customers" :key="customer.id">
+              <tr>
+                <template x-if="index === 0">
+                  <td class="center-align" :rowspan="group.customers.length" x-text="group.representative.visitTime">
+                  </td>
+                </template>
+
+                <td class="center-align" x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+
+                <template x-if="index === 0">
+                  <td :rowspan="group.customers.length"
+                    x-text="`${group.representative.lastName} ${group.representative.firstName}`"></td>
+                </template>
+
+                <td>
+                  <span x-text="`${customer.lastName} ${customer.firstName}`"></span>
+                  <template x-if="customer.gender === 'male'">
+                    <i class="fa-solid fa-mars gender-icon-male"></i>
+                  </template>
+                  <template x-if="customer.gender === 'female'">
+                    <i class="fa-solid fa-venus gender-icon-female"></i>
+                  </template>
+                </td>
+
+                <td>
+                  <select :value="customer.booth"
+                    @change="updateCustomerField(group.groupId, customer.id, 'booth', $event.target.value)">
+                    <option value="">未選択</option>
+                    <template x-for="booth in boothOptions" :key="booth">
+                      <option :value="booth" x-text="booth"></option>
+                    </template>
+                  </select>
+                </td>
+
+                <td>
+                  <select :value="customer.staff"
+                    @change="updateCustomerField(group.groupId, customer.id, 'staff', $event.target.value)">
+                    <option value="">未選択</option>
+                    <template x-for="staff in staffOptions" :key="staff">
+                      <option :value="staff" x-text="staff"></option>
+                    </template>
+                  </select>
+                </td>
+
+                <template x-if="index === 0">
+                  <td :rowspan="group.customers.length" x-text="group.representative.notes || '備考なし'"></td>
+                </template>
+
+                <td class="center-align">
+                  <button class="status-btn" :class="getStatusClass(customer.status)"
+                    @click="updateStatus(group.groupId, customer.id)">
+                    <span x-text="customer.status || '受付完了'"></span>
+                  </button>
+                </td>
+
+                <template x-if="index === 0">
+                  <td class="center-align" :rowspan="group.customers.length">
+                    <a :href="`form.html?group=${group.groupId}`" class="detail-link">
+                      <i class="fa-solid fa-square-up-right"></i>
+                    </a>
+                  </td>
+                </template>
+              </tr>
+            </template>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+
+</html>
