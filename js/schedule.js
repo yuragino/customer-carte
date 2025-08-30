@@ -39,7 +39,6 @@ document.addEventListener('alpine:init', () => {
     async fetchSchedule() {
       this.groups = [];
       const collectionName = `${this.selectedYear}_fireworks`;
-
       try {
         // firestore 変数を使ってコレクションにアクセス
         const querySnapshot = await firestore.collection(collectionName).get();
@@ -50,14 +49,12 @@ document.addEventListener('alpine:init', () => {
             ...doc.data()
           });
         });
-
         // 来店予定時刻でソート
         fetchedGroups.sort((a, b) => {
           if (a.representative.visitTime < b.representative.visitTime) return -1;
           if (a.representative.visitTime > b.representative.visitTime) return 1;
           return 0;
         });
-
         this.groups = fetchedGroups;
       } catch (error) {
         console.error("Error fetching schedule: ", error);
@@ -66,52 +63,37 @@ document.addEventListener('alpine:init', () => {
     },
 
     async updateStatus(groupId, customerId) {
-      const group = this.groups.find(g => g.groupId === groupId);
-      if (!group) return;
+      // groups配列から、指定されたgroupIdに一致するグループを見つける
+      const foundGroup = this.groups.find(groupItem => groupItem.groupId === groupId);
+      if (!foundGroup) return;
+      // 見つかったグループのcustomers配列から、指定されたcustomerIdに一致する顧客のインデックスを見つける
+      const foundCustomerIndex = foundGroup.customers.findIndex(customerItem => customerItem.id === customerId);
+      if (foundCustomerIndex === -1) return;
 
-      const customerIndex = group.customers.findIndex(c => c.id === customerId);
-      if (customerIndex === -1) return;
-
-      const currentStatus = group.customers[customerIndex].status || '受付完了';
+      // 変数名を修正：foundGroupとfoundCustomerIndexを使用
+      const currentStatus = foundGroup.customers[foundCustomerIndex].status || '受付完了';
       const nextStatus = this.statusCycle[currentStatus];
 
-      // UIを即時反映
-      group.customers[customerIndex].status = nextStatus;
+      // UIを即時反映（変数名を修正）
+      foundGroup.customers[foundCustomerIndex].status = nextStatus;
 
       try {
         const docRef = firestore.collection(`${this.selectedYear}_fireworks`).doc(groupId);
-
         // ドキュメントデータを取得
         const doc = await docRef.get();
         if (!doc.exists) {
           console.error("Document not found.");
           return;
         }
-
         const docData = doc.data();
-        const updatedCustomers = docData.customers.map(c => {
-          if (c.id === customerId) {
-            return {
-              ...c,
-              status: nextStatus,
-              statusTimestamps: {
-                ...(c.statusTimestamps || {}),
-                [this.statusTimestampKeys[currentStatus]]: firebase.firestore.FieldValue.serverTimestamp(), // ← firebase じゃなくて firestore 経由
-              },
-            };
-          }
-          return c;
-        });
-
-        // 更新データをまとめる（customerForm と同じスタイル）
-        const dataToSave = {
-          customers: updatedCustomers,
-          updatedAt: firestore.FieldValue.serverTimestamp(), // おまけで全体の更新日時も入れるとよい
-        };
-
-        await docRef.update(dataToSave);
+        // 更新するフィールドへのパスを直接指定する
+        const updateData = {};
+        updateData[`customers.${foundCustomerIndex}.status`] = nextStatus;
+        updateData[`customers.${foundCustomerIndex}.statusTimestamps.${this.statusTimestampKeys[currentStatus]}`] = firebase.firestore.FieldValue.serverTimestamp();
+        updateData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        // Firestoreに更新を送信
+        await docRef.update(updateData);
         console.log("Status and timestamp updated successfully!");
-
       } catch (error) {
         console.error("Error updating status: ", error);
         alert("ステータスの更新に失敗しました。");
@@ -128,7 +110,7 @@ document.addEventListener('alpine:init', () => {
         if (!doc.exists) throw new Error("Document not found");
 
         const customers = doc.data().customers;
-        const customerIndex = customers.findIndex(c => c.id === customerId);
+        const customerIndex = customers.findIndex(customerData => customerData.id === customerId);
         if (customerIndex === -1) throw new Error("Customer not found");
 
         customers[customerIndex][field] = value;
@@ -138,14 +120,6 @@ document.addEventListener('alpine:init', () => {
         console.error(`Error updating ${field}:`, error);
         alert(`${field}の更新に失敗しました。`);
       }
-    },
-
-    formatTimestamp(timestamp) {
-      if (!timestamp) return '--:--';
-      const date = timestamp.toDate();
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
     },
 
     getStatusClass(status) {

@@ -73,7 +73,7 @@
                   </td>
                 </template>
 
-                <td class="center-align" x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+                <td class="center-align" x-text="customer.statusTimestamps?.receptionCompletedAt || ''"></td>
 
                 <template x-if="index === 0">
                   <td :rowspan="group.customers.length"
@@ -116,7 +116,8 @@
 
                 <td class="center-align">
                   <button class="status-btn" :class="getStatusClass(customer.status)"
-                    @click="updateStatus(group.groupId, customer.id)">
+                    @click="updateStatus(group.groupId, customer.id)"
+                    :disabled="customer.status === '対応完了'">
                     <span x-text="customer.status || '受付完了'"></span>
                   </button>
                 </td>
