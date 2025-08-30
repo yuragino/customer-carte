@@ -1,36 +1,61 @@
-/* 基本スタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #f4f5f7;
     color: #333;
-    margin: 0;
-    padding: 20px;
 }
 
-/* ヘッダー */
+button:hover{
+    opacity: 0.8;
+}
+
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
     border-bottom: 1px solid #e0e0e0;
     margin-bottom: 20px;
 }
+
+.header-inner {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
 .header-title {
     font-size: 1.2rem;
     font-weight: bold;
 }
+
 .header-controls select {
     padding: 5px 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
     margin-left: 10px;
 }
+
+.header-nav {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    height: 100%;
+}
+
 .header-nav a {
+    display: block;
+    line-height: 70px;
     text-decoration: none;
     color: #333;
-    margin-left: 20px;
-    font-size: 0.9rem;
+}
+
+.header-nav a:hover {
+    color: #6c757d;
 }
 
 main {
@@ -49,9 +74,8 @@ main {
 
 .section-title {
     font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 15px;
     padding: 10px;
+    margin-bottom: 10px;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -66,46 +90,77 @@ main {
     width: 100%;
     border-collapse: collapse;
 }
-.form-table th, .form-table td {
+
+.form-table th,
+.form-table td {
     padding: 12px;
     border-bottom: 1px solid #f0f0f0;
     text-align: left;
     vertical-align: middle;
 }
+
 .form-table th {
     width: 25%;
     background-color: #fafafa;
     font-weight: normal;
-    font-size: 0.9rem;
     text-align: right;
 }
+
 .form-table td {
     width: 75%;
 }
 
 /* バッジ */
 .badge {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     padding: 2px 6px;
     border-radius: 4px;
     color: #fff;
     margin-left: 8px;
 }
-.badge.required { background-color: #dc3545; }
-.badge.optional { background-color: #6c757d; }
+
+.badge.required {
+    background-color: #dc3545;
+}
+
+.badge.optional {
+    background-color: #6c757d;
+}
 
 /* フォーム要素 */
-input[type="text"], input[type="tel"], input[type="time"], input[type="number"], select {
+input[type="text"],
+input[type="tel"],
+input[type="time"],
+input[type="number"],
+select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 1rem;
 }
-input[type="text"], input[type="tel"] { margin-right: 10px; }
-.full-width { width: 90%; }
-.person-count input { width: 60px; margin: 0 10px; }
-.form-table label { margin-right: 15px; cursor: pointer; }
-.small-input { width: 60px; }
+
+input[type="file"] {
+    width: auto;
+    max-width: 100px;
+    flex: 0 0 auto;
+}
+
+.full-width {
+    width: 90%;
+}
+
+.person-count input {
+    width: 60px;
+    margin: 0 10px;
+}
+
+.form-table label {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.small-input {
+    width: 60px;
+}
 
 /* 顧客詳細グリッド */
 .customer-details-grid {
@@ -113,14 +168,15 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
     border: 1px solid #e0e0e0;
     overflow-x: auto;
 }
+
 .customer-column-header {
     display: grid;
-    grid-template-rows: repeat(8, 60px); /* 8項目、各60pxの高さ */
+    grid-template-rows: repeat(9, 60px);
     background-color: #fafafa;
-    font-size: 0.8rem;
     text-align: center;
     flex-shrink: 0;
 }
+
 .header-item {
     display: flex;
     align-items: center;
@@ -129,12 +185,14 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
     border-bottom: 1px solid #e0e0e0;
     border-right: 1px solid #e0e0e0;
 }
+
 .customer-column {
     display: grid;
-    grid-template-rows: repeat(8, 60px); /* ヘッダーと高さを合わせる */
+    grid-template-rows: repeat(9, 60px);
     flex-shrink: 0;
     border-right: 1px solid #e0e0e0;
 }
+
 .form-cell {
     padding: 8px;
     border-bottom: 1px solid #e0e0e0;
@@ -142,10 +200,16 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
     justify-content: center;
     align-items: center;
     gap: 5px;
-    font-size: 0.9rem;
 }
-.form-cell input[type="text"] { width: 80px; }
-.form-cell input[type="radio"], .form-cell input[type="checkbox"] { margin-right: 5px; }
+
+.form-cell input[type="text"] {
+    width: 80px;
+}
+
+.form-cell label {
+    margin-right: 10px;
+    cursor: pointer;
+}
 
 /* 追加レンタルリスト */
 .rental-list {
@@ -153,30 +217,28 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
     padding: 0;
     margin: 0;
 }
+
 .rental-list li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
 }
-.add-btn {
-    background-color: #ddd;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    line-height: 20px;
-    text-align: center;
-}
-.delete-btn {
+
+.add-btn,.delete-btn {
     background: none;
     border: none;
     cursor: pointer;
     padding: 0 5px;
 }
-.delete-btn svg { vertical-align: middle; }
+
+.add-btn{
+    font-size: 1.5rem;
+    color: #3543dc;
+}
+
+.delete-btn:hover{
+    color: #dc3545;
+}
 
 /* 画像プレビュー */
 .preview-container {
@@ -184,6 +246,7 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
     gap: 5px;
     margin-top: 5px;
 }
+
 .preview-image {
     width: 40px;
     height: 40px;
@@ -192,13 +255,24 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
 }
 
 /* 合計・登録ボタン */
-.totals-section .form-table th { width: 15%; }
-.totals-section .form-table td { width: 85%; }
+.totals-section .form-table th {
+    width: 15%;
+}
+
+.totals-section .form-table td {
+    width: 85%;
+}
+
+.totals-section span{
+    font-size: 1.1rem;
+}
+
 .submit-container {
     text-align: center;
-    margin-top: 30px;
 }
+
 .submit-btn {
+    margin-bottom: 20px;
     background-color: #333;
     color: #fff;
     border: none;
@@ -220,14 +294,32 @@ input[type="text"], input[type="tel"] { margin-right: 10px; }
     justify-content: center;
     align-items: center;
 }
+
 .modal-content {
     background-color: #fff;
     padding: 30px;
     border-radius: 8px;
-    width: 300px;
+    width: 400px;
+    text-align: center;
 }
-.modal-content h3 { margin-top: 0; }
-.modal-form { margin-bottom: 15px; }
-.modal-form label { display: block; margin-bottom: 5px; }
-.modal-form input { width: 90%; }
-.modal-form div { display: flex; align-items: center; gap: 10px; }
+
+.modal-form {
+    width: 90%;
+    margin: 20px 0;
+}
+
+.modal-form label {
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+}
+
+.modal-form input {
+    width: 200px;
+}
+
+.modal-form div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

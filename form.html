@@ -3,33 +3,37 @@
 
 <head>
   <meta charset="UTF-8">
-    <title>お客様カルテ - 新規登録</title>
+  <title>お客様カルテ - 新規登録</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
   <script type="module" src="./js/form.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="./css/form.css">
 </head>
 
 <body x-data="customerForm">
   <header class="header">
-    <h1 class="header-title">お客様カルテ</h1>
-    <div class="header-controls">
-      <select x-model="selectedYear">
-        <template x-for="year in yearOptions" :key="year">
-          <option :value="year" x-text="year"></option>
-        </template>
-      </select>
-      <span>花火大会</span>
+    <div class="header-inner">
+      <h1 class="header-title">お客様カルテ</h1>
+      <div class="header-controls">
+        <select x-model="selectedYear">
+          <template x-for="year in yearOptions" :key="year">
+            <option :value="year" x-text="year"></option>
+          </template>
+        </select>
+        <span>花火大会</span>
+      </div>
+      <nav class="header-nav">
+        <a href="#">受付管理</a>
+        <a href="#">画像一覧</a>
+        <a href="#">新規登録</a>
+      </nav>
     </div>
-    <nav class="header-nav">
-      <a href="#">当日スケジュール</a>
-      <a href="#">画像一覧</a>
-      <a href="#">新規登録</a>
-    </nav>
   </header>
 
   <form @submit.prevent="submitForm">
@@ -58,15 +62,15 @@
             <tr>
               <th>代表者名 <span class="badge required">必須</span></th>
               <td>
-                <input type="text" placeholder="姓" x-model="representative.lastName">
-                <input type="text" placeholder="名" x-model="representative.firstName">
+                <input type="text" placeholder="姓" x-model="representative.lastName" id="sei">
+                <input type="text" placeholder="名" x-model="representative.firstName" id="mei">
               </td>
             </tr>
             <tr>
               <th>フリガナ <span class="badge required">必須</span></th>
               <td>
-                <input type="text" placeholder="セイ" x-model="representative.lastNameFurigana">
-                <input type="text" placeholder="メイ" x-model="representative.firstNameFurigana">
+                <input type="text" placeholder="セイ" x-model="representative.lastNameFurigana" id="sei_kana">
+                <input type="text" placeholder="メイ" x-model="representative.firstNameFurigana" id="mei_kana">
               </td>
             </tr>
             <tr>
@@ -193,12 +197,15 @@
                 <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
                   <li>
                     <span x-text="`${item.name} ${item.price}円`"></span>
-                    <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)"><i
-                        class="fa-regular fa-trash-can"></i></button>
+                    <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)">
+                      <i class="fa-regular fa-trash-can"></i>
+                    </button>
                   </li>
                 </template>
               </ul>
-              <i class="fa-solid fa-plus" @click="openRentalModal(index)"></i>
+              <button type="button" class="add-btn" @click="openRentalModal(index)">
+                <i class="fa-solid fa-circle-plus"></i>
+              </button>
             </div>
             <div class="form-cell">
               <input type="file" multiple @change="handleImageUpload($event, index)">
@@ -210,9 +217,9 @@
             </div>
             <div class="form-cell">
               <template x-if="representative.reservationMethod">
-                <span>前払: <span x-text="calculateCustomerPrepayment(customer)"></span>円 </span>
+                <span>前払：<span x-text="calculateCustomerPrepayment(customer)"></span>円 </span>
               </template>
-              <span>現地: <span x-text="calculateCustomerOnSitePayment(customer)"></span>円</span>
+              <span>現地：<span x-text="calculateCustomerOnSitePayment(customer)"></span>円</span>
             </div>
           </div>
         </template>
@@ -221,9 +228,9 @@
       <div class="form-section totals-section">
         <span>グループ合計</span>
         <template x-if="representative.reservationMethod">
-          <span>前払: <span x-text="prepayment"></span>円 </span>
+          <span>前払：<span x-text="prepayment"></span>円 </span>
         </template>
-        <span>現地: <span x-text="onSitePayment"></span>円</span>
+        <span>現地：<span x-text="onSitePayment"></span>円</span>
       </div>
 
       <div class="submit-container">
@@ -237,17 +244,21 @@
       <h3>レンタル追加登録</h3>
       <div class="modal-form">
         <label>項目</label>
-        <input type="text" x-model="newRentalItem.name" placeholder="半幅帯">
+        <input type="text" x-model="newRentalItem.name">
       </div>
       <div class="modal-form">
-        <label>価格</label>
-        <div>
-          <input type="number" x-model.number="newRentalItem.price" placeholder="800"> 円
-        </div>
+        <label>価格(円)</label>
+        <input type="number" x-model.number="newRentalItem.price">
       </div>
       <button class="submit-btn" @click="addRentalItem()">追加登録</button>
     </div>
   </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    AutoKana.bind('#sei', '#sei_kana', { katakana: true });
+    AutoKana.bind('#mei', '#mei_kana', { katakana: true });
+  });
+</script>
 </body>
 
 </html>
