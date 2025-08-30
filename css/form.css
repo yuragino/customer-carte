@@ -1,197 +1,233 @@
-.content-wrapper {
-  background: #fff;
-  padding: 20px 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 0 auto 40px auto;
+/* 基本スタイル */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f4f5f7;
+    color: #333;
+    margin: 0;
+    padding: 20px;
 }
 
-/* メインタイトル */
-h1 {
-  font-weight: 700;
-  font-size: 2rem;
-  border-bottom: 2px solid #eee;
-  margin-bottom: 20px;
+/* ヘッダー */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
 }
-
-/* 各フォーム項目のグループ */
-.form-area {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.header-title {
+    font-size: 1.2rem;
+    font-weight: bold;
 }
-
-.form-info {
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
+.header-controls select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-left: 10px;
 }
-
-.form-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #555;
-}
-
-/* テキスト・数値・日付入力 */
-input[type="text"],
-input[type="number"],
-input[type="date"],
-input[type="time"],
-input[type="tel"] {
-  padding: 8px 2px 8px 8px;
-  border: 1.5px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.25s;
-  outline-offset: 2px;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
-input[type="time"]:focus,
-input[type="tel"]:focus {
-  border-color: #0a84ff;
-  outline: none;
-  box-shadow: 0 0 8px #0a84ff66;
-}
-
-
-/* チェックボックス・ラジオボタン */
-label {
-  cursor: pointer;
-  font-weight: 500;
-  color: #444;
-  user-select: none;
-  margin-right: 15px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-input[type="checkbox"],
-input[type="radio"] {
-  cursor: pointer;
-  accent-color: #0a84ff;
-  margin: 0;
-}
-
-/* テーブル全体 */
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 25px;
-}
-
-thead th,
-tbody td {
-  min-width: 180px;
-}
-
-thead th {
-  background: #0a84ff;
-  border: 1px solid white;
-  color: white;
-  font-weight: 700;
-  padding: 12px 8px;
-  text-align: center;
-  border-radius: 10px 10px 0 0;
-}
-
-tbody td {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 10px 8px;
-  text-align: center;
-  vertical-align: middle;
-}
-
-tbody td:first-child {
-  text-align: left;
-  font-weight: 600;
-  background: #f9f9f9;
-  width: 110px;
-}
-
-.short-input {
-  display: inline-block;
-  width: 80px;
-}
-
-/* ボタン */
-button.submit-btn {
-  padding: 16px 0;
-  font-size: 1.2rem;
-  background: #0a84ff;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
-  display: block;
-  width: 500px;
-  margin: 0 auto;
-}
-
-button.submit-btn:hover {
-  background: #006ce0;
-}
-
-/* 合計表示 */
-.calc-group {
-  margin: 20px;
-  font-weight: 500;
-  text-align: center;
-}
-
-.calc-group span {
-  display: inline-block;
-  width: 150px;
-}
-
-.sub-calc {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.main-calc {
-  display: block;
-  margin: 20px;
-  font-weight: 700;
-  color: #222;
-}
-
-.main-calc>span:first-child {
-  font-size: 1.2rem;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 720px) {
-  .form-area {
-    flex-direction: column;
-  }
-
-  .form-info {
-    flex: 1 1 100%;
-  }
-
-  thead th,
-  tbody td {
+.header-nav a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 20px;
     font-size: 0.9rem;
-    padding: 8px 6px;
-  }
-
-  .submit-btn {
-    width: 100%;
-    max-width: none;
-  }
 }
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* フォームセクション */
+.form-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* フォームテーブル */
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.form-table th, .form-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+    vertical-align: middle;
+}
+.form-table th {
+    width: 25%;
+    background-color: #fafafa;
+    font-weight: normal;
+    font-size: 0.9rem;
+    text-align: right;
+}
+.form-table td {
+    width: 75%;
+}
+
+/* バッジ */
+.badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #fff;
+    margin-left: 8px;
+}
+.badge.required { background-color: #dc3545; }
+.badge.optional { background-color: #6c757d; }
+
+/* フォーム要素 */
+input[type="text"], input[type="tel"], input[type="time"], input[type="number"], select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+input[type="text"], input[type="tel"] { margin-right: 10px; }
+.full-width { width: 90%; }
+.person-count input { width: 60px; margin: 0 10px; }
+.form-table label { margin-right: 15px; cursor: pointer; }
+.small-input { width: 60px; }
+
+/* 顧客詳細グリッド */
+.customer-details-grid {
+    display: flex;
+    border: 1px solid #e0e0e0;
+    overflow-x: auto;
+}
+.customer-column-header {
+    display: grid;
+    grid-template-rows: repeat(8, 60px); /* 8項目、各60pxの高さ */
+    background-color: #fafafa;
+    font-size: 0.8rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+.header-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+}
+.customer-column {
+    display: grid;
+    grid-template-rows: repeat(8, 60px); /* ヘッダーと高さを合わせる */
+    flex-shrink: 0;
+    border-right: 1px solid #e0e0e0;
+}
+.form-cell {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+}
+.form-cell input[type="text"] { width: 80px; }
+.form-cell input[type="radio"], .form-cell input[type="checkbox"] { margin-right: 5px; }
+
+/* 追加レンタルリスト */
+.rental-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.rental-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+}
+.add-btn {
+    background-color: #ddd;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 20px;
+    text-align: center;
+}
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 5px;
+}
+.delete-btn svg { vertical-align: middle; }
+
+/* 画像プレビュー */
+.preview-container {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+.preview-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* 合計・登録ボタン */
+.totals-section .form-table th { width: 15%; }
+.totals-section .form-table td { width: 85%; }
+.submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+.submit-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 12px 40px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* モーダル */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 300px;
+}
+.modal-content h3 { margin-top: 0; }
+.modal-form { margin-bottom: 15px; }
+.modal-form label { display: block; margin-bottom: 5px; }
+.modal-form input { width: 90%; }
+.modal-form div { display: flex; align-items: center; gap: 10px; }

@@ -1,258 +1,295 @@
 import { firestore } from "./firebase.js";
-const FIRESTORE_COLLECTION_REGISTRATION = 'reservations';
-const FIRESTORE_COLLECTION_PRICING = 'pricing';
-const FIRESTORE_COLLECTION_EVENTS = 'eventDates';
 document.addEventListener('alpine:init', () => {
-  Alpine.data('app', () => ({
-    isEdit: false,
-    editDocId: null,
-    // --- フォームデータ ---
-    formData: {
-      isPrepaid: false,
-      reservationMethod: [],
-      leaderName: '',
-      leaderNameKana: '',
-      femaleNum: 1,
-      maleNum: 1,
-      visitDate: '',
-      visitTime: '',
-      transportMethod: '',
-      address: '',
-      tel: '',
-      lineType: '',
-      selectedRepeaterYears: [],
-      notes: '',
+  Alpine.data('customerForm', () => ({
+    // --- 定数 (Constants) ---
+    PRICES: {
+      RENTAL_DRESSING: 6800,
+      DRESSING_ONLY: 3800,
+      FOOTWEAR: 500,
+      BAG: 500,
     },
 
-    people: [],  // 個人情報配列
-    pricing: {
-      rentalKitsuke: 0,
-      kitsukeOnly: 0,
-      bag: 0,
-      geta: 0,
+    CLOUDINARY_CONFIG: {
+      CLOUD_NAME: 'dxq1xqypx',
+      UPLOAD_PRESET: 'unsigned_preset',
     },
 
-    cloudinary: {
-      cloudName: 'dxq1xqypx',
-      uploadPreset: 'unsigned_preset',
-      apiUrl: '',
+    // --- ヘッダー関連 ---
+    selectedYear: new Date().getFullYear(),
+    get yearOptions() {
+      const currentYear = new Date().getFullYear();
+      return [currentYear, currentYear + 1, currentYear - 1, currentYear - 2, currentYear - 3];
     },
-
-    updateIsPrepaid() {
-      this.formData.isPrepaid = this.formData.reservationMethod.some(method =>
-        method.startsWith('じゃらん') || method === 'アソビュー'
-      );
-    },
-
-    // --- 初期化 ---
-    async init() {
-      this.cloudinary.apiUrl = `https://api.cloudinary.com/v1_1/${this.cloudinary.cloudName}/upload`;
-      await this.loadPricing();
-      await this.loadFireworksDate();
-      const params = new URLSearchParams(window.location.search);
-      const groupId = params.get('group');
-      if (groupId) {
-        this.isEdit = true;
-        this.editDocId = groupId;
-        await this.loadReservationData(groupId);
-      }
-      this.generatePeopleRows();
-    },
-
-    // --- リピーター年度を現在年の前年から3年分生成 ---
-    get RepeaterYears() {
+    get repeaterYears() {
       const currentYear = new Date().getFullYear();
       return [currentYear - 1, currentYear - 2, currentYear - 3];
     },
 
-    // --- 花火大会日付をFirestoreから取得してvisitDateにセット ---
-    async loadFireworksDate() {
-      const currentYearStr = new Date().getFullYear().toString();
-      const docRef = firestore.collection("eventDates").doc(currentYearStr);
-      const doc = await docRef.get();
-      this.formData.visitDate = doc.data().fireworksDate;
+    // --- UIの状態 ---
+    isRepresentativeInfoOpen: true,
+    isRentalModalOpen: false,
+
+    // --- フォームデータ ---
+    representative: {
+      reservationMethod: null,
+      lastName: '',
+      firstName: '',
+      lastNameFurigana: '',
+      firstNameFurigana: '',
+      visitTime: '',
+      address: '',
+      phone: '',
+      transportation: 'car',
+      lineType: '椿LINE',
+      selectedRepeaterYears: [],
+      notes: '',
+    },
+    femaleCount: 1,
+    maleCount: 1,
+    customers: [], // 顧客詳細データ（人数に応じて動的に生成）
+
+    // --- レンタルモーダル用の一時データ ---
+    newRentalItem: { name: '', price: null },
+    currentTargetCustomerIndex: null,
+
+    // --- 初期化 ---
+    init() {
+      this.updateCustomerList();
+      this.$watch('femaleCount', () => this.updateCustomerList());
+      this.$watch('maleCount', () => this.updateCustomerList());
     },
 
-    // --- 料金設定コレクションを全件取得しpricingDataに格納 ---
-    async loadPricing() {
-      const docRef = firestore.collection('pricing').doc('yukata');
-      const doc = await docRef.get();
-      this.pricing = {
-        rentalKitsuke: doc.data().rentalKitsuke,
-        kitsukeOnly: doc.data().kitsukeOnly,
-        bag: doc.data().bag,
-        geta: doc.data().geta,
+    // --- 算出プロパティ ---
+    get prepayment() {
+      // 予約方法が選択されていない場合は前払いなし
+      if (!this.representative.reservationMethod) {
+        return 0;
+      }
+      // 各顧客の前払い金額を合計
+      return this.customers.reduce((total, customer) => {
+        return total + this.calculateCustomerPrepayment(customer);
+      }, 0);
+    },
+    get onSitePayment() {
+      // 各顧客の現地払い金額を合計
+      return this.customers.reduce((total, customer) => {
+        return total + this.calculateCustomerOnSitePayment(customer);
+      }, 0);
+    },
+
+    // --- メソッド (Methods) ---
+
+    /**
+     * 個別顧客の前払い金額を計算
+     * @param {object} customer - 顧客オブジェクト
+     * @returns {number} 前払い金額
+     */
+    calculateCustomerPrepayment(customer) {
+      if (!this.representative.reservationMethod) return 0;
+
+      if (customer.dressingType === 'rentalAndDressing') {
+        return this.PRICES.RENTAL_DRESSING;
+      }
+      if (customer.dressingType === 'dressingOnly') {
+        return this.PRICES.DRESSING_ONLY;
+      }
+      return 0;
+    },
+
+    /**
+     * 個別顧客の現地払い金額を計算
+     * @param {object} customer - 顧客オブジェクト
+     * @returns {number} 現地払い金額
+     */
+    calculateCustomerOnSitePayment(customer) {
+      let total = 0;
+
+      // 予約方法が選択されていない場合、着付け種別料金を現地払いに加算
+      if (!this.representative.reservationMethod) {
+        if (customer.dressingType === 'rentalAndDressing') {
+          total += this.PRICES.RENTAL_DRESSING;
+        } else if (customer.dressingType === 'dressingOnly') {
+          total += this.PRICES.DRESSING_ONLY;
+        }
+      }
+
+      // オプション料金を加算
+      if (customer.options.footwear) {
+        total += this.PRICES.FOOTWEAR;
+      }
+      if (customer.gender === 'female' && customer.options.obiBag) {
+        total += this.PRICES.BAG;
+      }
+
+      // 追加レンタル料金を加算
+      total += customer.additionalRentals.reduce((sum, item) => sum + (item.price || 0), 0);
+
+      return total;
+    },
+
+    toggleRadio(event, modelName) {
+      const clickedValue = event.target.value;
+      if (this.representative[modelName] === clickedValue) {
+        setTimeout(() => {
+          this.representative[modelName] = null;
+        }, 0);
+      } else {
+        this.representative[modelName] = clickedValue;
+      }
+    },
+
+    // 顧客データオブジェクトのテンプレートを作成する
+    createCustomerTemplate(gender, id) {
+      return {
+        id: id,
+        gender: gender,
+        lastName: '',
+        firstName: '',
+        bodyShape: null,
+        weight: null,
+        height: null,
+        footSize: null,
+        dressingType: 'rentalAndDressing',
+        options: {
+          footwear: false,
+          obiBag: false,
+        },
+        additionalRentals: [],
+        imagePreviews: [], // 画面表示用のプレビューURL
+        imageFiles: [],    // アップロード用のFileオブジェクト
       };
     },
 
-    // 編集モード：既存データ読み込み
-    async loadReservationData(docId) {
-      const docRef = firestore.collection(FIRESTORE_COLLECTION_REGISTRATION).doc(docId);
-      const doc = await docRef.get();
-      if (doc.exists) {
-        const data = doc.data();
-        this.formData = { ...this.formData, ...data };
-        this.people = data.people || [];
+    updateCustomerList() {
+      const newCustomerList = [];
+      const totalCount = this.femaleCount + this.maleCount;
+
+      for (let i = 0; i < totalCount; i++) {
+        const gender = i < this.femaleCount ? 'female' : 'male';
+        const existingCustomer = this.customers[i];
+        if (existingCustomer) {
+          existingCustomer.gender = gender;
+          newCustomerList.push(existingCustomer);
+        } else {
+          newCustomerList.push(this.createCustomerTemplate(gender, Date.now() + i));
+        }
+      }
+      this.customers = newCustomerList;
+    },
+
+    openRentalModal(customerIndex) {
+      this.currentTargetCustomerIndex = customerIndex;
+      this.newRentalItem = { name: '', price: null };
+      this.isRentalModalOpen = true;
+    },
+
+    addRentalItem() {
+      if (this.newRentalItem.name && this.newRentalItem.price > 0 && this.currentTargetCustomerIndex !== null) {
+        this.customers[this.currentTargetCustomerIndex].additionalRentals.push({ ...this.newRentalItem });
+        this.isRentalModalOpen = false;
       }
     },
 
-    // --- femaleNum, maleNumからpeople配列を生成 ---
-    generatePeopleRows() {
-      const totalPeopleCount = Number(this.formData.femaleNum) + Number(this.formData.maleNum);
-      const newPeople = [];
-      for (let index = 0; index < totalPeopleCount; index++) {
-        const gender = index < this.formData.femaleNum ? '女' : '男';
-        const existingPerson = this.people[index] || {};
-        newPeople.push({
-          name: existingPerson.name || '',
-          gender: existingPerson.gender || gender,
-          weight: existingPerson.weight || null,
-          clothingSize: existingPerson.clothingSize || '',
-          height: existingPerson.height || '',
-          footSize: existingPerson.footSize || '',
-          type: existingPerson.type || '',
-          options: Array.isArray(existingPerson.options) ? [...existingPerson.options] : [],
-          imageFile: existingPerson.imageFile || null,
-        });
+    removeRentalItem(customerIndex, itemIndex) {
+      this.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
+    },
+
+    /**
+         * 画像選択時の処理。プレビューURLとFileオブジェクトの両方を保存する
+         */
+    handleImageUpload(event, customerIndex) {
+      const files = event.target.files;
+      if (!files) return;
+
+      // 既存のプレビューURLを解放
+      this.customers[customerIndex].imagePreviews.forEach(url => URL.revokeObjectURL(url));
+
+      const newPreviews = [];
+      const newFiles = []; // Fileオブジェクトを格納する配列
+      for (const file of files) {
+        newPreviews.push(URL.createObjectURL(file));
+        newFiles.push(file); // Fileオブジェクトを保存
       }
-      this.people = newPeople;
+      this.customers[customerIndex].imagePreviews = newPreviews;
+      this.customers[customerIndex].imageFiles = newFiles; // Fileオブジェクトをstateに保存
     },
 
-    // --- 個人の着付け種別料金（じゃらんの人は前払い）合計 ---
-    calcPersonKitsukeTotal(person) {
-      return this.pricing[person.type] || 0;
-    },
+    /**
+        * Cloudinaryに画像をアップロードする
+        * @param {File} file - アップロードするファイル
+        * @param {string} folderName - 保存先のフォルダ名
+        * @returns {Promise<string>} アップロードされた画像のURL
+        */
+    async uploadImageToCloudinary(file, folderName) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', this.CLOUDINARY_CONFIG.UPLOAD_PRESET);
+      formData.append('folder', folderName);
 
-    // --- 個人のオプション料金（じゃらんの人は現地払い）合計 ---
-    calcPersonOptionTotal(person) {
-      let optionTotal = 0;
-      if (Array.isArray(person.options)) {
-        person.options.forEach(optionName => {
-          optionTotal += this.pricing[optionName] || 0;
-        });
+      const url = `https://api.cloudinary.com/v1_1/${this.CLOUDINARY_CONFIG.CLOUD_NAME}/image/upload`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Cloudinaryへの画像アップロードに失敗しました。');
       }
-      return optionTotal;
+
+      const data = await response.json();
+      return data.secure_url;
     },
 
-    // --- グループ合計---
-    calcGroupTotal() {
-      let total = 0;
-      this.people.forEach((person) => {
-        total += this.calcPersonKitsukeTotal(person);
-        total += this.calcPersonOptionTotal(person);
-      });
-      return total;
-    },
-
-    // --- グループの前払い料金合計（じゃらん用） ---
-    calcGroupJalanPrepaid() {
-      let total = 0;
-      this.people.forEach(person => {
-        total += this.calcPersonKitsukeTotal(person);
-      });
-      return total;
-    },
-
-    // --- グループの現地払い料金合計（じゃらん用） ---
-    calcGroupJalanOnSite() {
-      let total = 0;
-      this.people.forEach(person => {
-        total += this.calcPersonOptionTotal(person);
-      });
-      return total;
-    },
-
-    // ファイル選択時はファイルオブジェクトを保持するだけにする
-    handleFileUpload(event, index) {
-      const file = event.target.files[0];
-      if (!file) return;
-      this.people[index].imageFile = file;
-      this.people[index].imageUrl = ''; // 初期化
-    },
-
-    // 登録ボタン押した時の処理（submitForm）をasyncにして画像アップロードを待つ
+    /**
+     * フォーム全体のデータを送信する
+     */
     async submitForm() {
       try {
-        // 画像アップロード処理を並列実行し、結果をpeopleのimageUrlにセット
-        await Promise.all(this.people.map(async (person, index) => {
-          if (person.imageFile) {
-            const formData = new FormData();
-            formData.append('file', person.imageFile);
-            formData.append('upload_preset', this.cloudinary.uploadPreset);
+        // 1. 動的な名前を決定
+        const folderName = `${this.selectedYear}_fireworks`;
+        const collectionName = `${this.selectedYear}_fireworks`;
 
-            const res = await fetch(this.cloudinary.apiUrl, {
-              method: 'POST',
-              body: formData,
-            });
-            const data = await res.json();
-            if (data.error) {
-              throw new Error(`画像アップロード失敗: ${data.error.message}`);
-            }
-            this.people[index].imageUrl = data.secure_url;
-          }
+        // 2. 顧客データ内の画像URLを準備
+        const processedCustomers = await Promise.all(this.customers.map(async (customer) => {
+          const imageUrls = await Promise.all(
+            customer.imageFiles.map(file => this.uploadImageToCloudinary(file, folderName))
+          );
+
+          // Firestoreに保存する用の新しい顧客オブジェクトを作成
+          const customerData = { ...customer };
+          delete customerData.imageFiles; // Fileオブジェクトは不要なので削除
+          delete customerData.imagePreviews; // プレビューURLも不要なので削除
+          customerData.imageUrls = imageUrls; // CloudinaryのURLを追加
+
+          return customerData;
         }));
 
-        // 画像アップロードが完了した後Firestoreに保存
+        // 3. Firestoreに保存する最終的なデータを作成
         const dataToSave = {
-          ...this.formData,
-          people: this.people.map(person => ({
-            name: person.name,
-            gender: person.gender,
-            weight: person.weight,
-            clothingSize: person.clothingSize,
-            height: person.height,
-            footSize: person.footSize,
-            type: person.type,
-            options: person.options,
-            imageFileName: person.imageFile ? person.imageFile.name : null,
-            imageUrl: person.imageUrl || null,
-          })),
-          groupTotal: this.calcGroupTotal(),
+          representative: this.representative,
+          customers: processedCustomers,
+          femaleCount: this.femaleCount,
+          maleCount: this.maleCount,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         };
-        if (this.formData.isPrepaid) {
-          dataToSave.jalanPrepaidTotal = this.calcGroupJalanPrepaid();
-          dataToSave.jalanOnSiteTotal = this.calcGroupJalanOnSite();
-        }
 
-        if (this.isEdit && this.editDocId) {
-          await firestore.collection("reservations").doc(this.editDocId).update(dataToSave);
-          alert("更新が完了しました！");
-        } else {
-          dataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-          await firestore.collection("reservations").add(dataToSave);
-          alert("登録が完了しました！");
-          this.resetForm();
-        }
+        // 4. Firestoreにデータを追加 (ドキュメントIDは自動生成)
+        await firestore.collection(collectionName).add(dataToSave);
+
+        // 5. 成功アラートを表示
+        alert('登録が完了しました。');
+
+        // 必要であればフォームをリセットする処理をここに追加
+        // window.location.reload(); 
+
       } catch (error) {
-        console.error("登録エラー:", error);
-        alert(error.message || "登録中にエラーが発生しました。");
+        console.error("登録エラー: ", error);
+        alert(`登録中にエラーが発生しました。\n${error.message}`);
       }
-    },
-
-
-    // --- 登録後フォームリセット ---
-    resetForm() {
-      this.formData = {
-        isPrepaid: false,
-        leaderName: '',
-        leaderNameKana: '',
-        femaleNum: 1,
-        maleNum: 1,
-        visitDate: '',
-        visitTime: '',
-        transportMethod: '',
-        address: '',
-        tel: '',
-        lineType: '',
-        selectedRepeaterYears: [],
-        notes: '',
-      };
-      this.people = [];
-      this.generatePeopleRows();
-    },
-
+    }
   }));
 });
 
-// cSpell:ignore jalan kitsuke firestore geta yukata
+// cspell:ignore Furigana Firestore
