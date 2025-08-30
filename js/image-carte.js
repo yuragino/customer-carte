@@ -33,13 +33,8 @@ document.addEventListener('alpine:init', () => {
                 groupId: doc.id,
                 // ユニークなキーを生成
                 id: `${doc.id}_${customer.firstName}_${customerIndex}`,
-                // 代表者名と顧客名を連結
                 name: `${customer.lastName}${customer.firstName}`,
-                height: customer.height || '',
-                footSize: customer.footSize || '',
                 imageUrls: customer.imageUrls,
-                // 来店時間を代表者情報から取得
-                visitTime: data.representative.visitTime || '',
               });
             }
           });

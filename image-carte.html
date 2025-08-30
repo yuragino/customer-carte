@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <title>画像一覧</title>
@@ -13,7 +14,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="./css/layout.css">
   <link rel="stylesheet" href="./css/card-style.css">
@@ -50,39 +51,15 @@
             <button class="action-btn delete-btn" @click="">
               <i class="fa-solid fa-trash-can"></i>
             </button>
-            <button class="action-btn edit-btn" 
-                    @click="window.location.href = `/form.html?group=${customer.groupId}`">
+            <button class="action-btn edit-btn" @click="window.location.href = `/form.html?group=${customer.groupId}`">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </div>
-
-          <details>
-            <summary>身長・足のサイズ</summary>
-            <table>
-              <tr>
-                <th>身長</th>
-                <td x-text="customer.height + ' cm'"></td>
-              </tr>
-              <tr>
-                <th>足のサイズ</th>
-                <td x-text="customer.footSize + ' cm'"></td>
-              </tr>
-            </table>
-          </details>
-
-          <table>
-            <tr>
-              <th>名前</th>
-              <td x-text="customer.name"></td>
-            </tr>
-            <tr>
-              <th>来店時間</th>
-              <td x-text="customer.visitTime"></td>
-            </tr>
-          </table>
+          <div x-text="customer.name"></div>
         </div>
       </template>
     </div>
   </main>
 </body>
+
 </html>
