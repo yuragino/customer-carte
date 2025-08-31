@@ -1,8 +1,10 @@
 .schedule-container {
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  width: 99%;
+  margin: 0 auto;
 }
 
 table {
@@ -45,6 +47,7 @@ thead th {
   font-weight: 600;
   color: #495057;
   font-size: 0.9rem;
+  border-bottom: 2px solid #e5e7eb;
 }
 
 tbody tr:last-child td {
@@ -173,8 +176,10 @@ input[type="checkbox"] {
 }
 
 table .is-canceled {
-  background-color: #f8f8f8; /* 薄いグレーの背景 */
-  color: #a0a0a0; /* 文字色を薄くする */
+  background-color: #f8f8f8;
+  /* 薄いグレーの背景 */
+  color: #a0a0a0;
+  /* 文字色を薄くする */
 }
 
 .booth-radios label.disabled,
