@@ -1,11 +1,5 @@
-import Alpine from 'alpinejs';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
-
-// Alpine.jsを起動
-window.Alpine = Alpine;
-Alpine.start();
-
 // Firebaseの設定情報をここに貼り付ける
 // YOUR_FIREBASE_CONFIGは、Firebaseコンソールから取得できます
 const firebaseConfig = {
