@@ -75,7 +75,6 @@ th {
 
 .action-btn {
   position: absolute;
-  background: rgba(255, 255, 255, 0.7);
   border: none;
   cursor: pointer;
   font-size: 1.4em;
