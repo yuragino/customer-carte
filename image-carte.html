@@ -46,9 +46,17 @@
       <template x-for="(customer, index) in customersWithImage" :key="customer.id">
         <div class="card">
           <div class="image-container">
-            <template x-for="(imageUrl, imageIndex) in customer.imageUrls" :key="imageIndex">
-              <img :src="imageUrl" alt="写真" x-show="customer.currentIndex === imageIndex">
+            <template x-if="customer.imageUrls.length > 0">
+              <template x-for="(imageUrl, imageIndex) in customer.imageUrls" :key="imageIndex">
+                <img :src="imageUrl" alt="写真" x-show="customer.currentIndex === imageIndex">
+              </template>
             </template>
+            <template x-if="customer.imageUrls.length === 0">
+              <div class="no-image-placeholder">
+                <i class="fa-solid fa-image"></i>
+              </div>
+            </template>
+
             <div x-show="customer.imageUrls.length > 1" class="preview-btn">
               <button class="prev" @click="prevImage(index)">
                 <i class="fa-solid fa-angles-left"></i>

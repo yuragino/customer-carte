@@ -3,41 +3,43 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>トップページ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>統計情報</title>
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
   <!-- Custom Script -->
-  <script type="module" src="./js/image-carte.js"></script>
+  <script type="module" src="./js/statistics.js"></script>
   <!-- Alpine.js -->
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="./css/layout.css">
+  <link rel="stylesheet" href="./css/statistics.css">
 </head>
 
-<body x-data="kimonoApp" x-init="init">
+<body x-data="statisticsPage" x-init="init">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title">画像一覧</h1>
+      <h1 class="header-title">お客様カルテ</h1>
       <div class="header-controls">
-        <select x-model="selectedYear">
+        <select x-model.number="selectedYear">
           <template x-for="year in yearOptions" :key="year">
-            <option :value="year" x-text="year"></option>
+            <option :value="year" x-text="year" :selected="year === selectedYear"></option>
           </template>
         </select>
         <span>花火大会</span>
       </div>
       <nav class="header-nav">
-        <a href="./schedule.html">受付管理</a>
-        <a href="#">画像一覧</a>
-        <a href="./form.html">新規登録</a>
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
+        <a :href="`./schedule.html?year=${selectedYear}`">受付管理</a>
+        <a :href="`./image-carte.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
       </nav>
     </div>
   </header>
+
   <main>
 
   </main>

@@ -36,8 +36,12 @@ const formatTimestamp = ts => {
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('statisticsPage', () => ({
+    // --- ヘッダー関連 ---
     selectedYear: new Date().getFullYear(),
-    yearOptions: [2026, 2025, 2024, 2023, 2022],
+    get yearOptions() {
+      const currentYear = new Date().getFullYear();
+      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
+    },
 
     customerStats: [],
     femaleAvg: null, maleAvg: null,
@@ -52,12 +56,27 @@ document.addEventListener('alpine:init', () => {
     },
 
     async loadStatistics() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('year', this.selectedYear);
+      window.history.pushState({}, '', url);
+
+      this.customerStats = [];
+      this.femaleAvg = this.maleAvg = null;
+      this.femaleMin = this.femaleMax = null;
+      this.maleMin = this.maleMax = null;
+
       const colRef = collection(db, `${this.selectedYear}_fireworks`);
       const snapshot = await getDocs(colRef);
 
       const stats = [];
       const femaleRecords = [];
       const maleRecords = [];
+
+      if (snapshot.empty) {
+        // データが無い → ここで空のまま終了
+        this.customerStats = [];
+        return;
+      }
 
       snapshot.forEach(doc => {
         const group = doc.data();

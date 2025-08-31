@@ -24,7 +24,7 @@
     <div class="header-inner">
       <h1 class="header-title">お客様カルテ</h1>
       <div class="header-controls">
-        <select x-model.number="selectedYear">
+        <select x-model.number="selectedYear" @change="loadStatistics()">
           <template x-for="year in yearOptions" :key="year">
             <option :value="year" x-text="year" :selected="year === selectedYear"></option>
           </template>
@@ -77,6 +77,7 @@
         </tr>
       </thead>
       <tbody>
+        <template x-if="customerStats.length > 0"></template>
         <template x-for="customer in customerStats" :key="customer.id">
           <tr>
             <td x-text="customer.representative"></td>
@@ -94,8 +95,16 @@
             <td x-text="customer.total ?? '--'"></td>
           </tr>
         </template>
+        </template>
+        <!-- データが0件のとき -->
+        <template x-if="customerStats.length === 0">
+          <tr>
+            <td colspan="9" class="no-data">該当するデータがありません。</td>
+          </tr>
+        </template>
       </tbody>
     </table>
+
   </main>
 </body>
 

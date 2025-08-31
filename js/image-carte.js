@@ -31,7 +31,6 @@ document.addEventListener('alpine:init', () => {
       // URLからyearパラメータを取得し、なければ現在の年をデフォルト値にする
       const yearFromUrl = params.get('year');
       this.selectedYear = yearFromUrl ? Number(yearFromUrl) : new Date().getFullYear();
-
       await this.loadData();
     },
 
@@ -39,10 +38,11 @@ document.addEventListener('alpine:init', () => {
       const url = new URL(window.location.href);
       url.searchParams.set('year', this.selectedYear);
       window.history.pushState({}, '', url);
+
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const colRef = collection(db, collectionName); // コレクション参照
-        const snapshot = await getDocs(colRef);        // スナップショットを取得
+        const colRef = collection(db, collectionName);
+        const snapshot = await getDocs(colRef);
 
         const customersList = [];
 
@@ -51,16 +51,14 @@ document.addEventListener('alpine:init', () => {
           if (!data.customers) return;
 
           data.customers.forEach((customer, customerIndex) => {
-            // imageUrls が存在し、かつ空でない場合のみ処理
-            if (customer.imageUrls && customer.imageUrls.length > 0) {
-              customersList.push({
-                groupId: doc.id,
-                id: `${doc.id}_${customer.firstName}_${customerIndex}`,
-                name: `${customer.lastName}${customer.firstName}`,
-                imageUrls: customer.imageUrls,
-                currentIndex: 0,
-              });
-            }
+            // imageUrlsがない場合でも空の配列を設定することで、カードが作成される
+            customersList.push({
+              groupId: doc.id,
+              id: `${doc.id}_${customer.firstName}_${customerIndex}`,
+              name: `${customer.lastName}${customer.firstName}`,
+              imageUrls: customer.imageUrls || [],
+              currentIndex: 0,
+            });
           });
         });
 
@@ -70,7 +68,6 @@ document.addEventListener('alpine:init', () => {
         alert('データの取得に失敗しました。');
       }
     },
-
     nextImage(cardIndex) {
       const customer = this.customersWithImage[cardIndex];
       customer.currentIndex = (customer.currentIndex + 1) % customer.imageUrls.length;
