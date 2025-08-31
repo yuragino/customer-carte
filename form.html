@@ -31,6 +31,7 @@
         <span>花火大会</span>
       </div>
       <nav class="header-nav">
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
         <a :href="`./schedule.html?year=${selectedYear}`">受付管理</a>
         <a :href="`./image-carte.html?year=${selectedYear}`">画像一覧</a>
         <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
@@ -142,7 +143,8 @@
               <th>リピーター</th>
               <td>
                 <template x-if="representative.selectedRepeaterYears.length === 0">
-                  <button type="button" class="checking-btn" @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする</button>
+                  <button type="button" class="checking-btn"
+                    @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする</button>
                 </template>
                 <template x-if="representative.selectedRepeaterYears.length > 0">
                   <div>

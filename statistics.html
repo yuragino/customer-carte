@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>統計情報</title>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <!-- Custom Script -->
+  <script type="module" src="./js/statistics.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="./css/layout.css">
+  <link rel="stylesheet" href="./css/statistics.css">
+</head>
+
+<body x-data="statisticsPage" x-init="init">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title">お客様カルテ</h1>
+      <div class="header-controls">
+        <select x-model.number="selectedYear">
+          <template x-for="year in yearOptions" :key="year">
+            <option :value="year" x-text="year" :selected="year === selectedYear"></option>
+          </template>
+        </select>
+        <span>花火大会</span>
+      </div>
+      <nav class="header-nav">
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
+        <a :href="`./schedule.html?year=${selectedYear}`">受付管理</a>
+        <a :href="`./image-carte.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>代表者名</th>
+          <th>顧客名</th>
+          <th>受付時間</th>
+          <th>案内→着付け (分)</th>
+          <th>着付け→見送り (分)</th>
+          <th>トータル (分)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="customer in customerStats" :key="customer.id">
+          <tr>
+            <td x-text="customer.representative"></td>
+            <td x-text="customer.name"></td>
+            <td x-text="customer.receptionTime ?? '--'"></td>
+            <td x-text="customer.guideToDress ?? '--'"></td>
+            <td x-text="customer.dressToSendOff ?? '--'"></td>
+            <td x-text="customer.total ?? '--'"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </main>
+
+</body>
+
+</html>
