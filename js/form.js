@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
@@ -402,6 +402,36 @@ document.addEventListener('alpine:init', () => {
         alert(`削除中にエラーが発生しました。\n${error.message}`);
       }
     },
+
+    async checkRepeaterStatus() {
+      if (!this.representative.phone) {
+        alert('リピーターチェックを行うには電話番号を入力してください。');
+        return;
+      }
+
+      const foundYears = [];
+      const currentYear = new Date().getFullYear();
+      const searchYears = [currentYear - 1, currentYear - 2, currentYear - 3]; // 検索対象の過去3年
+
+      for (const year of searchYears) {
+        const collectionName = `${year}_fireworks`;
+        try {
+          const q = query(collection(db, collectionName), where('representative.phone', '==', this.representative.phone));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            foundYears.push(year);
+          }
+        } catch (error) {
+          console.warn(`Error checking collection ${collectionName}: `, error);
+        }
+      }
+
+      if (foundYears.length > 0) {
+        this.representative.selectedRepeaterYears = foundYears;
+      } else {
+        this.representative.selectedRepeaterYears = [0];
+      }
+    }
 
   }));
 });

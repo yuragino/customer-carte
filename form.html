@@ -135,19 +135,21 @@
               </td>
             </tr>
             <tr>
-              <th>リピーター <span class="badge optional">任意</span></th>
-              <td>
-                <template x-for="year in repeaterYears" :key="year">
-                  <label>
-                    <input type="checkbox" :value="year" x-model="representative.selectedRepeaterYears">
-                    <span x-text="year"></span>
-                  </label>
-                </template>
-              </td>
-            </tr>
-            <tr>
               <th>備考 <span class="badge optional">任意</span></th>
               <td><input type="text" class="full-width" x-model="representative.notes"></td>
+            </tr>
+            <tr>
+              <th>リピーター</th>
+              <td>
+                <template x-if="representative.selectedRepeaterYears.length === 0">
+                  <button type="button" class="btn" @click="checkRepeaterStatus()">リピーターチェック</button>
+                </template>
+                <template x-if="representative.selectedRepeaterYears.length > 0">
+                  <span x-show="representative.selectedRepeaterYears.includes(0)">新規</span>
+                  <span x-show="!representative.selectedRepeaterYears.includes(0)"
+                    x-text="representative.selectedRepeaterYears.join(', ')"></span>
+                </template>
+              </td>
             </tr>
             <tr>
               <th>お伝え事項</th>
