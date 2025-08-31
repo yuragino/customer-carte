@@ -61,6 +61,14 @@ document.addEventListener('alpine:init', () => {
           });
         });
         fetchedGroups.sort((a, b) => {
+          // キャンセル済みかどうかでソート
+          if (a.representative.isCanceled && !b.representative.isCanceled) {
+            return 1; // aがキャンセル済みで、bが未キャンセルなら、aを後ろに
+          }
+          if (!a.representative.isCanceled && b.representative.isCanceled) {
+            return -1; // aが未キャンセルで、bがキャンセル済みなら、aを前に
+          }
+          // キャンセル状態が同じ場合は、来店予定時間でソート
           if (a.representative.visitTime < b.representative.visitTime) return -1;
           if (a.representative.visitTime > b.representative.visitTime) return 1;
           return 0;

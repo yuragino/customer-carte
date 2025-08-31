@@ -160,11 +160,6 @@ input[type="checkbox"] {
   transition: background-color 0.2s, border-color 0.2s;
 }
 
-.booth-radios label:hover,
-.staff-checkboxes label:hover {
-  background-color: #e9ecef;
-}
-
 .booth-radios label:has(input[type="radio"]:checked) {
   background-color: #007bff;
   color: #fff;
@@ -175,4 +170,14 @@ input[type="checkbox"] {
   background-color: #28a745;
   color: #fff;
   border-color: #28a745;
+}
+
+table .is-canceled {
+  background-color: #f8f8f8; /* 薄いグレーの背景 */
+  color: #a0a0a0; /* 文字色を薄くする */
+}
+
+.booth-radios label.disabled,
+.staff-checkboxes label.disabled {
+  opacity: 0.6;
 }

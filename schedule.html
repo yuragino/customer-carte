@@ -66,7 +66,7 @@
 
           <template x-for="group in groups.toReversed()" :key="group.groupId">
             <template x-for="(customer, index) in group.customers" :key="customer.id">
-              <tr>
+              <tr :class="{'is-canceled': group.representative.isCanceled}">
                 <template x-if="index === 0">
                   <td :rowspan="group.customers.length" x-text="group.representative.visitTime">
                   </td>
@@ -75,8 +75,7 @@
                 <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
 
                 <template x-if="index === 0">
-                  <td :rowspan="group.customers.length"
-                    x-text="`${group.representative.lastName}さま`"></td>
+                  <td :rowspan="group.customers.length" x-text="`${group.representative.lastName}さま`"></td>
                 </template>
 
                 <td>
@@ -88,9 +87,10 @@
                   <div class="booth-radios">
                     <template x-for="booth in customer.gender === 'female' ? boothOptionsFemale :boothOptionsMale"
                       :key="booth">
-                      <label>
+                      <label :class="{'disabled': group.representative.isCanceled}">
                         <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
-                          @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)">
+                          @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)"
+                          :disabled="group.representative.isCanceled">
                         <span x-text="booth"></span>
                       </label>
                     </template>
@@ -100,9 +100,10 @@
                 <td>
                   <div class="staff-checkboxes">
                     <template x-for="staff in staffOptions" :key="staff">
-                      <label>
+                      <label :class="{'disabled': group.representative.isCanceled}">
                         <input type="checkbox" :checked="customer.staff && customer.staff.includes(staff)"
-                          @change="updateCustomerField(group.groupId, customer.id, 'staff', staff, $event.target.checked)">
+                          @change="updateCustomerField(group.groupId, customer.id, 'staff', staff, $event.target.checked)"
+                          :disabled="group.representative.isCanceled">
                         <span x-text="staff"></span>
                       </label>
                     </template>
@@ -111,10 +112,12 @@
 
                 <td>
                   <button class="status-btn" :class="getStatusClass(customer.status)"
-                    @click="updateStatus(group, customer.id)" x-show="customer.status !== '対応完了'">
+                    @click="updateStatus(group, customer.id)"
+                    x-show="customer.status !== '対応完了' && !group.representative.isCanceled">
                     <span x-text="customer.status || '受付完了'"></span>
                   </button>
                   <span x-show="customer.status === '対応完了'" x-text="'済'"></span>
+                  <span x-show="group.representative.isCanceled">キャンセル済</span>
                 </td>
 
                 <template x-if="index === 0">
