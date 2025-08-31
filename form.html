@@ -38,6 +38,11 @@
     </div>
   </header>
   <div class="cancellation-status" x-show="representative.isCanceled === true">この予約はすでにキャンセルされています</div>
+  <div class="delete-container">
+    <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
+      <i class="fa-regular fa-trash-can"></i> カルテを削除
+    </button>
+  </div>
   <form @submit.prevent="submitForm">
     <main>
       <div class="form-section">

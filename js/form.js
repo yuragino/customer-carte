@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
@@ -100,7 +100,7 @@ document.addEventListener('alpine:init', () => {
     async loadFormData(groupId) {
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, groupId); 
+        const docRef = doc(db, collectionName, groupId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -363,28 +363,46 @@ document.addEventListener('alpine:init', () => {
           customers: processedCustomers,
           femaleCount: this.femaleCount,
           maleCount: this.maleCount,
-          updatedAt: serverTimestamp(), 
+          updatedAt: serverTimestamp(),
         };
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
         if (this.currentGroupId) {
           // 既存のドキュメントを更新
-          const docRef = doc(db, collectionName, this.currentGroupId); 
-          await updateDoc(docRef, dataToSave); 
+          const docRef = doc(db, collectionName, this.currentGroupId);
+          await updateDoc(docRef, dataToSave);
           alert('更新が完了しました。');
         } else {
           // 新規ドキュメントを追加
-          dataToSave.createdAt = serverTimestamp(); 
-          const colRef = collection(db, collectionName); 
-          await addDoc(colRef, dataToSave); 
+          dataToSave.createdAt = serverTimestamp();
+          const colRef = collection(db, collectionName);
+          await addDoc(colRef, dataToSave);
           alert('登録が完了しました。');
         }
-
+        window.location.href = './schedule.html';
       } catch (error) {
         console.error("登録エラー: ", error);
         alert(`登録中にエラーが発生しました。\n${error.message}`);
       }
-    }
+    },
+
+    async deleteForm() {
+      if (!confirm('本当にこのカルテを削除しますか？')) {
+        return; // ユーザーがキャンセルした場合
+      }
+      try {
+        const collectionName = `${this.selectedYear}_fireworks`;
+        const docRef = doc(db, collectionName, this.currentGroupId);
+        await deleteDoc(docRef);
+
+        alert('カルテを削除しました。');
+        window.location.href = './schedule.html'; // 削除後、受付管理ページへ遷移
+      } catch (error) {
+        console.error("削除エラー: ", error);
+        alert(`削除中にエラーが発生しました。\n${error.message}`);
+      }
+    },
+
   }));
 });
 

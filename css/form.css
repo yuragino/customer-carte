@@ -284,3 +284,22 @@ input[type="file"] {
   justify-content: center;
   gap: 10px;
 }
+
+.delete-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.delete-container .delete-btn {
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.delete-container .delete-btn:hover {
+  background: #dc3545;
+  color: #fff;
+}
