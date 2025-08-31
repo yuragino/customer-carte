@@ -62,57 +62,6 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    async updateStatus(groupId, customerId) {
-      // groups配列から、指定されたgroupIdに一致するグループを見つける
-      const foundGroup = this.groups.find(groupItem => groupItem.groupId === groupId);
-      if (!foundGroup) return;
-      // 見つかったグループのcustomers配列から、指定されたcustomerIdに一致する顧客のインデックスを見つける
-      const foundCustomerIndex = foundGroup.customers.findIndex(customerItem => customerItem.id === customerId);
-      if (foundCustomerIndex === -1) return;
-
-      // 変数名を修正：foundGroupとfoundCustomerIndexを使用
-      const currentStatus = foundGroup.customers[foundCustomerIndex].status || '受付完了';
-      const nextStatus = this.statusCycle[currentStatus];
-
-      // UIを即時反映（変数名を修正）
-      foundGroup.customers[foundCustomerIndex].status = nextStatus;
-
-      try {
-        const docRef = firestore.collection(`${this.selectedYear}_fireworks`).doc(groupId);
-        // ドキュメントデータを取得
-        const doc = await docRef.get();
-        if (!doc.exists) {
-          console.error("Document not found.");
-          return;
-        }
-        const docData = doc.data();
-        const updatedCustomers = docData.customers.map(customerData => {
-          if (customerData.id === customerId) {
-            return {
-              ...customerData,
-              status: nextStatus,
-              statusTimestamps: {
-                ...(customerData.statusTimestamps || {}),
-                [this.statusTimestampKeys[currentStatus]]: firebase.firestore.FieldValue.serverTimestamp(),
-              },
-            };
-          }
-          return customerData;
-        });
-        const dataToSave = {
-          customers: updatedCustomers,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        };
-        await docRef.update(dataToSave);
-        console.log("Status and timestamp updated successfully!");
-      } catch (error) {
-        console.error("Error updating status: ", error);
-        alert("ステータスの更新に失敗しました。");
-        // エラー時はUIを元に戻す
-        this.fetchSchedule();
-      }
-    },
-
     async updateCustomerField(groupId, customerId, field, value) {
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
@@ -125,8 +74,8 @@ document.addEventListener('alpine:init', () => {
         if (customerIndex === -1) throw new Error("Customer not found");
 
         customers[customerIndex][field] = value;
-
         await docRef.update({ customers: customers });
+
       } catch (error) {
         console.error(`Error updating ${field}:`, error);
         alert(`${field}の更新に失敗しました。`);
@@ -144,7 +93,7 @@ document.addEventListener('alpine:init', () => {
       };
       return classMap[currentStatus] || 'status-received';
     },
-    
+
     formatTimestamp(timestamp) {
       if (!timestamp) return '';
       // FirestoreタイムスタンプオブジェクトをJavaScript Dateオブジェクトに変換

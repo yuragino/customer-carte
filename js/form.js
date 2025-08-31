@@ -224,7 +224,12 @@ document.addEventListener('alpine:init', () => {
         status: '受付完了',
         booth: '',
         staff: '',
-        statusTimestamps: {},
+        statusTimestamps: {
+          receptionCompletedAt: null,
+          guidanceCompletedAt: null,
+          dressingCompletedAt: null,
+          sendOffCompletedAt: null
+        },
       };
     },
 

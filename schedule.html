@@ -91,8 +91,8 @@
                 </td>
 
                 <td>
-                  <select :value="customer.booth"
-                    @change="updateCustomerField(group.groupId, customer.id, 'booth', $event.target.value)">
+                  <select x-model="customer.booth"
+                    @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)">
                     <option value="">未選択</option>
                     <template x-for="booth in boothOptions" :key="booth">
                       <option :value="booth" x-text="booth"></option>
@@ -101,8 +101,9 @@
                 </td>
 
                 <td>
-                  <select :value="customer.staff"
-                    @change="updateCustomerField(group.groupId, customer.id, 'staff', $event.target.value)">
+                   <div>DB値: <span x-text="customer.staff"></span></div>
+                  <select x-model="customer.staff"
+                    @change="updateCustomerField(group.groupId, customer.id, 'staff', customer.staff)">
                     <option value="">未選択</option>
                     <template x-for="staff in staffOptions" :key="staff">
                       <option :value="staff" x-text="staff"></option>
@@ -116,7 +117,7 @@
 
                 <td class="center-align">
                   <button class="status-btn" :class="getStatusClass(customer.status)"
-                    @click="updateStatus(group.groupId, customer.id)" :disabled="customer.status === '対応完了'">
+                    @click="updateStatus(group.groupId, customer.id)">
                     <span x-text="customer.status || '受付完了'"></span>
                   </button>
                 </td>
