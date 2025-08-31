@@ -19,7 +19,7 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('schedulePage', () => ({
     groups: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
-    boothOptionsMale: ['C1', 'C2','B1', 'B2'],
+    boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
 
     statusCycle: {
@@ -72,12 +72,11 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    async updateCustomerField(groupId, customerId, field, value) {
+    // updateCustomerField 関数のシグネチャを変更
+    async updateCustomerField(groupId, customerId, field, value, checked) {
       try {
-        // ドキュメントへの参照を作成
         const collectionName = `${this.selectedYear}_fireworks`;
         const docRef = doc(db, collectionName, groupId);
-        // ドキュメントの存在チェック
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) throw new Error("Document not found");
 
@@ -85,10 +84,28 @@ document.addEventListener('alpine:init', () => {
         const customerIndex = customers.findIndex(customerData => customerData.id === customerId);
         if (customerIndex === -1) throw new Error("Customer not found");
 
-        // customers配列全体を更新する
-        customers[customerIndex][field] = value;
+        if (field === 'staff') {
+          let currentStaff = customers[customerIndex].staff || [];
+          // checked引数を使って、追加するか削除するかを判断
+          if (checked) {
+            // チェックが入った場合、配列に追加（重複は避ける）
+            if (!currentStaff.includes(value)) {
+              currentStaff.push(value);
+            }
+          } else {
+            // チェックが外れた場合、配列から削除
+            const valueIndex = currentStaff.indexOf(value);
+            if (valueIndex > -1) {
+              currentStaff.splice(valueIndex, 1);
+            }
+          }
+          customers[customerIndex].staff = currentStaff;
+        } else {
+          customers[customerIndex][field] = value;
+        }
+
         await updateDoc(docRef, { customers: customers });
-        console.log("updated successfully!");
+        console.log("Updated successfully!");
       } catch (error) {
         console.error(`Error updating ${field}:`, error);
         alert(`${field}の更新に失敗しました。`);

@@ -87,8 +87,7 @@
 
                 <td>
                   <div class="booth-radios">
-                    <template
-                      x-for="booth in customer.gender === 'female' ? boothOptionsFemale :boothOptionsMale"
+                    <template x-for="booth in customer.gender === 'female' ? boothOptionsFemale :boothOptionsMale"
                       :key="booth">
                       <label>
                         <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
@@ -100,11 +99,11 @@
                 </td>
 
                 <td>
-                  <div class="staff-radios">
+                  <div class="staff-checkboxes">
                     <template x-for="staff in staffOptions" :key="staff">
                       <label>
-                        <input type="radio" :name="`staff-${customer.id}`" :value="staff" x-model="customer.staff"
-                          @change="updateCustomerField(group.groupId, customer.id, 'staff', customer.staff)">
+                        <input type="checkbox" :checked="customer.staff && customer.staff.includes(staff)"
+                          @change="updateCustomerField(group.groupId, customer.id, 'staff', staff, $event.target.checked)">
                         <span x-text="staff"></span>
                       </label>
                     </template>
