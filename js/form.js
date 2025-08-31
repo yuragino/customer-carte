@@ -1,4 +1,28 @@
-import { firestore } from "./firebase.js";
+import Alpine from 'alpinejs';
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
+
+// Alpine.jsを起動
+window.Alpine = Alpine;
+Alpine.start();
+
+// Firebaseの設定情報をここに貼り付ける
+// YOUR_FIREBASE_CONFIGは、Firebaseコンソールから取得できます
+const firebaseConfig = {
+  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
+  authDomain: "kimono-coordinate.firebaseapp.com",
+  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
+  projectId: "kimono-coordinate",
+  storageBucket: "kimono-coordinate.firebasestorage.app",
+  messagingSenderId: "399031825104",
+  appId: "1:399031825104:web:639225192503ab895724d5",
+  measurementId: "G-MCBZVD9D22"
+};
+
+// FirebaseとFirestoreを初期化
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('customerForm', () => ({
     // --- 定数 (Constants) ---
@@ -84,11 +108,11 @@ document.addEventListener('alpine:init', () => {
     async loadFormData(groupId) {
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = firestore.collection(collectionName).doc(groupId);
-        const doc = await docRef.get();
+        const docRef = doc(db, collectionName, groupId); // 古い記法を置き換え
+        const docSnap = await getDoc(docRef); // 古い記法を置き換え
 
-        if (doc.exists) {
-          const data = doc.data();
+        if (docSnap.exists()) {
+          const data = docSnap.data();
 
           // 代表者情報を反映
           this.representative = {
@@ -286,11 +310,11 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-        * Cloudinaryに画像をアップロードする
-        * @param {File} file - アップロードするファイル
-        * @param {string} folderName - 保存先のフォルダ名
-        * @returns {Promise<string>} アップロードされた画像のURL
-        */
+     * Cloudinaryに画像をアップロードする
+     * @param {File} file - アップロードするファイル
+     * @param {string} folderName - 保存先のフォルダ名
+     * @returns {Promise<string>} アップロードされた画像のURL
+     */
     async uploadImageToCloudinary(file, folderName) {
       const formData = new FormData();
       formData.append('file', file);
@@ -313,8 +337,8 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
- * フォーム全体のデータを送信する
- */
+     * フォーム全体のデータを送信する
+     */
     async submitForm() {
       try {
         // 1. 動的な名前を決定
@@ -351,18 +375,20 @@ document.addEventListener('alpine:init', () => {
           customers: processedCustomers,
           femaleCount: this.femaleCount,
           maleCount: this.maleCount,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: serverTimestamp(), // 古い記法を置き換え
         };
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
         if (this.currentGroupId) {
           // 既存のドキュメントを更新
-          await firestore.collection(collectionName).doc(this.currentGroupId).update(dataToSave);
+          const docRef = doc(db, collectionName, this.currentGroupId); // 古い記法を置き換え
+          await updateDoc(docRef, dataToSave); // 古い記法を置き換え
           alert('更新が完了しました。');
         } else {
           // 新規ドキュメントを追加
-          dataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-          await firestore.collection(collectionName).add(dataToSave);
+          dataToSave.createdAt = serverTimestamp(); // 古い記法を置き換え
+          const colRef = collection(db, collectionName); // 古い記法を置き換え
+          await addDoc(colRef, dataToSave); // 古い記法を置き換え
           alert('登録が完了しました。');
         }
 
