@@ -43,6 +43,11 @@
 
   <main>
     <div class="list">
+      <template x-if="customersWithImage.length === 0">
+        <p style="text-align: center; width: 100%; padding: 2rem;">
+          該当するデータがありません。
+        </p>
+      </template>
       <template x-for="(customer, index) in customersWithImage" :key="customer.id">
         <div class="card">
           <div class="image-container">
