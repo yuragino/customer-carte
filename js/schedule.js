@@ -94,6 +94,44 @@ document.addEventListener('alpine:init', () => {
         alert(`${field}の更新に失敗しました。`);
       }
     },
+    
+    async updateStatus(groupId, customerId) {
+      try {
+        const collectionName = `${this.selectedYear}_fireworks`;
+        const docRef = doc(db, collectionName, groupId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) throw new Error("Document not found");
+
+        const data = docSnap.data();
+        const customers = data.customers;
+        const customerIndex = customers.findIndex(c => c.id === customerId);
+        const customer = customers[customerIndex];
+
+        const currentStatus = customer.status || '受付完了';
+        const nextStatus = this.statusCycle[currentStatus];
+
+        if (nextStatus === currentStatus) {
+          // 最終ステータスに達した場合は何もしない
+          return;
+        }
+
+        // ステータスとタイムスタンプを更新
+        customer.status = nextStatus;
+        if (!customer.statusTimestamps) {
+          customer.statusTimestamps = {};
+        }
+        const timestampKey = this.statusTimestampKeys[nextStatus];
+        customer.statusTimestamps[timestampKey] = new Date();
+
+        // Firestoreにデータを更新
+        await updateDoc(docRef, { customers: customers });
+
+      } catch (error) {
+        console.error("Error updating status:", error);
+        alert("ステータス更新に失敗しました。");
+      }
+    },
 
     getStatusClass(status) {
       const currentStatus = status || '受付完了';
@@ -109,7 +147,7 @@ document.addEventListener('alpine:init', () => {
 
     formatTimestamp(timestamp) {
       if (!timestamp) return '';
-      const date = timestamp.toDate();
+      const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
       return `${hours}:${minutes}`;
