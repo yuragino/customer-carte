@@ -40,33 +40,63 @@
     </div>
   </header>
 
+  <!-- 男女別統計 -->
+  <section class="stats-grid">
+    <div class="stats-box">
+      <h2>女性</h2>
+      <p>平均：<span x-text="femaleAvg ?? '--'"></span></p>
+      <p>最短：<span x-text="femaleMin?.time ?? '--'"></span>（<span x-text="femaleMin?.name"></span> / <span
+          x-text="femaleMin?.staff"></span>）</p>
+      <p>最長：<span x-text="femaleMax?.time ?? '--'"></span>（<span x-text="femaleMax?.name"></span> / <span
+          x-text="femaleMax?.staff"></span>）</p>
+    </div>
+    <div class="stats-box">
+      <h2>男性</h2>
+      <p>平均：<span x-text="maleAvg ?? '--'"></span></p>
+      <p>最短：<span x-text="maleMin?.time ?? '--'"></span>（<span x-text="maleMin?.name"></span> / <span
+          x-text="maleMin?.staff"></span>）</p>
+      <p>最長：<span x-text="maleMax?.time ?? '--'"></span>（<span x-text="maleMax?.name"></span> / <span
+          x-text="maleMax?.staff"></span>）</p>
+    </div>
+  </section>
+
+  <!-- 顧客別一覧 -->
   <main>
-    <table>
+    <table class="stats-table">
       <thead>
         <tr>
           <th>代表者名</th>
           <th>顧客名</th>
-          <th>受付時間</th>
-          <th>案内→着付け (分)</th>
-          <th>着付け→見送り (分)</th>
-          <th>トータル (分)</th>
+          <th>担当スタッフ</th>
+          <th>受付完了</th>
+          <th>案内完了</th>
+          <th>着付完了</th>
+          <th>見送り完了</th>
+          <th>着付所要時間</th>
+          <th>トータル</th>
         </tr>
       </thead>
       <tbody>
         <template x-for="customer in customerStats" :key="customer.id">
           <tr>
             <td x-text="customer.representative"></td>
-            <td x-text="customer.name"></td>
-            <td x-text="customer.receptionTime ?? '--'"></td>
+            <td :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></td>
+            <td>
+              <template x-for="s in customer.staff" :key="s">
+                <div x-text="s"></div>
+              </template>
+            </td>
+            <td x-text="customer.reception ?? '--'"></td>
+            <td x-text="customer.guidance ?? '--'"></td>
+            <td x-text="customer.dressing ?? '--'"></td>
+            <td x-text="customer.sendoff ?? '--'"></td>
             <td x-text="customer.guideToDress ?? '--'"></td>
-            <td x-text="customer.dressToSendOff ?? '--'"></td>
             <td x-text="customer.total ?? '--'"></td>
           </tr>
         </template>
       </tbody>
     </table>
   </main>
-
 </body>
 
 </html>
