@@ -31,9 +31,9 @@
         <span>花火大会</span>
       </div>
       <nav class="header-nav">
-        <a href="./schedule.html">受付管理</a>
-        <a href="./image-carte.html">画像一覧</a>
-        <a href="./form.html">新規登録</a>
+        <a :href="`./schedule.html?year=${selectedYear}`">受付管理</a>
+        <a :href="`./image-carte.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
       </nav>
     </div>
   </header>

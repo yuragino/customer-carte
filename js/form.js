@@ -34,11 +34,7 @@ document.addEventListener('alpine:init', () => {
     selectedYear: new Date().getFullYear(),
     get yearOptions() {
       const currentYear = new Date().getFullYear();
-      return [currentYear, currentYear + 1, currentYear - 1, currentYear - 2, currentYear - 3];
-    },
-    get repeaterYears() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear - 1, currentYear - 2, currentYear - 3];
+      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
     },
 
     // --- UIの状態 ---
@@ -82,6 +78,10 @@ document.addEventListener('alpine:init', () => {
     // --- 初期化 ---
     async init() {
       const params = new URLSearchParams(window.location.search);
+      // URLからyearパラメータを取得し、なければ現在の年をデフォルト値にする
+      const yearFromUrl = params.get('year');
+      this.selectedYear = yearFromUrl ? parseInt(yearFromUrl) : new Date().getFullYear();
+
       const groupId = params.get('group');
       this.currentGroupId = groupId;
 
@@ -98,6 +98,9 @@ document.addEventListener('alpine:init', () => {
 
     // --- Firestoreからデータを取得し、フォームに反映させるメソッド ---
     async loadFormData(groupId) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('year', this.selectedYear);
+      window.history.pushState({}, '', url);
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
         const docRef = doc(db, collectionName, groupId);
