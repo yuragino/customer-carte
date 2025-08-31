@@ -101,7 +101,7 @@
                 </td>
 
                 <td>
-                   <div>DB値: <span x-text="customer.staff"></span></div>
+                  <div>DB値: <span x-text="customer.staff"></span></div>
                   <select x-model="customer.staff"
                     @change="updateCustomerField(group.groupId, customer.id, 'staff', customer.staff)">
                     <option value="">未選択</option>
@@ -117,9 +117,10 @@
 
                 <td class="center-align">
                   <button class="status-btn" :class="getStatusClass(customer.status)"
-                    @click="updateStatus(group.groupId, customer.id)">
+                    @click="updateStatus(group, customer.id)" x-show="customer.status !== '対応完了'">
                     <span x-text="customer.status || '受付完了'"></span>
                   </button>
+                  <span x-show="customer.status === '対応完了'" x-text="'対応完了'"></span>
                 </td>
 
                 <template x-if="index === 0">

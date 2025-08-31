@@ -26,7 +26,6 @@ document.addEventListener('alpine:init', () => {
       '案内完了': '着付完了',
       '着付完了': '見送り完了',
       '見送り完了': '対応完了',
-      '対応完了': '対応完了',
     },
 
     statusTimestampKeys: {
@@ -34,7 +33,6 @@ document.addEventListener('alpine:init', () => {
       '案内完了': 'guidanceCompletedAt',
       '着付完了': 'dressingCompletedAt',
       '見送り完了': 'sendOffCompletedAt',
-      '対応完了': 'serviceCompletedAt',
     },
 
     selectedYear: new Date().getFullYear(),
@@ -75,10 +73,11 @@ document.addEventListener('alpine:init', () => {
 
     async updateCustomerField(groupId, customerId, field, value) {
       try {
+        // ドキュメントへの参照を作成
         const collectionName = `${this.selectedYear}_fireworks`;
         const docRef = doc(db, collectionName, groupId);
+        // ドキュメントの存在チェック
         const docSnap = await getDoc(docRef);
-
         if (!docSnap.exists()) throw new Error("Document not found");
 
         const customers = docSnap.data().customers;
@@ -88,26 +87,25 @@ document.addEventListener('alpine:init', () => {
         // customers配列全体を更新する
         customers[customerIndex][field] = value;
         await updateDoc(docRef, { customers: customers });
-
+        console.log("updated successfully!");
       } catch (error) {
         console.error(`Error updating ${field}:`, error);
         alert(`${field}の更新に失敗しました。`);
       }
     },
-    
-    async updateStatus(groupId, customerId) {
+
+    async updateStatus(group, customerId) {
       try {
+        // ドキュメントへの参照を作成
         const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, groupId);
-        const docSnap = await getDoc(docRef);
+        const docRef = doc(db, collectionName, group.groupId);
 
-        if (!docSnap.exists()) throw new Error("Document not found");
-
-        const data = docSnap.data();
-        const customers = data.customers;
+        // データの取得と更新対象の特定
+        const customers = group.customers;
         const customerIndex = customers.findIndex(c => c.id === customerId);
         const customer = customers[customerIndex];
 
+        // ステータスの判定と次のステータスの決定
         const currentStatus = customer.status || '受付完了';
         const nextStatus = this.statusCycle[currentStatus];
 
@@ -115,21 +113,17 @@ document.addEventListener('alpine:init', () => {
           // 最終ステータスに達した場合は何もしない
           return;
         }
-
         // ステータスとタイムスタンプを更新
         customer.status = nextStatus;
-        if (!customer.statusTimestamps) {
-          customer.statusTimestamps = {};
-        }
-        const timestampKey = this.statusTimestampKeys[nextStatus];
+        const timestampKey = this.statusTimestampKeys[currentStatus];
         customer.statusTimestamps[timestampKey] = new Date();
-
         // Firestoreにデータを更新
         await updateDoc(docRef, { customers: customers });
-
+        console.log("Status and timestamp updated successfully!");
       } catch (error) {
         console.error("Error updating status:", error);
         alert("ステータス更新に失敗しました。");
+        this.fetchSchedule();
       }
     },
 
