@@ -23,7 +23,7 @@
 <body x-data="schedulePage">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title">お客様カルテ</h1>
+      <h1 class="header-title"><a :href="`./index.html?year=${selectedYear}`">お客様カルテ</a></h1>
       <div class="header-controls">
         <select x-model.number="selectedYear" @change="fetchSchedule()">
           <template x-for="year in yearOptions" :key="year">
@@ -42,6 +42,7 @@
   </header>
 
   <main>
+      <p class="manual-link"><a href="./manual-schedule.html">📖 受付管理マニュアル</a></p>
     <table>
       <thead>
         <tr>

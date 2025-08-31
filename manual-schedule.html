@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>操作マニュアル - 受付管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="./css/layout.css">
+  <link rel="stylesheet" href="./css/manual-schedule.css">
+</head>
+
+<body>
+  <header>
+    <h1>操作マニュアル（受付管理ページ）</h1>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>このページについて</h2>
+      <p>
+        このマニュアルは「受付管理ページ」の操作手順を説明しています。<br>
+        当日の受付から案内・着付・見送りまでの進行を管理するページです。
+      </p>
+    </section>
+
+    <section class="flow">
+      <h2>ステータス更新の流れ</h2>
+      <p>
+        ステータス欄に出ているボタンは「<strong>この作業が終わったら押す</strong>」という意味です。<br>
+        表示されている内容が現在の状態を示しているわけではありません。
+      </p>
+      <ol>
+        <li><strong>受付完了</strong> ボタンが出ている → 受付が終わったらクリック</li>
+        <li>クリックすると時刻が自動記録され、次の「案内完了」ボタンに変わります</li>
+        <li>同様に「案内完了」→「着付完了」→「見送り完了」と進みます</li>
+        <li>すべて完了すると「済」と表示され、ボタンは消えて操作できなくなります</li>
+      </ol>
+    </section>
+
+    <section class="booth-staff">
+      <h2>ブース・担当者の割当</h2>
+      <ul>
+        <li>お客様ごとに「ブース」を選択できます（女性：A1/A2/B1/B2、男性：C1/C2/B1/B2）。</li>
+        <li>スタッフ名にチェックを入れると担当として割り当てられます。複数選択可能です。</li>
+        <li>これらの変更は<strong>即時保存</strong>されます（保存ボタンは不要）。</li>
+      </ul>
+      <!-- <div class="screenshot placeholder">ブース選択とスタッフチェックの画面例キャプチャ</div> -->
+    </section>
+
+    <section class="cancel">
+      <h2>キャンセルされたグループ</h2>
+      <p>
+        キャンセルの場合は行全体がグレー表示になります。ブースやスタッフの操作はできません。<br>
+        ステータス欄には「キャンセル済」と表示されます。
+      </p>
+      <!-- <div class="screenshot placeholder">キャンセル行キャプチャ</div> -->
+    </section>
+
+    <section class="detail-link">
+      <h2>詳細リンク</h2>
+      <p>
+        詳細リンクをクリックすると、フォーム画面に移動して該当グループの情報を編集できます。<br>
+        <strong>備考が入力されている場合、このリンクは赤く表示されます。</strong><br>
+        赤いリンクを見かけた場合は必ずクリックして内容を確認してください。
+      </p>
+      <!-- <div class="screenshot placeholder">備考ありで赤くなったリンクの例キャプチャ</div> -->
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="../index.html">← トップページに戻る</a></p>
+  </footer>
+</body>
+
+</html>

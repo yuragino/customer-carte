@@ -3,12 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>統計情報</title>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
+  <title>お客様カルテ - トップページ</title>
   <!-- Custom Script -->
-  <script type="module" src="./js/statistics.js"></script>
+  <script type="module" src="./js/top-page.js"></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
@@ -16,15 +13,15 @@
     integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="./css/layout.css">
-  <link rel="stylesheet" href="./css/statistics.css">
+  <link rel="stylesheet" href="./css/top-page.css">
 </head>
 
-<body x-data="statisticsPage" x-init="init">
+<body x-data="app" x-init="init">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title">お客様カルテ</h1>
+      <h1 class="header-title"><a :href="`./index.html?year=${selectedYear}`">お客様カルテ</a></h1>
       <div class="header-controls">
-        <select x-model.number="selectedYear">
+        <select x-model.number="selectedYear" @change="changeYear()">
           <template x-for="year in yearOptions" :key="year">
             <option :value="year" x-text="year" :selected="year === selectedYear"></option>
           </template>
@@ -40,11 +37,33 @@
     </div>
   </header>
 
-  <main>
-
+  <main class="menu">
+    <a :href="`statistics.html?year=${selectedYear}`" class="menu-card">
+      <i class="fa-solid fa-chart-line"></i>
+      <h2>統計情報</h2>
+      <p>平均所要時間やスタッフ別の結果を確認できます。</p>
+    </a>
+    <a :href="`schedule.html?year=${selectedYear}`" class="menu-card">
+      <i class="fa-solid fa-calendar-check"></i>
+      <h2>受付管理</h2>
+      <p>来店予定や進行状況を管理できます。</p>
+    </a>
+    <a :href="`image-carte.html?year=${selectedYear}`" class="menu-card">
+      <i class="fa-solid fa-image"></i>
+      <h2>画像一覧</h2>
+      <p>撮影した写真をまとめて確認できます。</p>
+    </a>
+    <a :href="`form.html?year=${selectedYear}`" class="menu-card">
+      <i class="fa-solid fa-user-plus"></i>
+      <h2>新規登録</h2>
+      <p>お客様情報を新規登録・編集します。</p>
+    </a>
   </main>
-
-
+  <footer>
+    <p class="manual-link">
+      <a href="./manual-schedule.html">📖 受付管理マニュアル</a>
+    </p>
+  </footer>
 </body>
 
 </html>

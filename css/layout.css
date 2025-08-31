@@ -50,7 +50,8 @@ body {
     height: 100%;
 }
 
-.header-nav a {
+.header-nav a,
+.header-title a{
     display: block;
     line-height: 70px;
     text-decoration: none;
