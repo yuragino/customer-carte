@@ -142,7 +142,7 @@
               <th>リピーター</th>
               <td>
                 <template x-if="representative.selectedRepeaterYears.length === 0">
-                  <button type="button" class="btn" @click="checkRepeaterStatus()">リピーターチェック</button>
+                  <button type="button" class="checking-btn" @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする</button>
                 </template>
                 <template x-if="representative.selectedRepeaterYears.length > 0">
                   <div>
