@@ -1,20 +1,34 @@
-import { firestore } from "./firebase.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
+  authDomain: "kimono-coordinate.firebaseapp.com",
+  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
+  projectId: "kimono-coordinate",
+  storageBucket: "kimono-coordinate.firebasestorage.app",
+  messagingSenderId: "399031825104",
+  appId: "1:399031825104:web:639225192503ab895724d5",
+  measurementId: "G-MCBZVD9D22"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('schedulePage', () => ({
     groups: [],
     boothOptions: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
 
-    // ステータスの遷移を定義
     statusCycle: {
       '受付完了': '案内完了',
       '案内完了': '着付完了',
       '着付完了': '見送り完了',
       '見送り完了': '対応完了',
-      '対応完了': '対応完了', // 最終ステータス
+      '対応完了': '対応完了',
     },
 
-    // ステータスとタイムスタンプのキーをマッピング
     statusTimestampKeys: {
       '受付完了': 'receptionCompletedAt',
       '案内完了': 'guidanceCompletedAt',
@@ -23,7 +37,6 @@ document.addEventListener('alpine:init', () => {
       '対応完了': 'serviceCompletedAt',
     },
 
-    // --- ヘッダー関連 ---
     selectedYear: new Date().getFullYear(),
     get yearOptions() {
       const currentYear = new Date().getFullYear();
@@ -31,7 +44,6 @@ document.addEventListener('alpine:init', () => {
     },
 
     init() {
-      // 年の変更を監視して再フェッチ
       this.$watch('selectedYear', () => this.fetchSchedule());
       this.fetchSchedule();
     },
@@ -40,8 +52,8 @@ document.addEventListener('alpine:init', () => {
       this.groups = [];
       const collectionName = `${this.selectedYear}_fireworks`;
       try {
-        // firestore 変数を使ってコレクションにアクセス
-        const querySnapshot = await firestore.collection(collectionName).get();
+        const colRef = collection(db, collectionName);
+        const querySnapshot = await getDocs(colRef);
         const fetchedGroups = [];
         querySnapshot.forEach((doc) => {
           fetchedGroups.push({
@@ -49,7 +61,6 @@ document.addEventListener('alpine:init', () => {
             ...doc.data()
           });
         });
-        // 来店予定時刻でソート
         fetchedGroups.sort((a, b) => {
           if (a.representative.visitTime < b.representative.visitTime) return -1;
           if (a.representative.visitTime > b.representative.visitTime) return 1;
@@ -65,16 +76,18 @@ document.addEventListener('alpine:init', () => {
     async updateCustomerField(groupId, customerId, field, value) {
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = firestore.collection(collectionName).doc(groupId);
-        const doc = await docRef.get();
-        if (!doc.exists) throw new Error("Document not found");
+        const docRef = doc(db, collectionName, groupId);
+        const docSnap = await getDoc(docRef);
 
-        const customers = doc.data().customers;
+        if (!docSnap.exists()) throw new Error("Document not found");
+
+        const customers = docSnap.data().customers;
         const customerIndex = customers.findIndex(customerData => customerData.id === customerId);
         if (customerIndex === -1) throw new Error("Customer not found");
 
+        // customers配列全体を更新する
         customers[customerIndex][field] = value;
-        await docRef.update({ customers: customers });
+        await updateDoc(docRef, { customers: customers });
 
       } catch (error) {
         console.error(`Error updating ${field}:`, error);
@@ -96,7 +109,6 @@ document.addEventListener('alpine:init', () => {
 
     formatTimestamp(timestamp) {
       if (!timestamp) return '';
-      // FirestoreタイムスタンプオブジェクトをJavaScript Dateオブジェクトに変換
       const date = timestamp.toDate();
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -104,5 +116,4 @@ document.addEventListener('alpine:init', () => {
     },
   }));
 });
-
 // cspell:ignore Firestore

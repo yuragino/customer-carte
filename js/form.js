@@ -1,7 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, doc, getDoc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
-// Firebaseの設定情報をここに貼り付ける
-// YOUR_FIREBASE_CONFIGは、Firebaseコンソールから取得できます
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
   authDomain: "kimono-coordinate.firebaseapp.com",
@@ -13,7 +12,6 @@ const firebaseConfig = {
   measurementId: "G-MCBZVD9D22"
 };
 
-// FirebaseとFirestoreを初期化
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -102,8 +100,8 @@ document.addEventListener('alpine:init', () => {
     async loadFormData(groupId) {
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, groupId); // 古い記法を置き換え
-        const docSnap = await getDoc(docRef); // 古い記法を置き換え
+        const docRef = doc(db, collectionName, groupId); 
+        const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -369,20 +367,20 @@ document.addEventListener('alpine:init', () => {
           customers: processedCustomers,
           femaleCount: this.femaleCount,
           maleCount: this.maleCount,
-          updatedAt: serverTimestamp(), // 古い記法を置き換え
+          updatedAt: serverTimestamp(), 
         };
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
         if (this.currentGroupId) {
           // 既存のドキュメントを更新
-          const docRef = doc(db, collectionName, this.currentGroupId); // 古い記法を置き換え
-          await updateDoc(docRef, dataToSave); // 古い記法を置き換え
+          const docRef = doc(db, collectionName, this.currentGroupId); 
+          await updateDoc(docRef, dataToSave); 
           alert('更新が完了しました。');
         } else {
           // 新規ドキュメントを追加
-          dataToSave.createdAt = serverTimestamp(); // 古い記法を置き換え
-          const colRef = collection(db, collectionName); // 古い記法を置き換え
-          await addDoc(colRef, dataToSave); // 古い記法を置き換え
+          dataToSave.createdAt = serverTimestamp(); 
+          const colRef = collection(db, collectionName); 
+          await addDoc(colRef, dataToSave); 
           alert('登録が完了しました。');
         }
 

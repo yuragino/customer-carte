@@ -1,11 +1,33 @@
-import { firestore } from "./firebase.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
+  authDomain: "kimono-coordinate.firebaseapp.com",
+  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
+  projectId: "kimono-coordinate",
+  storageBucket: "kimono-coordinate.firebasestorage.app",
+  messagingSenderId: "399031825104",
+  appId: "1:399031825104:web:639225192503ab895724d5",
+  measurementId: "G-MCBZVD9D22"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     // --- ヘッダー関連 ---
     selectedYear: new Date().getFullYear(),
     get yearOptions() {
       const currentYear = new Date().getFullYear();
-      return [currentYear, currentYear + 1, currentYear - 1, currentYear - 2, currentYear - 3];
+      return [
+        currentYear,
+        currentYear + 1,
+        currentYear - 1,
+        currentYear - 2,
+        currentYear - 3
+      ];
     },
 
     customersWithImage: [],
@@ -18,7 +40,9 @@ document.addEventListener('alpine:init', () => {
     async loadData() {
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const snapshot = await firestore.collection(collectionName).get();
+        const colRef = collection(db, collectionName); // コレクション参照
+        const snapshot = await getDocs(colRef);        // スナップショットを取得
+
         const customersList = [];
 
         snapshot.forEach(doc => {
@@ -26,15 +50,14 @@ document.addEventListener('alpine:init', () => {
           if (!data.customers) return;
 
           data.customers.forEach((customer, customerIndex) => {
-            // imageUrls が存在し、空でない場合のみ処理
+            // imageUrls が存在し、かつ空でない場合のみ処理
             if (customer.imageUrls && customer.imageUrls.length > 0) {
               customersList.push({
                 groupId: doc.id,
-                // ユニークなキーを生成
                 id: `${doc.id}_${customer.firstName}_${customerIndex}`,
                 name: `${customer.lastName}${customer.firstName}`,
                 imageUrls: customer.imageUrls,
-                currentIndex: 0, // ★ 新しいプロパティを追加: 現在表示中の画像インデックス
+                currentIndex: 0,
               });
             }
           });
@@ -47,22 +70,15 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    /**
-     * 次の画像に切り替える
-     * @param {number} cardIndex - 切り替えるカードのインデックス
-     */
     nextImage(cardIndex) {
       const customer = this.customersWithImage[cardIndex];
       customer.currentIndex = (customer.currentIndex + 1) % customer.imageUrls.length;
     },
 
-    /**
-     * 前の画像に切り替える
-     * @param {number} cardIndex - 切り替えるカードのインデックス
-     */
     prevImage(cardIndex) {
       const customer = this.customersWithImage[cardIndex];
-      customer.currentIndex = (customer.currentIndex - 1 + customer.imageUrls.length) % customer.imageUrls.length;
+      customer.currentIndex =
+        (customer.currentIndex - 1 + customer.imageUrls.length) % customer.imageUrls.length;
     },
   }));
 });
