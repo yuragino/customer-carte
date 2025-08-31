@@ -428,7 +428,6 @@ document.addEventListener('alpine:init', () => {
           console.warn(`Error checking collection ${collectionName}: `, error);
         }
       }
-
       if (foundYears.length > 0) {
         this.representative.selectedRepeaterYears = foundYears;
       } else {

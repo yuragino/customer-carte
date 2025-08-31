@@ -145,9 +145,11 @@
                   <button type="button" class="btn" @click="checkRepeaterStatus()">リピーターチェック</button>
                 </template>
                 <template x-if="representative.selectedRepeaterYears.length > 0">
-                  <span x-show="representative.selectedRepeaterYears.includes(0)">新規</span>
-                  <span x-show="!representative.selectedRepeaterYears.includes(0)"
-                    x-text="representative.selectedRepeaterYears.join(', ')"></span>
+                  <div>
+                    <span x-show="representative.selectedRepeaterYears.includes(0)">新規</span>
+                    <span x-show="!representative.selectedRepeaterYears.includes(0)"
+                      x-text="representative.selectedRepeaterYears.join(', ')"></span>
+                  </div>
                 </template>
               </td>
             </tr>
