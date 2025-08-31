@@ -13,14 +13,35 @@ main {
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 th,
 td {
-  padding: 0.9rem 1rem;
-  text-align: left;
+  padding: 0.9rem 0;
+  text-align: center;
   border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
+}
+
+th:nth-child(1),
+td:nth-child(1),
+th:nth-child(2),
+td:nth-child(2),
+th:last-child,
+td:last-child {
+  width: 8%;
+}
+
+th:nth-child(3),
+td:nth-child(3),
+th:nth-child(4),
+td:nth-child(4) {
+  width: 10%;
+}
+
+td:nth-child(7) {
+  white-space: wrap;
 }
 
 thead th {
@@ -32,11 +53,6 @@ thead th {
 
 tbody tr:last-child td {
   border-bottom: none;
-}
-
-/* 中央寄せ用クラスの追加 */
-.center-align {
-  text-align: center;
 }
 
 select {
@@ -59,41 +75,38 @@ select {
   text-align: center;
 }
 
+/* 受付完了 (グレー) */
 .status-received {
   background-color: #6c757d;
 }
 
-/* 受付完了 (グレー) */
+/* 案内完了 (青) */
 .status-guided {
   background-color: #007bff;
 }
 
-/* 案内完了 (青) */
+
+/* 着付完了 (緑) */
 .status-dressing-done {
   background-color: #28a745;
 }
 
-/* 着付完了 (緑) */
+/* 見送り完了 (オレンジ) */
 .status-sent-off {
   background-color: #fd7e14;
 }
 
-/* 見送り完了 (オレンジ) */
-.status-completed {
-  background-color: #343a40;
+/* 性別ハイライト */
+.gender-male {
+  background-color: #3498db20;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
 }
 
-/* 対応完了 (ダークグレー) */
-
-/* Icons */
-.gender-icon-male {
-  color: #3498db;
-  margin-left: 0.25rem;
-}
-
-.gender-icon-female {
-  color: #e91e63;
-  margin-left: 0.25rem;
+.gender-female {
+  background-color: rgba(233, 30, 98, 0.094);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
 }
 
 .detail-link {

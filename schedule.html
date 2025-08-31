@@ -45,15 +45,15 @@
       <table>
         <thead>
           <tr>
-            <th class="center-align">来店予定</th>
-            <th class="center-align">来店時刻</th>
+            <th>来店予定</th>
+            <th>来店時刻</th>
             <th>代表者名</th>
             <th>個人名</th>
             <th>ブース</th>
             <th>担当者</th>
             <th>備考</th>
-            <th class="center-align">ステータス</th>
-            <th class="center-align">詳細</th>
+            <th>ステータス</th>
+            <th>詳細</th>
           </tr>
         </thead>
         <tbody>
@@ -69,11 +69,11 @@
             <template x-for="(customer, index) in group.customers" :key="customer.id">
               <tr>
                 <template x-if="index === 0">
-                  <td class="center-align" :rowspan="group.customers.length" x-text="group.representative.visitTime">
+                  <td :rowspan="group.customers.length" x-text="group.representative.visitTime">
                   </td>
                 </template>
 
-                <td class="center-align" x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+                <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
 
                 <template x-if="index === 0">
                   <td :rowspan="group.customers.length"
@@ -81,41 +81,41 @@
                 </template>
 
                 <td>
-                  <span x-text="`${customer.lastName} ${customer.firstName}`"></span>
-                  <template x-if="customer.gender === 'male'">
-                    <i class="fa-solid fa-mars gender-icon-male"></i>
-                  </template>
-                  <template x-if="customer.gender === 'female'">
-                    <i class="fa-solid fa-venus gender-icon-female"></i>
-                  </template>
+                  <span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'"
+                    x-text="`${customer.lastName} ${customer.firstName}`"></span>
                 </td>
 
                 <td>
-                  <select x-model="customer.booth"
-                    @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)">
-                    <option value="">未選択</option>
-                    <template x-for="booth in boothOptions" :key="booth">
-                      <option :value="booth" x-text="booth"></option>
+                  <div class="booth-radios">
+                    <template
+                      x-for="booth in customer.gender === 'female' ? boothOptionsFemale :boothOptionsMale"
+                      :key="booth">
+                      <label>
+                        <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
+                          @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)">
+                        <span x-text="booth"></span>
+                      </label>
                     </template>
-                  </select>
+                  </div>
                 </td>
 
                 <td>
-                  <div>DB値: <span x-text="customer.staff"></span></div>
-                  <select x-model="customer.staff"
-                    @change="updateCustomerField(group.groupId, customer.id, 'staff', customer.staff)">
-                    <option value="">未選択</option>
+                  <div class="staff-radios">
                     <template x-for="staff in staffOptions" :key="staff">
-                      <option :value="staff" x-text="staff"></option>
+                      <label>
+                        <input type="radio" :name="`staff-${customer.id}`" :value="staff" x-model="customer.staff"
+                          @change="updateCustomerField(group.groupId, customer.id, 'staff', customer.staff)">
+                        <span x-text="staff"></span>
+                      </label>
                     </template>
-                  </select>
+                  </div>
                 </td>
 
                 <template x-if="index === 0">
                   <td :rowspan="group.customers.length" x-text="group.representative.notes || '備考なし'"></td>
                 </template>
 
-                <td class="center-align">
+                <td>
                   <button class="status-btn" :class="getStatusClass(customer.status)"
                     @click="updateStatus(group, customer.id)" x-show="customer.status !== '対応完了'">
                     <span x-text="customer.status || '受付完了'"></span>
@@ -124,7 +124,7 @@
                 </td>
 
                 <template x-if="index === 0">
-                  <td class="center-align" :rowspan="group.customers.length">
+                  <td :rowspan="group.customers.length">
                     <a :href="`form.html?group=${group.groupId}`" class="detail-link">
                       <i class="fa-solid fa-square-up-right"></i>
                     </a>

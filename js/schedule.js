@@ -18,7 +18,8 @@ const db = getFirestore(app);
 document.addEventListener('alpine:init', () => {
   Alpine.data('schedulePage', () => ({
     groups: [],
-    boothOptions: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
+    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
+    boothOptionsMale: ['C1', 'C2','B1', 'B2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
 
     statusCycle: {
@@ -140,7 +141,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     formatTimestamp(timestamp) {
-      if (!timestamp) return '';
+      if (!timestamp) return '--:--';
       const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
