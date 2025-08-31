@@ -25,9 +25,9 @@
     <div class="header-inner">
       <h1 class="header-title">お客様カルテ</h1>
       <div class="header-controls">
-        <select x-model="selectedYear" @change="fetchSchedule()">
+        <select x-model.number="selectedYear" @change="fetchSchedule()">
           <template x-for="year in yearOptions" :key="year">
-            <option :value="year" x-text="year"></option>
+            <option :value="year" x-text="year" :selected="year === selectedYear"></option>
           </template>
         </select>
         <span>花火大会</span>
