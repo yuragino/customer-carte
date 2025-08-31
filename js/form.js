@@ -236,10 +236,6 @@ document.addEventListener('alpine:init', () => {
         additionalRentals: [],
         imagePreviews: [], // 画面表示用のプレビューURL
         imageFiles: [],    // アップロード用のFileオブジェクト
-        // // schedule.jsで使用するプロパティ
-        // status: '受付完了',
-        // booth: '',
-        // staff: '',
         statusTimestamps: {
           receptionCompletedAt: null,
           guidanceCompletedAt: null,

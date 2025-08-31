@@ -28,15 +28,16 @@ td:last-child {
   width: 8%;
 }
 
-th:nth-child(3),
-td:nth-child(3),
-th:nth-child(4),
-td:nth-child(4) {
+th:nth-child(7),
+td:nth-child(7) {
   width: 10%;
 }
 
-td:nth-child(7) {
-  white-space: wrap;
+th:nth-child(5),
+td:nth-child(5),
+th:nth-child(6),
+td:nth-child(6) {
+  width: 21%;
 }
 
 thead th {
@@ -66,7 +67,6 @@ select {
   font-weight: bold;
   color: #fff;
   cursor: pointer;
-  min-width: 100px;
   text-align: center;
 }
 
@@ -123,6 +123,56 @@ td:last-child {
 }
 
 .detail-link:hover {
-  color: #68a54a;
-  transition: 0.1s;
+  opacity: 0.8;
+}
+
+.notes-exist-link {
+  color: #ff0022a5;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.booth-radios label,
+.staff-checkboxes label {
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  color: #495057;
+  font-size: 0.8rem;
+  display: inline-block;
+  margin: 0.2rem;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.booth-radios label:hover,
+.staff-checkboxes label:hover {
+  background-color: #e9ecef;
+}
+
+.booth-radios label:has(input[type="radio"]:checked) {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.staff-checkboxes label:has(input[type="checkbox"]:checked) {
+  background-color: #28a745;
+  color: #fff;
+  border-color: #28a745;
 }

@@ -51,7 +51,6 @@
             <th>個人名</th>
             <th>ブース</th>
             <th>担当者</th>
-            <th>備考</th>
             <th>ステータス</th>
             <th>詳細</th>
           </tr>
@@ -77,7 +76,7 @@
 
                 <template x-if="index === 0">
                   <td :rowspan="group.customers.length"
-                    x-text="`${group.representative.lastName} ${group.representative.firstName}`"></td>
+                    x-text="`${group.representative.lastName}さま`"></td>
                 </template>
 
                 <td>
@@ -110,21 +109,18 @@
                   </div>
                 </td>
 
-                <template x-if="index === 0">
-                  <td :rowspan="group.customers.length" x-text="group.representative.notes || '備考なし'"></td>
-                </template>
-
                 <td>
                   <button class="status-btn" :class="getStatusClass(customer.status)"
                     @click="updateStatus(group, customer.id)" x-show="customer.status !== '対応完了'">
                     <span x-text="customer.status || '受付完了'"></span>
                   </button>
-                  <span x-show="customer.status === '対応完了'" x-text="'対応完了'"></span>
+                  <span x-show="customer.status === '対応完了'" x-text="'済'"></span>
                 </td>
 
                 <template x-if="index === 0">
                   <td :rowspan="group.customers.length">
-                    <a :href="`form.html?group=${group.groupId}`" class="detail-link">
+                    <a :href="`form.html?group=${group.groupId}`" class="detail-link"
+                      :class="{'notes-exist-link': group.representative.notes}">
                       <i class="fa-solid fa-square-up-right"></i>
                     </a>
                   </td>
