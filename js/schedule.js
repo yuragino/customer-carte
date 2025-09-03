@@ -26,7 +26,7 @@ document.addEventListener('alpine:init', () => {
       '受付完了': '案内完了',
       '案内完了': '着付完了',
       '着付完了': '見送り完了',
-      '見送り完了': '対応完了',
+      '見送り完了': '済',
     },
 
     statusTimestampKeys: {
@@ -166,7 +166,7 @@ document.addEventListener('alpine:init', () => {
         '案内完了': 'status-guided',
         '着付完了': 'status-dressing-done',
         '見送り完了': 'status-sent-off',
-        '対応完了': 'status-completed',
+        '済': 'status-completed',
       };
       return classMap[currentStatus] || 'status-received';
     },
