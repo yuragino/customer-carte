@@ -76,7 +76,7 @@
               <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
 
               <template x-if="index === 0">
-                <td :rowspan="group.customers.length" x-text="`${group.representative.lastName}さま`"></td>
+                <td :rowspan="group.customers.length" x-text="`${group.representative.lastName}`"></td>
               </template>
 
               <td>
@@ -118,7 +118,7 @@
                   <span x-text="customer.status || '受付完了'"></span>
                 </button>
                 <span x-show="customer.status === '済'">済</span>
-                <span x-show="group.representative.isCanceled">キャンセル済</span>
+                <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
               </td>
 
               <template x-if="index === 0">

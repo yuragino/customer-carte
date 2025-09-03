@@ -1,7 +1,12 @@
+main {
+  max-width: 1000px;
+  margin: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  /* table-layout: fixed; */
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -16,33 +21,11 @@ td {
   vertical-align: middle;
 }
 
-th:nth-child(1),
-td:nth-child(1),
-th:nth-child(2),
-td:nth-child(2),
 th:last-child,
-td:last-child {
-  width: 8%;
-}
-
-th:nth-child(7),
-td:nth-child(7) {
+td:last-child{
   width: 10%;
 }
 
-th:nth-child(3),
-td:nth-child(3),
-th:nth-child(4),
-td:nth-child(4){
-  width: 12%;
-}
-
-th:nth-child(5),
-td:nth-child(5),
-th:nth-child(6),
-td:nth-child(6) {
-  width: 21%;
-}
 
 thead th {
   background-color: #f8f9fa;
