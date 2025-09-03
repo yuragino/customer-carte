@@ -40,6 +40,7 @@ document.addEventListener('alpine:init', () => {
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,
+    isSubmitting: false,  // フォーム送信中フラグ
 
     // --- フォームデータ ---
     representative: {
@@ -78,7 +79,7 @@ document.addEventListener('alpine:init', () => {
     // --- 初期化 ---
     async init() {
       const params = new URLSearchParams(window.location.search);
-      // URLからyearパラメータを取得し、なければ現在の年をデフォルト値にする
+
       const yearFromUrl = params.get('year');
       this.selectedYear = yearFromUrl ? parseInt(yearFromUrl) : new Date().getFullYear();
 
@@ -331,6 +332,7 @@ document.addEventListener('alpine:init', () => {
      * フォーム全体のデータを送信する
      */
     async submitForm() {
+      this.isSubmitting = true;
       try {
         // 1. 動的な名前を決定
         const folderName = `${this.selectedYear}_fireworks`;
@@ -386,6 +388,8 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         console.error("登録エラー: ", error);
         alert(`登録中にエラーが発生しました。\n${error.message}`);
+      } finally {
+        this.isSubmitting = false;
       }
     },
 
@@ -393,6 +397,7 @@ document.addEventListener('alpine:init', () => {
       if (!confirm('本当にこのカルテを削除しますか？')) {
         return; // ユーザーがキャンセルした場合
       }
+      this.isSubmitting = true;
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
         const docRef = doc(db, collectionName, this.currentGroupId);
@@ -403,6 +408,8 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         console.error("削除エラー: ", error);
         alert(`削除中にエラーが発生しました。\n${error.message}`);
+      }finally {
+        this.isSubmitting = false;
       }
     },
 

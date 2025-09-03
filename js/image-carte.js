@@ -28,7 +28,7 @@ document.addEventListener('alpine:init', () => {
 
     async init() {
       const params = new URLSearchParams(window.location.search);
-      // URLからyearパラメータを取得し、なければ現在の年をデフォルト値にする
+
       const yearFromUrl = params.get('year');
       this.selectedYear = yearFromUrl ? Number(yearFromUrl) : new Date().getFullYear();
       await this.loadData();
