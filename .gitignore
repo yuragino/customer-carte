@@ -1,6 +1,0 @@
-# node_modulesフォルダをGitの追跡から除外
-node_modules/
-
-# OSやエディタが生成する一時ファイルも除外
-.DS_Store
-.env

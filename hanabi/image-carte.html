@@ -9,15 +9,15 @@
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
   <!-- Custom Script -->
-  <script type="module" src="./js/image-carte.js"></script>
+  <script type="module" src="../assets/js/hanabi/image-carte.js"></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
-  <link rel="stylesheet" href="./css/layout.css">
-  <link rel="stylesheet" href="./css/card-style.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/hanabi/card-style.css">
 </head>
 
 <body x-data="app" x-init="init">
@@ -70,7 +70,8 @@
                 <i class="fa-solid fa-angles-right"></i>
               </button>
             </div>
-            <button class="action-btn edit-btn" @click="window.location.href = `./form.html?group=${customer.groupId}&year=${selectedYear}`">
+            <button class="action-btn edit-btn"
+              @click="window.location.href = `./form.html?group=${customer.groupId}&year=${selectedYear}`">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </div>
