@@ -53,7 +53,7 @@
         <div x-show="isRepresentativeInfoOpen">
           <table class="form-table">
             <tr>
-              <th>予約方法 <span class="badge optional">任意</span></th>
+              <th>予約方法</th>
               <td>
                 <label><input type="radio" name="reservationMethod" value="じゃらん椿"
                     @click="toggleRadio($event, 'reservationMethod')"
@@ -67,34 +67,35 @@
               </td>
             </tr>
             <tr>
-              <th>代表者名 <span class="badge required">必須</span></th>
-              <td><input type="text" placeholder="山田花子" x-model="representative.name" id="name" required></td>
+              <th>代表者名</th>
+              <td><input type="text" x-model="representative.name" id="name" required></td>
             </tr>
             <tr>
-              <th>ふりがな <span class="badge required">必須</span></th>
-              <td><input type="text" placeholder="やまだはなこ" x-model="representative.kana" id="furigana"></td>
+              <th>ふりがな</th>
+              <td><input type="text" x-model="representative.kana" id="furigana"></td>
             </tr>
             <tr>
-              <th>来店時間 <span class="badge required">必須</span></th>
+              <th>来店時間</th>
               <td><input type="time" x-model="representative.visitTime"></td>
             </tr>
             <tr>
-              <th>人数 <span class="badge required">必須</span></th>
+              <th>人数</th>
               <td class="person-count">
                 女 <input type="number" min="0" x-model.number="femaleCount">
                 男 <input type="number" min="0" x-model.number="maleCount">
               </td>
             </tr>
             <tr>
-              <th>住所 <span class="badge optional">任意</span></th>
+              <th>住所</th>
               <td><input type="text" class="full-width" x-model="representative.address"></td>
             </tr>
             <tr>
-              <th>電話番号 <span class="badge optional">任意</span></th>
-              <td><input type="tel" x-model="representative.phone" placeholder="080123456" inputmode="numeric" pattern="[0-9]*"></td>
+              <th>電話番号</th>
+              <td><input type="tel" x-model="representative.phone" placeholder="080123456" inputmode="numeric"
+                  pattern="[0-9]*"></td>
             </tr>
             <tr>
-              <th>交通手段 <span class="badge required">必須</span></th>
+              <th>交通手段</th>
               <td>
                 <label><input type="radio" name="transportation" value="car"
                     @click="toggleRadio($event, 'transportation')" :checked="representative.transportation === 'car'">
@@ -112,7 +113,7 @@
               </td>
             </tr>
             <tr>
-              <th>LINE <span class="badge optional">任意</span></th>
+              <th>LINE</th>
               <td>
                 <label>
                   <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
@@ -129,7 +130,7 @@
               </td>
             </tr>
             <tr>
-              <th>備考 <span class="badge optional">任意</span></th>
+              <th>備考</th>
               <td><input type="text" class="full-width" x-model="representative.notes"></td>
             </tr>
             <tr>

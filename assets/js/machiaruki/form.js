@@ -42,6 +42,8 @@ document.addEventListener('alpine:init', () => {
       name: '',
       kana: '',
       visitDateTime: '',
+      finishTime: '',
+      returnTime: '',
       address: '',
       phone: '',
       transportation: 'car',
@@ -96,7 +98,9 @@ document.addEventListener('alpine:init', () => {
           // 代表者情報を反映
           this.representative = {
             ...this.representative,
-            ...data.representative
+            ...data.representative,
+            finishTime: data.representative?.finishTime || '',
+            returnTime: data.representative?.returnTime || ''
           };
           this.femaleCount = data.femaleCount;
           this.maleCount = data.maleCount;

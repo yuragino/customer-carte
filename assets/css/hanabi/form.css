@@ -43,7 +43,8 @@ main {
     width: 25%;
     background-color: #fafafa;
     font-weight: normal;
-    text-align: right;
+    text-align: left;
+    font-weight: 600;
 }
 
 .form-table td {
