@@ -110,10 +110,6 @@ input[type="file"] {
     width: 60px;
 }
 
-input[type="time"] {
-    width: 191.8px;
-}
-
 /* 顧客詳細グリッド */
 .customer-details-grid {
     display: flex;
