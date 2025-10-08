@@ -73,12 +73,12 @@
               <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
 
               <template x-if="index === 0">
-                <td :rowspan="group.customers.length" x-text="`${group.representative.lastName}`"></td>
+                <td :rowspan="group.customers.length" x-text="`${group.representative.name}`"></td>
               </template>
 
               <td>
                 <span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'"
-                  x-text="`${customer.lastName} ${customer.firstName}`"></span>
+                  x-text="customer.name"></span>
               </td>
 
               <td>

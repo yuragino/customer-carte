@@ -379,8 +379,6 @@ document.addEventListener('alpine:init', () => {
       try {
         const docRef = doc(db, COLLECTION_NAME, this.currentGroupId);
         await deleteDoc(docRef);
-
-        alert('カルテを削除しました。');
         window.location.href = './index.html'; // 削除後、予約一覧ページへ遷移
       } catch (error) {
         console.error("削除エラー: ", error);

@@ -31,12 +31,12 @@
       <nav class="header-nav">
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
-        <a :href="`./image-list.html?year=${selectedYear}`">画像検索</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
         <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
       </nav>
     </div>
   </header>
-  <div class="cancellation-status" x-show="formData.isCanceled === true">この予約はすでにキャンセルされています</div>
+  <div class="cancellation-status" x-show="formData.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
   <div class="delete-container">
     <button type="button" class="delete-btn" x-show="currentCustomerId" @click="deleteForm">
       <i class="fa-regular fa-trash-can"></i> カルテを削除
@@ -83,7 +83,7 @@
           </tr>
           <tr>
             <th>電話番号</th>
-            <td><input type="tel" placeholder="09012345678" x-model="formData.basic.phone"></td>
+            <td><input type="tel" placeholder="09012345678" x-model="formData.basic.phone" inputmode="numeric" pattern="[0-9]*"></td>
           </tr>
           <tr>
             <th>身長</th>
@@ -204,7 +204,8 @@
         </table>
       </div>
 
-      <div x-show="meetingModalVisible" class="modal-bg" @click.self="closeMeetingModal()" x-trap="meetingModalVisible"  x-cloak>
+      <div x-show="meetingModalVisible" class="modal-bg" @click.self="closeMeetingModal()" x-trap="meetingModalVisible"
+        x-cloak>
         <div class="modal-box">
           <i class="fa-solid fa-xmark close-btn" @click="closeMeetingModal()"></i>
           <div>

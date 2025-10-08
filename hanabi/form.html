@@ -37,7 +37,7 @@
       </nav>
     </div>
   </header>
-  <div class="cancellation-status" x-show="representative.isCanceled === true">この予約はすでにキャンセルされています</div>
+  <div class="cancellation-status" x-show="representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
   <div class="delete-container">
     <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
       <i class="fa-regular fa-trash-can"></i> カルテを削除
@@ -68,17 +68,11 @@
             </tr>
             <tr>
               <th>代表者名 <span class="badge required">必須</span></th>
-              <td>
-                <input type="text" placeholder="姓" x-model="representative.lastName" id="sei">
-                <input type="text" placeholder="名" x-model="representative.firstName" id="mei">
-              </td>
+              <td><input type="text" placeholder="山田花子" x-model="representative.name" id="name" required></td>
             </tr>
             <tr>
               <th>ふりがな <span class="badge required">必須</span></th>
-              <td>
-                <input type="text" placeholder="せい" x-model="representative.lastNameFurigana" id="sei_kana">
-                <input type="text" placeholder="めい" x-model="representative.firstNameFurigana" id="mei_kana">
-              </td>
+              <td><input type="text" placeholder="やまだはなこ" x-model="representative.kana" id="furigana"></td>
             </tr>
             <tr>
               <th>来店時間 <span class="badge required">必須</span></th>
@@ -97,7 +91,7 @@
             </tr>
             <tr>
               <th>電話番号 <span class="badge optional">任意</span></th>
-              <td><input type="tel" x-model="representative.phone" placeholder="080123456"></td>
+              <td><input type="tel" x-model="representative.phone" placeholder="080123456" inputmode="numeric" pattern="[0-9]*"></td>
             </tr>
             <tr>
               <th>交通手段 <span class="badge required">必須</span></th>
@@ -283,8 +277,7 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      AutoKana.bind('#sei', '#sei_kana');
-      AutoKana.bind('#mei', '#mei_kana');
+      AutoKana.bind('#name', '#furigana', { katakana: false });
     });
   </script>
 </body>

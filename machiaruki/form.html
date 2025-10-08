@@ -27,7 +27,7 @@
       </nav>
     </div>
   </header>
-  <div class="cancellation-status" x-show="representative.isCanceled === true">この予約はすでにキャンセルされています</div>
+  <div class="cancellation-status" x-show="representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
   <div class="delete-container">
     <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
       <i class="fa-regular fa-trash-can"></i> カルテを削除
@@ -85,7 +85,7 @@
             </tr>
             <tr>
               <th>電話番号 <span class="badge optional">任意</span></th>
-              <td><input type="tel" x-model="representative.phone" placeholder="080123456" class="middle-width"></td>
+              <td><input type="tel" x-model="representative.phone" placeholder="080123456" class="middle-width" inputmode="numeric" pattern="[0-9]*"></td>
             </tr>
             <tr>
               <th>交通手段 <span class="badge required">必須</span></th>
@@ -182,7 +182,7 @@
             <div class="form-cell">
               <div><label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label></div>
               <template x-if="customer.gender === 'female'">
-                <div><label><input type="checkbox" x-model="customer.options.obiBag"> かごバッグ</label></div>
+                <div><label><input type="checkbox" x-model="customer.options.obiBag"> バッグ</label></div>
               </template>
             </div>
             <div class="form-cell">
@@ -239,7 +239,7 @@
     </main>
   </form>
 
-  <div class="modal-overlay" x-show="isRentalModalOpen" @click="isRentalModalOpen = false" x-transition>
+  <div class="modal-overlay" x-show="isRentalModalOpen" @click="isRentalModalOpen = false" x-cloak>
     <div class="modal-content" @click.stop>
       <h3>レンタル追加登録</h3>
       <div class="modal-form">

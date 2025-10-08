@@ -139,7 +139,7 @@ document.addEventListener('alpine:init', () => {
           // 更新処理
           const docRef = doc(db, collectionName, this.currentCustomerId);
           await updateDoc(docRef, dataToSave);
-          alert('カルテを更新しました。');
+          alert('更新が完了しました。');
         } else {
           // 新規作成処理
           dataToSave.createdAt = serverTimestamp();
@@ -161,7 +161,6 @@ document.addEventListener('alpine:init', () => {
       try {
         const collectionName = `${this.selectedYear}_seijinshiki`;
         await deleteDoc(doc(db, collectionName, this.currentCustomerId));
-        alert('カルテを削除しました。');
         window.location.href = `./index.html?year=${this.selectedYear}`;
       } catch (error) {
         console.error("削除エラー: ", error);
