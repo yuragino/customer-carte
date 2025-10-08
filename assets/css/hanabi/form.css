@@ -71,17 +71,23 @@ main {
 input[type="text"],
 input[type="tel"],
 input[type="time"],
+input[type="datetime-local"],
 input[type="number"],
 select {
-    padding: 8px;
+    padding: 0.4rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1rem;
 }
 
 input[type="file"] {
     width: auto;
     max-width: 100px;
     flex: 0 0 auto;
+}
+
+.middle-width {
+    width: 15rem;
 }
 
 .full-width {
@@ -103,8 +109,8 @@ input[type="file"] {
     width: 60px;
 }
 
-input[type="time"]{
-    width: 165px;
+input[type="time"] {
+    width: 191.8px;
 }
 
 /* 顧客詳細グリッド */
@@ -145,10 +151,6 @@ input[type="time"]{
     justify-content: center;
     align-items: center;
     gap: 5px;
-}
-
-.form-cell input[type="text"] {
-    width: 80px;
 }
 
 .form-cell label {

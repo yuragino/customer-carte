@@ -11,9 +11,10 @@ const firebaseConfig = {
   appId: "1:399031825104:web:639225192503ab895724d5",
   measurementId: "G-MCBZVD9D22"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
@@ -30,13 +31,6 @@ document.addEventListener('alpine:init', () => {
       UPLOAD_PRESET: 'unsigned_preset',
     },
 
-    // --- ヘッダー関連 ---
-    selectedYear: new Date().getFullYear(),
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
-    },
-
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,
@@ -45,16 +39,13 @@ document.addEventListener('alpine:init', () => {
     // --- フォームデータ ---
     representative: {
       reservationMethod: null,
-      lastName: '',
-      firstName: '',
-      lastNameFurigana: '',
-      firstNameFurigana: '',
-      visitTime: '',
+      name: '',
+      kana: '',
+      visitDateTime: '',
       address: '',
       phone: '',
       transportation: 'car',
       lineType: '椿LINE',
-      selectedRepeaterYears: [],
       notes: '',
       checkpoints: {
         rentalPage: false,
@@ -79,10 +70,6 @@ document.addEventListener('alpine:init', () => {
     // --- 初期化 ---
     async init() {
       const params = new URLSearchParams(window.location.search);
-
-      const yearFromUrl = params.get('year');
-      this.selectedYear = yearFromUrl ? parseInt(yearFromUrl) : new Date().getFullYear();
-
       const groupId = params.get('group');
       this.currentGroupId = groupId;
 
@@ -99,12 +86,8 @@ document.addEventListener('alpine:init', () => {
 
     // --- Firestoreからデータを取得し、フォームに反映させるメソッド ---
     async loadFormData(groupId) {
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.history.pushState({}, '', url);
       try {
-        const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, groupId);
+        const docRef = doc(db, COLLECTION_NAME, groupId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -333,10 +316,7 @@ document.addEventListener('alpine:init', () => {
     async submitForm() {
       this.isSubmitting = true;
       try {
-        // 1. 動的な名前を決定
-        const folderName = `${this.selectedYear}_fireworks`;
-        const collectionName = `${this.selectedYear}_fireworks`;
-
+        const folderName = COLLECTION_NAME;
         // 2. 顧客データ内の画像URLを準備
         const processedCustomers = await Promise.all(this.customers.map(async (customer) => {
           // 新しい画像ファイルがある場合のみ、アップロード処理を実行
@@ -373,13 +353,13 @@ document.addEventListener('alpine:init', () => {
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
         if (this.currentGroupId) {
           // 既存のドキュメントを更新
-          const docRef = doc(db, collectionName, this.currentGroupId);
+          const docRef = doc(db, COLLECTION_NAME, this.currentGroupId);
           await updateDoc(docRef, dataToSave);
           alert('更新が完了しました。');
         } else {
           // 新規ドキュメントを追加
           dataToSave.createdAt = serverTimestamp();
-          const colRef = collection(db, collectionName);
+          const colRef = collection(db, COLLECTION_NAME);
           await addDoc(colRef, dataToSave);
         }
         window.location.href = './index.html';
@@ -397,8 +377,7 @@ document.addEventListener('alpine:init', () => {
       }
       this.isSubmitting = true;
       try {
-        const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, this.currentGroupId);
+        const docRef = doc(db, COLLECTION_NAME, this.currentGroupId);
         await deleteDoc(docRef);
 
         alert('カルテを削除しました。');
@@ -409,38 +388,7 @@ document.addEventListener('alpine:init', () => {
       } finally {
         this.isSubmitting = false;
       }
-    },
-
-    async checkRepeaterStatus() {
-      if (!this.representative.phone) {
-        alert('リピーターチェックを行うには電話番号を入力してください。');
-        return;
-      }
-
-      const foundYears = [];
-      const currentYear = new Date().getFullYear();
-      const searchYears = [currentYear - 1, currentYear - 2, currentYear - 3]; // 検索対象の過去3年
-
-      for (const year of searchYears) {
-        const collectionName = `${year}_fireworks`;
-        try {
-          const q = query(collection(db, collectionName), where('representative.phone', '==', this.representative.phone));
-          const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            foundYears.push(year);
-          }
-        } catch (error) {
-          console.warn(`Error checking collection ${collectionName}: `, error);
-        }
-      }
-      if (foundYears.length > 0) {
-        this.representative.selectedRepeaterYears = foundYears;
-      } else {
-        this.representative.selectedRepeaterYears = [0];
-      }
     }
 
   }));
 });
-
-// cspell:ignore Furigana Firestore

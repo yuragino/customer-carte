@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>成人式カルテ印刷</title>
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/seijinshiki/print.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/seijinshiki/print.css">
+</head>
+
+<body x-data="app">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
+      <div class="header-controls">
+        <button @click="window.print()" class="print-btn">
+          <i class="fa-solid fa-print"></i> このページを印刷
+        </button>
+      </div>
+      <nav class="header-nav">
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div x-show="isLoading" class="loading-indicator">読み込み中...</div>
+
+    <div x-show="!isLoading && errorMessage" class="error-message" x-text="errorMessage"></div>
+
+    <div class="page" x-show="!isLoading && customerData.basic" x-cloak>
+      <h1 x-text="`${selectedYear}成人式着付受付`"></h1>
+      <div class="card">
+        <h2><i class="fa-regular fa-circle-user"></i> 基本情報</h2>
+        <table>
+          <tr>
+            <th>予約受付日</th>
+            <td x-text="customerData.basic.reservationDate || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>名前</th>
+            <td>
+              <span class="furigana" x-text="customerData.basic.kana"></span>
+              <span class="name" x-text="customerData.basic.name"></span>
+            </td>
+          </tr>
+          <tr>
+            <th>紹介者</th>
+            <td x-text="customerData.basic.introducer || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>住所</th>
+            <td x-text="customerData.basic.address || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>LINE</th>
+            <td x-text="customerData.basic.lineType || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>電話番号</th>
+            <td x-text="customerData.basic.phone || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>身長</th>
+            <td x-text="customerData.basic.height ? `${customerData.basic.height} cm` : 'ー'"></td>
+          </tr>
+          <tr>
+            <th>足サイズ</th>
+            <td x-text="customerData.basic.footSize ? `${customerData.basic.footSize} cm` : 'ー'"></td>
+          </tr>
+          <tr>
+            <th>衣装</th>
+            <td x-text="customerData.basic.outfit || 'ー'"></td>
+          </tr>
+          <tr x-show="customerData.basic.outfit">
+            <th>利用形態</th>
+            <td x-text="customerData.basic.rentalType || 'ー'"></td>
+          </tr>
+          <tr x-show="customerData.basic.outfit === '振袖'">
+            <th>ヘアメイク担当</th>
+            <td x-text="customerData.basic.hairMakeStaff || 'ー'"></td>
+          </tr>
+          <tr x-show="customerData.basic.outfit">
+            <th>備考</th>
+            <td class="note" x-text="customerData.basic.outfitMemo || 'ー'"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-regular fa-calendar-check"></i> 当日スケジュール</h2>
+        <table x-show="customerData.basic.outfit">
+          <template x-if="customerData.basic.outfit === '振袖'">
+            <template x-for="task in customerData.toujitsu.schedule" :key="task.id">
+              <tr>
+                <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
+                <td x-text="task.start && task.end ? `${task.start} 〜 ${task.end}` : 'ー'"></td>
+              </tr>
+            </template>
+          </template>
+          <template x-if="customerData.basic.outfit === '袴'">
+            <tr x-data="{ kitsukeTask: customerData.toujitsu.schedule.find(t => t.type === 'kitsuke') }">
+              <th>着付時間</th>
+              <td
+                x-text="kitsukeTask && kitsukeTask.start && kitsukeTask.end ? `${kitsukeTask.start} 〜 ${kitsukeTask.end}` : 'ー'">
+              </td>
+            </tr>
+          </template>
+          <tr>
+            <th>備考</th>
+            <td class="note" x-text="customerData.toujitsu.note || 'ー'"></td>
+          </tr>
+        </table>
+        <p x-show="!customerData.basic.outfit">衣装が選択されていません。</p>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-regular fa-calendar-days"></i> 打ち合わせ・お預かり</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>種別</th>
+              <th>日時</th>
+              <th>場所</th>
+              <th>備考</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="meeting in sortedMeetings" :key="meeting.id">
+              <tr>
+                <td x-text="meeting.type"></td>
+                <td x-text="formatDisplayDate(meeting.date)"></td>
+                <td x-text="meeting.place"></td>
+                <td class="note" x-text="meeting.note"></td>
+              </tr>
+            </template>
+            <tr x-show="sortedMeetings.length === 0">
+              <td colspan="4" style="text-align: center;">登録された予定はありません。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-camera-retro"></i> 前撮り</h2>
+        <div x-show="customerData.maedoriStatus === 'なし'">
+          <p>なし</p>
+          <table x-show="customerData.maedori.note">
+            <tr>
+              <th>備考</th>
+              <td class="note" x-text="customerData.maedori.note"></td>
+            </tr>
+          </table>
+        </div>
+        <table x-show="customerData.maedoriStatus === 'あり'">
+          <tr>
+            <th>種類</th>
+            <td x-text="customerData.maedori.type || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>カメラマン</th>
+            <td x-text="customerData.maedori.camera || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>撮影日</th>
+            <td x-text="customerData.maedori.date || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>ヘア時間</th>
+            <td
+              x-text="customerData.maedori.hairStart && customerData.maedori.hairEnd ? `${customerData.maedori.hairStart} 〜 ${customerData.maedori.hairEnd}` : 'ー'">
+            </td>
+          </tr>
+          <tr>
+            <th>着付時間</th>
+            <td
+              x-text="customerData.maedori.kitsukeStart && customerData.maedori.kitsukeEnd ? `${customerData.maedori.kitsukeStart} 〜 ${customerData.maedori.kitsukeEnd}` : 'ー'">
+            </td>
+          </tr>
+          <tr>
+            <th>撮影時間</th>
+            <td
+              x-text="customerData.maedori.shootStart && customerData.maedori.shootEnd ? `${customerData.maedori.shootStart} 〜 ${customerData.maedori.shootEnd}` : 'ー'">
+            </td>
+          </tr>
+          <tr>
+            <th>着付場所</th>
+            <td x-text="customerData.maedori.place || 'ー'"></td>
+          </tr>
+          <tr>
+            <th>備考</th>
+            <td class="note" x-text="customerData.maedori.note || 'ー'"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-yen-sign"></i> 見積もり</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>利用内容</th>
+              <th class="price-col">金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="(item, index) in customerData.estimateItems" :key="index">
+              <tr>
+                <td x-text="getEstimateItemName(item, index)"></td>
+                <td x-text="getEstimateUsageText(item)"></td>
+                <td class="price-col" x-text="formatYen(calcPrice(item))"></td>
+              </tr>
+            </template>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2">合計</th>
+              <td class="total-amount" x-text="formatYen(totalAmount)"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-receipt"></i> 領収情報</h2>
+        <table>
+          <tr>
+            <th>領収日</th>
+            <td x-text="customerData.estimate.receiptDate || '未領収'"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>

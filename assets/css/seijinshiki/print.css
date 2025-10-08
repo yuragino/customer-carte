@@ -1,0 +1,143 @@
+/* ----- 印刷ページ用スタイル ----- */
+
+/* ページの基本設定 */
+body {
+    background-color: #f0f2f5; /* 背景色 */
+}
+
+.print-btn{
+  height: 70px;
+  width: 200px;
+}
+
+/* A4用紙のシミュレーション */
+.page {
+    background: white;
+    width: 210mm;
+    min-height: 296mm; /* A4サイズより少し短くして、内容が少ない場合の見栄えを調整 */
+    padding: 13mm;
+    margin: 20px auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ローディングとエラーメッセージ */
+.loading-indicator,
+.error-message {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 50px;
+    color: #666;
+}
+
+/* 各セクションのスタイル */
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+}
+
+.card h2 {
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #3498db;
+    color: #3498db;
+    display: flex;
+    align-items: center;
+}
+
+.card h2 i {
+    margin-right: 12px;
+}
+
+/* テーブルのスタイル */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    width: 140px; /* 見出し列の幅を固定 */
+}
+
+/* 特定の要素のスタイル */
+.furigana {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #000;
+}
+
+.note {
+    white-space: pre-wrap; /* 改行をそのまま表示 */
+    word-break: break-all;
+}
+
+.price-col {
+    text-align: right;
+}
+
+.total-amount {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: right;
+}
+
+tfoot th, tfoot td {
+    background-color: #f2f2f2;
+    border-top: 2px solid #ccc;
+}
+
+
+/* ----- 印刷時専用スタイル ----- */
+@media print {
+    /* 印刷時はヘッダーや背景を非表示/リセット */
+    .header, .header-nav {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    /* ページのマージンや影をなくす */
+    .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+    }
+
+    .card {
+        border: 1px solid #ccc;
+        page-break-inside: avoid; /* セクションの途中で改ページされるのを防ぐ */
+    }
+
+    /* 印刷時のフォントサイズを調整 */
+    body, .page {
+        font-size: 10pt;
+    }
+}

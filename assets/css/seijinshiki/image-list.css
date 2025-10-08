@@ -1,0 +1,101 @@
+/* === アコーディオン === */
+.accordion {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.accordion button {
+  width: 100%;
+  background: #fff;
+  border: none;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  /* 名称＋アイコン左、矢印右 */
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.accordion button:hover {
+  background: #f9f9f9;
+}
+
+/* 左側テキストと「写真なし」アイコン */
+.accordion-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.no-media-icon,
+.accordion button i.fa-image-slash {
+  color: #bbb;
+  font-size: 0.9rem;
+}
+
+/* ▼ / ▲ チェブロン */
+.accordion button .chevron {
+  font-size: 0.9rem;
+  margin-left: auto;
+  color: #666;
+}
+
+/* === アコーディオン内容 === */
+.accordion-content {
+  background: #fafafa;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* === 画像 === */
+.images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.preview-img {
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.preview-img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* === 動画 === */
+.videos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.preview-video {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  max-height: 220px;
+}
+
+/* === 空データ表示 === */
+.accordion-content p {
+  color: #888;
+  font-style: italic;
+  margin: 0;
+}
+
+/* === レイアウト調整（iPad対応） === */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}

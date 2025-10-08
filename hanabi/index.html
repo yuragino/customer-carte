@@ -3,25 +3,26 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>お客様カルテ - トップページ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>花火大会予約一覧</title>
   <!-- Custom Script -->
-  <script type="module" src="../assets/js/common/top-page.js"></script>
+  <script type="module" src="../assets/js/hanabi/reservation-list.js"></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
-  <link rel="stylesheet" href="../assets/css/common/top-page.css">
+  <link rel="stylesheet" href="../assets/css/common/reservation-list.css">
+  <link rel="stylesheet" href="../assets/css/hanabi/reservation-list.css">
 </head>
 
-<body x-data="app" x-init="init">
+<body x-data="App">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title"><a :href="`./index.html?year=${selectedYear}`">お客様カルテ</a></h1>
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
-        <select x-model.number="selectedYear" @change="changeYear()">
+        <select x-model.number="selectedYear" @change="fetchSchedule()">
           <template x-for="year in yearOptions" :key="year">
             <option :value="year" x-text="year" :selected="year === selectedYear"></option>
           </template>
@@ -30,40 +31,107 @@
       </div>
       <nav class="header-nav">
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
-        <a :href="`./schedule.html?year=${selectedYear}`">受付管理</a>
-        <a :href="`./image-carte.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
         <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
       </nav>
     </div>
   </header>
 
-  <main class="menu">
-    <a :href="`statistics.html?year=${selectedYear}`" class="menu-card">
-      <i class="fa-solid fa-chart-line"></i>
-      <h2>統計情報</h2>
-      <p>平均所要時間やスタッフ別の結果を確認できます。</p>
-    </a>
-    <a :href="`schedule.html?year=${selectedYear}`" class="menu-card">
-      <i class="fa-solid fa-calendar-check"></i>
-      <h2>受付管理</h2>
-      <p>来店予定や進行状況を管理できます。</p>
-    </a>
-    <a :href="`image-carte.html?year=${selectedYear}`" class="menu-card">
-      <i class="fa-solid fa-image"></i>
-      <h2>画像一覧</h2>
-      <p>撮影した写真をまとめて確認できます。</p>
-    </a>
-    <a :href="`form.html?year=${selectedYear}`" class="menu-card">
-      <i class="fa-solid fa-user-plus"></i>
-      <h2>新規登録</h2>
-      <p>お客様情報を新規登録します。</p>
-    </a>
+  <main>
+    <p class="manual-link"><a href="../common/manual-index.html">📖 操作マニュアル</a></p>
+    <table>
+      <thead>
+        <tr>
+          <th>来店予定</th>
+          <th>来店時刻</th>
+          <th>代表者名</th>
+          <th>個人名</th>
+          <th>ブース</th>
+          <th>担当者</th>
+          <th>ステータス</th>
+          <th>詳細</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="groups.length === 0">
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 2rem;">
+              該当するデータがありません。
+            </td>
+          </tr>
+        </template>
+
+        <template x-for="group in groups.toReversed()" :key="group.groupId">
+          <template x-for="(customer, index) in group.customers" :key="customer.id">
+            <tr :class="{'is-canceled': group.representative.isCanceled}">
+              <template x-if="index === 0">
+                <td :rowspan="group.customers.length" x-text="group.representative.visitTime">
+                </td>
+              </template>
+
+              <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+
+              <template x-if="index === 0">
+                <td :rowspan="group.customers.length" x-text="`${group.representative.lastName}`"></td>
+              </template>
+
+              <td>
+                <span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'"
+                  x-text="`${customer.lastName} ${customer.firstName}`"></span>
+              </td>
+
+              <td>
+                <div class="booth-radios">
+                  <template x-for="booth in customer.gender === 'female' ? boothOptionsFemale :boothOptionsMale"
+                    :key="booth">
+                    <label :class="{'disabled': group.representative.isCanceled}">
+                      <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
+                        @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)"
+                        :disabled="group.representative.isCanceled">
+                      <span x-text="booth"></span>
+                    </label>
+                  </template>
+                </div>
+              </td>
+
+              <td>
+                <div class="staff-checkboxes">
+                  <template x-for="staff in staffOptions" :key="staff">
+                    <label :class="{'disabled': group.representative.isCanceled}">
+                      <input type="checkbox" :checked="customer.staff && customer.staff.includes(staff)"
+                        @change="updateCustomerField(group.groupId, customer.id, 'staff', staff, $event.target.checked)"
+                        :disabled="group.representative.isCanceled">
+                      <span x-text="staff"></span>
+                    </label>
+                  </template>
+                </div>
+              </td>
+
+              <td>
+                <button class="status-btn" :class="getStatusClass(customer.status)"
+                  @click="updateStatus(group, customer.id)"
+                  x-show="customer.status !== '済' && !group.representative.isCanceled">
+                  <span x-text="customer.status || '受付完了'"></span>
+                </button>
+                <span x-show="customer.status === '済'">済</span>
+                <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
+              </td>
+
+              <template x-if="index === 0">
+                <td :rowspan="group.customers.length">
+                  <a :href="`form.html?group=${group.groupId}&year=${selectedYear}`" class="detail-link"
+                    :class="{'notes-exist-link': group.representative.notes}">
+                    <i class="fa-solid fa-square-up-right"></i>
+                  </a>
+                </td>
+              </template>
+            </tr>
+          </template>
+        </template>
+      </tbody>
+    </table>
   </main>
-  <footer>
-    <p class="manual-link">
-      <a href="./manual-schedule.html">📖 受付管理マニュアル</a>
-    </p>
-  </footer>
 </body>
 
 </html>

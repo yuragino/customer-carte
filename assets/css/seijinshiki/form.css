@@ -1,0 +1,438 @@
+main {
+  max-width: 800px;
+  margin: auto;
+  padding: 1.2rem;
+}
+
+/* ===== 見出し ===== */
+h2 {
+  font-size: 1.3rem;
+  margin: 1rem 0 0.5rem;
+  color: #1e293b;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 1rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.title-actions {
+  margin-left: auto;
+}
+
+.title-actions a{
+  font-size: 18px;
+}
+
+/* ===== カード ===== */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+/* ===== テーブル型フォーム ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+th {
+  width: 25%;
+  text-align: left;
+  font-weight: 600;
+  background: #f9fafb;
+  padding: 1.2rem;
+}
+
+td {
+  height: 60px;
+  padding: 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+tr:not(:last-child) td,
+th {
+  border-bottom: 1px solid #eaeef5;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.estimate-card table,
+.meeting-card table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.estimate-card th,
+.meeting-card th {
+  height: 50px;
+  padding: 8px;
+  border: 1px solid #eaeef5;
+}
+
+.estimate-card td,
+.meeting-card td {
+  border: 1px solid #eaeef5;
+}
+
+.meeting-card th:first-child {
+  width: 14%;
+}
+
+.meeting-card th:nth-child(2) {
+  width: 28%;
+}
+
+
+.meeting-card th:nth-child(3) {
+  width: 16%;
+}
+
+.meeting-card th:nth-child(4) {
+  width: 28%;
+}
+
+.meeting-card th:nth-child(5),
+.meeting-card th:nth-child(6) {
+  width: 7%;
+}
+
+.meeting-card td:nth-child(5),
+.meeting-card td:nth-child(6) {
+  text-align: center;
+}
+
+.estimate-card th,
+.estimate-card td:not(:first-child) {
+  text-align: center;
+}
+
+.estimate-card th:first-child {
+  width: 35%;
+}
+
+.estimate-card th:nth-child(2),
+.estimate-card th:nth-child(3) {
+  width: 10%;
+}
+
+.estimate-card th:nth-child(4) {
+  width: 35%;
+}
+
+.estimate-card th:nth-child(5) {
+  width: 10%;
+}
+
+/* ===== 入力幅調整 ===== */
+label:has(input[type="radio"]) {
+  cursor: pointer;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="number"],
+input[type="tel"] {
+  width: 15rem;
+  padding: 0.4rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all .2s;
+}
+
+input[type="text"],
+main select,
+textarea {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all .2s;
+}
+
+input:not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(77, 181, 255, 0.2);
+}
+
+/* ===== ボタン ===== */
+.btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-del {
+  background: none;
+  color: #dc2626;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-del:hover {
+  color: #b91c1c;
+}
+
+.btn-edit {
+  background: none;
+  color: #0ea5e9;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-edit:hover {
+  color: #0369a1;
+}
+
+.register-btn {
+  margin-bottom: 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* ===== モーダル ===== */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  width: 95%;
+  max-width: 460px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.modal-actions {
+  text-align: center;
+  margin-top: 0.8rem;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  cursor: pointer;
+  font-size: 22px;
+  color: #555;
+}
+
+.modal-box label {
+  display: block;
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.modal-box input,
+.modal-box textarea,
+.modal-box select {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.modal-box input:focus,
+.modal-box textarea:focus,
+.modal-box select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  outline: none;
+}
+
+.total {
+  margin-top: 0.3rem;
+  color: #333;
+  text-align: center;
+}
+
+/* ===== 表示リスト ===== */
+.meeting-entry {
+  margin-bottom: 0.8rem;
+}
+
+.entry-actions {
+  float: right;
+}
+
+
+/* ===== トグルボタン ===== */
+.toggle-btn {
+  min-width: 70px;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.toggle-btn.inactive {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.toggle-btn.active-yes {
+  background: #16a34a;
+  /* 緑 */
+  color: white;
+}
+
+.toggle-btn.active-no {
+  background: #dc2626;
+  /* 赤 */
+  color: white;
+}
+
+.toggle-btn:hover {
+  opacity: 0.9;
+}
+
+/* ===== トグルチェックボックス ===== */
+.toggle-check input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-check i.fa-circle-check {
+  display: none;
+  color: #16a34a;
+  font-size: 1.4rem;
+}
+
+.toggle-check i.fa-circle-xmark {
+  display: inline;
+  color: #9ca3af;
+  font-size: 1.4rem;
+}
+
+.toggle-check input:checked~i.fa-circle-xmark {
+  display: none;
+}
+
+.toggle-check input:checked~i.fa-circle-check {
+  display: inline;
+}
+
+.toggle-check i {
+  cursor: pointer;
+}
+
+/* 項目カラムのセル全体を中央寄せ */
+.estimate-card table td:first-child {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* セルの中の input / select も中央寄せ */
+.estimate-card table td:first-child input,
+.estimate-card table td:first-child select {
+  display: inline-block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.clickable-cell label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* 画像プレビュー */
+.preview-container {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.preview-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* --- キャンセル機能のスタイル --- */
+.cancellation-status {
+  max-width: 800px;
+  margin: 0 auto 20px;
+  padding: 15px;
+  background-color: #ffebeb;
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  text-align: center;
+  color: #dc3545;
+}
+
+.cancellation-status label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.delete-container {
+  text-align: center;
+}
+
+.delete-container .delete-btn {
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 8px 20px;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.delete-container .delete-btn:hover {
+  background: #dc3545;
+  color: #fff;
+}

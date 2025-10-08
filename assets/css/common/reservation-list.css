@@ -6,7 +6,6 @@ main {
 table {
   width: 100%;
   border-collapse: collapse;
-  /* table-layout: fixed; */
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -20,12 +19,6 @@ td {
   border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
 }
-
-th:last-child,
-td:last-child{
-  width: 6%;
-}
-
 
 thead th {
   background-color: #f8f9fa;
@@ -162,9 +155,7 @@ input[type="checkbox"] {
 
 table .is-canceled {
   background-color: #f8f8f8;
-  /* 薄いグレーの背景 */
   color: #a0a0a0;
-  /* 文字色を薄くする */
 }
 
 .booth-radios label.disabled,
@@ -177,10 +168,12 @@ table .is-canceled {
   padding: 0 1.2rem 1.2rem 1.2rem ;
   color: #555;
 }
+
 .manual-link a {
   color: #004e92;
   text-decoration: none;
 }
+
 .manual-link a:hover {
   text-decoration: underline;
 }

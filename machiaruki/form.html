@@ -3,10 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>花火大会新規登録</title>
+  <title>まち歩き新規登録</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Custom Script -->
-  <script type="module" src="../assets/js/hanabi/form.js"></script>
+  <script type="module" src="../assets/js/machiaruki/form.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
@@ -21,19 +21,9 @@
   <header class="header">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
-      <div class="header-controls">
-        <select x-model.number="selectedYear">
-          <template x-for="year in yearOptions" :key="year">
-            <option :value="year" x-text="year" :selected="year === selectedYear"></option>
-          </template>
-        </select>
-        <span>花火大会</span>
-      </div>
       <nav class="header-nav">
-        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
-        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
-        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+        <a href="./index.html">予約一覧</a>
+        <a href="./form.html">新規登録</a>
       </nav>
     </div>
   </header>
@@ -69,20 +59,18 @@
             <tr>
               <th>代表者名 <span class="badge required">必須</span></th>
               <td>
-                <input type="text" placeholder="姓" x-model="representative.lastName" id="sei">
-                <input type="text" placeholder="名" x-model="representative.firstName" id="mei">
+                <input type="text" placeholder="山田花子" x-model="representative.name" id="name" class="middle-width">
               </td>
             </tr>
             <tr>
               <th>ふりがな <span class="badge required">必須</span></th>
               <td>
-                <input type="text" placeholder="せい" x-model="representative.lastNameFurigana" id="sei_kana">
-                <input type="text" placeholder="めい" x-model="representative.firstNameFurigana" id="mei_kana">
+                <input type="text" placeholder="やまだはなこ" x-model="representative.kana" id="furigana" class="middle-width">
               </td>
             </tr>
             <tr>
-              <th>来店時間 <span class="badge required">必須</span></th>
-              <td><input type="time" x-model="representative.visitTime"></td>
+              <th>来店日時 <span class="badge required">必須</span></th>
+              <td><input type="datetime-local" x-model="representative.visitDateTime" class="middle-width"></td>
             </tr>
             <tr>
               <th>人数 <span class="badge required">必須</span></th>
@@ -97,7 +85,7 @@
             </tr>
             <tr>
               <th>電話番号 <span class="badge optional">任意</span></th>
-              <td><input type="tel" x-model="representative.phone" placeholder="080123456"></td>
+              <td><input type="tel" x-model="representative.phone" placeholder="080123456" class="middle-width"></td>
             </tr>
             <tr>
               <th>交通手段 <span class="badge required">必須</span></th>
@@ -139,25 +127,9 @@
               <td><input type="text" class="full-width" x-model="representative.notes"></td>
             </tr>
             <tr>
-              <th>リピーター</th>
-              <td>
-                <template x-if="representative.selectedRepeaterYears.length === 0">
-                  <button type="button" class="checking-btn"
-                    @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする（過去3年）</button>
-                </template>
-                <template x-if="representative.selectedRepeaterYears.length > 0">
-                  <div>
-                    <span x-show="representative.selectedRepeaterYears.includes(0)">新規</span>
-                    <span x-show="!representative.selectedRepeaterYears.includes(0)"
-                      x-text="representative.selectedRepeaterYears.join(', ')"></span>
-                  </div>
-                </template>
-              </td>
-            </tr>
-            <tr>
               <th>お伝え事項</th>
               <td>
-                <label><input type="checkbox" x-model="representative.checkpoints.rentalPage"> 浴衣レンタルページ</label>
+                <label><input type="checkbox" x-model="representative.checkpoints.rentalPage"> きものレンタルページ</label>
                 <label><input type="checkbox" x-model="representative.checkpoints.footwearBag"> 履物バッグ</label>
                 <label><input type="checkbox" x-model="representative.checkpoints.price"> 料金</label>
                 <label><input type="checkbox" x-model="representative.checkpoints.location"> 当店の場所</label>
@@ -184,7 +156,7 @@
         <template x-for="(customer, index) in customers" :key="customer.id">
           <div class="customer-column">
             <div class="form-cell">
-              <input type="text" x-model="customer.name" placeholder="">
+              <input type="text" x-model="customer.name">
             </div>
             <div class="form-cell">
               <label><input type="radio" :name="'gender' + index" value="female" x-model="customer.gender"> 女</label>
@@ -267,7 +239,7 @@
     </main>
   </form>
 
-  <div class="modal-overlay" x-show="isRentalModalOpen" @click="isRentalModalOpen = false" x-cloak>
+  <div class="modal-overlay" x-show="isRentalModalOpen" @click="isRentalModalOpen = false" x-transition>
     <div class="modal-content" @click.stop>
       <h3>レンタル追加登録</h3>
       <div class="modal-form">
@@ -283,8 +255,7 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      AutoKana.bind('#sei', '#sei_kana');
-      AutoKana.bind('#mei', '#mei_kana');
+      AutoKana.bind('#name', '#furigana', { katakana: false });
     });
   </script>
 </body>

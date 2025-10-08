@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>着付け予約管理システムTOPページ</title>
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/common/top-page.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/common/top-page.css">
+</head>
+
+<body x-data="app" x-init="init">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title">着付予約管理システム</h1>
+  </header>
+
+  <main>
+    <div class="menu">
+      <a :href="/machiaruki/" class="menu-card">
+        <i class="fa-solid fa-person-walking"></i>
+        <h2>まち歩き</h2>
+      </a>
+      <a :href="/hanabi/" class="menu-card">
+        <i class="fa-solid fa-star"></i>
+        <h2>花火大会</h2>
+      </a>
+      <a :href="/seijinshiki/" class="menu-card">
+        <i class="fa-solid fa-champagne-glasses"></i>
+        <h2>成人式</h2>
+      </a>
+      <a href="https://yuragino.github.io/kimono-coordinaiton-admin/" class="menu-card">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <h2>着物コーデ管理画面</h2>
+      </a>
+    </div>
+  </main>
+</body>
+
+</html>

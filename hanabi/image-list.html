@@ -3,27 +3,23 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>画像一覧</title>
+  <title>花火大会画像一覧</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore-compat.js"></script>
   <!-- Custom Script -->
-  <script type="module" src="../assets/js/hanabi/image-carte.js"></script>
+  <script type="module" src="../assets/js/hanabi/image-list.js"></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <!-- Styles -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    integrity="sha384-...." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
-  <link rel="stylesheet" href="../assets/css/hanabi/card-style.css">
+  <link rel="stylesheet" href="../assets/css/hanabi/image-list.css">
 </head>
 
 <body x-data="app" x-init="init">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title"><a :href="`./index.html?year=${selectedYear}`">お客様カルテ</a></h1>
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
         <select x-model.number="selectedYear" @change="loadData()">
           <template x-for="year in yearOptions" :key="year">
@@ -34,8 +30,8 @@
       </div>
       <nav class="header-nav">
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
-        <a :href="`./schedule.html?year=${selectedYear}`">受付管理</a>
-        <a :href="`./image-carte.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
         <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
       </nav>
     </div>

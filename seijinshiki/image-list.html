@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>成人式画像一覧</title>
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/seijinshiki/image-list.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/seijinshiki/image-list.css">
+</head>
+
+<body x-data="app" x-init="init">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
+      <div class="header-controls">
+        <select x-model.number="selectedYear" @change="changeYear()">
+          <template x-for="year in yearOptions" :key="year">
+            <option :value="year" x-text="year" :selected="year === selectedYear"></option>
+          </template>
+        </select>
+        <span>成人式</span>
+      </div>
+      <nav class="header-nav">
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- 検索ボックス -->
+    <div class="search-box">
+      <input type="text" placeholder="名前を入力してください" x-model="searchQuery" />
+      <i class="fa fa-search"></i>
+    </div>
+
+    <!-- 顧客アコーディオン -->
+    <template x-for="customer in filteredCustomers" :key="customer.id">
+      <div class="accordion">
+        <button @click="toggleAccordion(customer.id)">
+          <div class="accordion-text">
+            <span x-text="customer.basic.name"></span>
+          </div>
+          <i class="fa-solid chevron" :class="isOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+        </button>
+
+        <div x-show="isOpen(customer.id)" class="accordion-content">
+
+          <!-- 画像表示 -->
+          <div class="images">
+            <template x-if="customer.imageUrls?.length > 0">
+              <template x-for="img in customer.imageUrls" :key="img">
+                <img :src="img" class="preview-img" loading="lazy" />
+              </template>
+            </template>
+            <template x-if="!customer.imageUrls?.length">
+              <p>画像が登録されていません</p>
+            </template>
+          </div>
+
+          <!-- 動画表示 -->
+          <div class="videos">
+            <template x-if="customer.videoUrls?.length > 0">
+              <template x-for="vid in customer.videoUrls" :key="vid">
+                <video controls class="preview-video">
+                  <source :src="vid" type="video/mp4">
+                </video>
+              </template>
+            </template>
+            <template x-if="!customer.videoUrls?.length">
+              <p>動画が登録されていません</p>
+            </template>
+          </div>
+
+        </div>
+      </div>
+    </template>
+  </main>
+</body>
+
+</html>

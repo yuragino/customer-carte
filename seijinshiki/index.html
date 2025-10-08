@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>成人式予約一覧</title>
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/seijinshiki/reservation-list.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/common/reservation-list.css">
+  <link rel="stylesheet" href="../assets/css/seijinshiki/reservation-list.css">
+</head>
+
+<body x-data="app">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
+      <div class="header-controls">
+        <select x-model.number="selectedYear" @change="fetchSchedule()">
+          <template x-for="year in yearOptions" :key="year">
+            <option :value="year" x-text="year" :selected="year === selectedYear"></option>
+          </template>
+        </select>
+        <span>成人式</span>
+      </div>
+      <nav class="header-nav">
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="manual-link"><a href="../common/manual-index.html">📖 操作マニュアル</a></p>
+    <table>
+      <thead>
+        <tr>
+          <th>来店予定</th>
+          <th>来店時刻</th>
+          <th>名前</th>
+          <th>ブース</th>
+          <th>担当者</th>
+          <th>ステータス</th>
+          <th>詳細</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-if="customers.length === 0 && !isLoading">
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem;">
+              該当するデータがありません。
+            </td>
+          </tr>
+        </template>
+        <template x-if="isLoading">
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem;">
+              <i class="fa-solid fa-spinner fa-spin"></i> 読み込み中...
+            </td>
+          </tr>
+        </template>
+
+        <template x-for="customer in customers" :key="customer.id">
+          <tr :class="{'is-canceled': customer.isCanceled}">
+            <td x-text="customer.toujitsu?.schedule[0]?.start || '--:--'"></td>
+
+            <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+
+            <td>
+              <span :class="customer.basic?.outfit === '振袖' ? 'gender-female' : 'gender-male'"
+                x-text="customer.basic?.name || '名前なし'"></span>
+            </td>
+
+            <td>
+              <div class="booth-radios">
+                <template x-for="booth in customer.basic?.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale"
+                  :key="booth">
+                  <label :class="{'disabled': customer.isCanceled}">
+                    <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
+                      @change="updateCustomerField(customer.id, 'booth', customer.booth)"
+                      :disabled="customer.isCanceled">
+                    <span x-text="booth"></span>
+                  </label>
+                </template>
+              </div>
+            </td>
+
+            <td>
+              <div class="staff-checkboxes">
+                <template x-for="staff in staffOptions" :key="staff">
+                  <label :class="{'disabled': customer.isCanceled}">
+                    <input type="checkbox" :value="staff" :name="`staff-${customer.id}-${staff}`"
+                      :checked="(customer.staff || []).includes(staff)"
+                      @change="updateCustomerStaff(customer.id, staff, $event.target.checked)"
+                      :disabled="customer.isCanceled">
+                    <span x-text="staff"></span>
+                  </label>
+                </template>
+              </div>
+            </td>
+
+            <td>
+              <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)"
+                x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'">
+              </button>
+              <span x-show="customer.status === '済'">済</span>
+              <span x-show="customer.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
+            </td>
+
+            <td>
+              <a :href="`form.html?customer=${customer.id}&year=${selectedYear}`" class="detail-link" title="詳細を開く">
+                <i class="fa-solid fa-square-up-right"></i>
+              </a>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </main>
+</body>
+
+</html>
