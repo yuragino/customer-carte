@@ -139,5 +139,34 @@ document.addEventListener('alpine:init', () => {
         return sum + this.calcPrice(item);
       }, 0);
     },
+
+    formatDate(isoString) {
+      if (!isoString) return '-';
+      try {
+        const date = new Date(isoString);
+        const day = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+        return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} (${day}) ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+      } catch (e) {
+        return '-';
+      }
+    },
+
+    formatDate(dateStr) {
+      if (!dateStr) return 'ー';
+      try {
+        const date = new Date(dateStr);
+        if (isNaN(date)) return 'ー';
+        const days = ['日', '月', '火', '水', '木', '金', '土'];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1);
+        const day = String(date.getDate());
+        const week = days[date.getDay()];
+
+        return `${year}年${month}月${day}日 (${week})`;
+      } catch (e) {
+        return 'ー';
+      }
+    },
+
   }));
 });

@@ -46,7 +46,7 @@ document.addEventListener('alpine:init', () => {
       returnTime: '',
       address: '',
       phone: '',
-      transportation: 'car',
+      transportation: '車',
       lineType: '椿LINE',
       notes: '',
       checkpoints: {
@@ -335,12 +335,16 @@ document.addEventListener('alpine:init', () => {
             delete customerData.imagePreviews;
             // 既存のURLを新しいURLで完全に置き換える
             customerData.imageUrls = newImageUrls;
+            customerData.prepayment = this.calculateCustomerPrepayment(customer);
+            customerData.onSitePayment = this.calculateCustomerOnSitePayment(customer);
             return customerData;
           } else {
             // 新しい画像ファイルがない場合は、既存のデータをそのまま返す
             const customerData = { ...customer };
             delete customerData.imageFiles;
             delete customerData.imagePreviews;
+            customerData.prepayment = this.calculateCustomerPrepayment(customer);
+            customerData.onSitePayment = this.calculateCustomerOnSitePayment(customer);
             return customerData;
           }
         }));
@@ -352,6 +356,8 @@ document.addEventListener('alpine:init', () => {
           femaleCount: this.femaleCount,
           maleCount: this.maleCount,
           updatedAt: serverTimestamp(),
+          totalPrepayment: this.prepayment,
+          totalOnSitePayment: this.onSitePayment,
         };
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
@@ -365,8 +371,8 @@ document.addEventListener('alpine:init', () => {
           dataToSave.createdAt = serverTimestamp();
           const colRef = collection(db, COLLECTION_NAME);
           await addDoc(colRef, dataToSave);
+          window.location.href = './index.html';
         }
-        window.location.href = './index.html';
       } catch (error) {
         console.error("登録エラー: ", error);
         alert(`登録中にエラーが発生しました。\n${error.message}`);

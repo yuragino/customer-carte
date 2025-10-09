@@ -40,13 +40,13 @@
     <div x-show="!isLoading && errorMessage" class="error-message" x-text="errorMessage"></div>
 
     <div class="page" x-show="!isLoading && customerData.basic" x-cloak>
-      <h1 x-text="`${selectedYear}成人式着付受付`"></h1>
+      <h2 x-text="`${selectedYear}成人式着付受付`"></h2>
       <div class="card">
         <h2><i class="fa-regular fa-circle-user"></i> 基本情報</h2>
         <table>
           <tr>
             <th>予約受付日</th>
-            <td x-text="customerData.basic.reservationDate || 'ー'"></td>
+            <td x-text="formatDate(customerData.basic.reservationDate)"></td>
           </tr>
           <tr>
             <th>名前</th>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="UTF-8">
+<title>まち歩きカルテ印刷</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Script -->
+<script type="module" src="../assets/js/machiaruki/print.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
+<!-- Alpine.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+<link rel="stylesheet" href="../assets/css/common/layout.css">
+<link rel="stylesheet" href="../assets/css/machiaruki/print.css">
+</head>
+
+<body x-data="printView">
+  <main class="page" x-show="!isLoading && !error">
+    <header class="page-header">
+      <h1>まち歩き予約受付</h1>
+      <div class="print-button-container">
+        <button @click="window.print()" class="print-btn"><i class="fa-solid fa-print"></i> このページを印刷</button>
+      </div>
+    </header>
+
+    <section class="info-section">
+      <table class="info-table">
+        <tr>
+          <th>来店日時</th>
+          <td x-text="formatDateTime(representative.visitDateTime)"></td>
+          <th>代表者名</th>
+          <td
+            x-text="representative.kana ? `${representative.name} 様 (${representative.kana})` : `${representative.name} 様`" style="font-weight: bold;">
+          </td>
+        </tr>
+        <tr>
+          <th>仕上がり時間</th>
+          <td x-text="formatTime(representative.finishTime)"></td>
+          <th>お戻り予定</th>
+          <td x-text="formatTime(representative.returnTime)"></td>
+        </tr>
+        <tr>
+          <th>予約方法</th>
+          <td x-text="representative.reservationMethod || '-'"></td>
+          <th>人数</th>
+          <td>
+            <span x-show="femaleCount > 0">
+              女性: <span x-text="femaleCount"></span>名
+            </span>
+            <span x-show="femaleCount > 0 && maleCount > 0">,</span>
+            <span x-show="maleCount > 0">
+              男性: <span x-text="maleCount"></span>名
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <th>電話番号</th>
+          <td x-text="representative.phone || '-'"></td>
+          <th>住所</th>
+          <td x-text="representative.address || '-'"></td>
+        </tr>
+        <tr>
+          <th>交通手段</th>
+          <td x-text="representative.transportation || '-'"></td>
+          <th>LINE</th>
+          <td x-text="representative.lineType || '-'"></td>
+        </tr>
+        <tr>
+          <th>備考</th>
+          <td colspan="3" x-text="representative.notes || '特になし'"></td>
+        </tr>
+        <tr>
+          <th>お伝え事項</th>
+          <td colspan="3">
+            <ul class="checklist">
+              <template x-for="[key, value] in Object.entries(representative.checkpoints || {})">
+                <li x-show="value">
+                  <i class="fa-regular fa-square-check"></i>
+                  <span x-text="getCheckpointLabel(key)"></span>
+                </li>
+              </template>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </section>
+
+    <div class="customers-container">
+      <template x-for="(customer, index) in customers" :key="customer.id">
+        <div class="customer-card">
+          <div class="customer-card-inner">
+            <div class="customer-info">
+              <h3 class="customer-name"><i class="fa-solid fa-user"></i>
+                <span x-text="customer.name"></span> 様
+                <template x-if="customer.gender">
+                  <span class="gender-tag" x-text="customer.gender === 'female' ? '（女性）' : '（男性）'"></span>
+                </template>
+              </h3>
+              <div class="customer-details">
+                <div x-show="customer.dressingType" class="detail-row">
+                  <span class="label">着付種別：</span>
+                  <span class="value"
+                    x-text="customer.dressingType === 'rentalAndDressing' ? 'レンタル＆着付' : '着付のみ'"></span>
+                </div>
+
+                <div x-show="customer.bodyShape || customer.weight" class="detail-row">
+                  <span class="label">体型：</span>
+                  <span class="value"
+                    x-text="`${customer.bodyShape || '-'} / ${customer.weight || '-'}${customer.gender === 'female' ? '号' : 'kg'}`"></span>
+                </div>
+
+                <div x-show="customer.height || customer.footSize" class="detail-row">
+                  <span class="label">サイズ：</span>
+                  <span class="value"
+                    x-text="`身長 ${customer.height || '-'}cm / 足 ${customer.footSize || '-'}cm`"></span>
+                </div>
+                <div class="options-list detail-row">
+                  <span class="label">オプション：</span>
+                  <span x-show="customer.options.footwear" class="value">履き物</span>
+                  <span x-show="customer.options.obiBag" class="value"> バッグ</span>
+                  <span x-show="!customer.options.footwear && !customer.options.obiBag">なし</span>
+                </div>
+
+                <div x-show="customer.additionalRentals && customer.additionalRentals.length > 0" class="rental-list detail-row">
+                  <span class="label">追加レンタル：</span>
+                  <span class="value">
+                    <template x-for="item in customer.additionalRentals" :key="item.name">
+                      <span class="rental-item" x-text="`${item.name} (${item.price.toLocaleString()}円)`"></span>
+                    </template>
+                  </span>
+                </div>
+              </div>
+              <div class="payment-info">
+                <div x-show="representative.reservationMethod && customer.prepayment"
+                  x-text="`前払：${customer.prepayment}円`">
+                </div>
+                <div x-show="customer.onSitePayment"
+                  x-text="`現地：${customer.onSitePayment}円`">
+                </div>
+              </div>
+            </div>
+            <div class="customer-images" x-show="customer.imageUrls && customer.imageUrls.length > 0">
+              <template x-for="src in customer.imageUrls">
+                <div class="image-wrapper">
+                  <a :href="src" target="_blank">
+                    <img :src="src" alt="アップロード画像">
+                  </a>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <footer class="page-footer">
+      <h2><i class="fa-solid fa-yen-sign"></i>グループ合計金額</h2>
+      <div class="total-amount">
+        <div class="total-item" x-show="representative.reservationMethod">
+          前払合計: <strong x-text="totalPrepayment"></strong> 円
+        </div>
+        <div class="total-item" x-show="totalOnSitePayment > 0">
+          現地支払合計: <strong x-text="totalOnSitePayment"></strong> 円
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <div class="status-message" x-show="isLoading" x-cloak>
+    <p><i class="fa-solid fa-spinner fa-spin"></i> データを読み込んでいます...</p>
+  </div>
+  <div class="status-message" x-show="error" x-cloak>
+    <p><i class="fa-solid fa-circle-exclamation"></i> <span x-text="error"></span></p>
+  </div>
+</body>
+
+</html>

@@ -291,7 +291,10 @@ input[type="file"] {
 
 .delete-container {
     margin-bottom: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
 }
 
 .delete-container .delete-btn {
