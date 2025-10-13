@@ -1,11 +1,12 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { formatFullDateTime, formatDateOnly, formatTime } from '../common/utils.js';
+import { formatFullDateTime, formatTime,formatYen} from '../common/utils.js';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('printView', () => ({
     formatFullDateTime,
     formatTime,
+    formatYen,
     // ===== State =====
     isLoading: true,
     error: null,

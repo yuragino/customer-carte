@@ -2,10 +2,11 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp,
 import { db } from '../common/firebase-config.js';
 import { CLOUDINARY_CONFIG, CASUAL_PRICES } from '../common/constants.js';
 import { getYearSettings } from "../common/year-selector.js";
-
+import { formatYen } from "../common/utils.js";
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
     ...getYearSettings(),
+    formatYen,
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,

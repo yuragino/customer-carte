@@ -2,9 +2,11 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp 
 import { db } from '../common/firebase-config.js';
 import { CLOUDINARY_CONFIG, CASUAL_PRICES } from '../common/constants.js';
 const COLLECTION_NAME = 'machiaruki';
+import { formatYen } from "../common/utils.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
+    formatYen,
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,

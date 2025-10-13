@@ -3,11 +3,12 @@ import { db } from '../common/firebase-config.js';
 import { CLOUDINARY_CONFIG, SEIJINSHIKI_PRICES } from '../common/constants.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { uploadMediaToCloudinary } from '../common/form-utils.js';
-import { formatFullDateTime } from "../common/utils.js";
+import { formatFullDateTime, formatYen } from "../common/utils.js";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
     formatFullDateTime,
+    formatYen,
     // ===== 状態管理 =====
     currentCustomerId: null, // 編集中のドキュメントID
     isSubmitting: false,  // フォーム送信中フラグ
@@ -219,10 +220,7 @@ document.addEventListener('alpine:init', () => {
         [schedule[0], schedule[1]] = [schedule[1], schedule[0]];
       }
     },
-    formatYen(value) {
-      if (typeof value !== 'number' || isNaN(value)) return "—";
-      return value.toLocaleString('ja-JP') + "円";
-    },
+
   }));
 });
 

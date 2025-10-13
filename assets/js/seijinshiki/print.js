@@ -1,13 +1,14 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
-import { formatFullDateTime, formatDateOnly, formatTime } from '../common/utils.js';
+import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils.js';
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
     ...getYearSettings(),
     formatFullDateTime,
     formatDateOnly,
     formatTime,
+    formatYen,
     // ===== 状態管理 =====
     currentCustomerId: null,
     isLoading: true,
@@ -56,11 +57,6 @@ document.addEventListener('alpine:init', () => {
         return [];
       }
       return [...this.customerData.meetings].sort((a, b) => new Date(a.date) - new Date(b.date));
-    },
-
-    formatYen(amount) {
-      if (typeof amount !== 'number' || isNaN(amount)) return '¥0';
-      return `¥${amount.toLocaleString()}`;
     },
 
     getEstimateUsageText(item) {

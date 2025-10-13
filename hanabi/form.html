@@ -240,20 +240,20 @@
             </div>
             <div class="form-cell">
               <div x-show="representative.reservationMethod">
-                前払：<span x-text="calculateCustomerPrepayment(customer)"></span>円
+                前払：<span x-text="formatYen(calculateCustomerPrepayment(customer))"></span>
               </div>
               <div x-show="calculateCustomerOnSitePayment(customer) > 0">
                 現地：
                 <template x-if="customer.discountAmount > 0">
                   <span class="discounted">
-                    <span class="old-price" x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
+                    <span class="old-price" x-text="formatYen(calculateCustomerOnSitePayment(customer))"></span>
                     →
-                    <span class="new-price" x-text="calculateCustomerOnSitePaymentAdjusted(customer) + '円'"></span>
+                    <span class="new-price" x-text="formatYen(calculateCustomerOnSitePaymentAdjusted(customer))"></span>
                   </span>
                 </template>
 
                 <template x-if="!customer.discountAmount || customer.discountAmount === 0">
-                  <span x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
+                  <span x-text="formatYen(calculateCustomerOnSitePayment(customer))"></span>
                 </template>
 
                 <button type="button" class="edit-btn" @click="openDiscountModal(index)">
@@ -281,14 +281,14 @@
           <template x-if="customers.some(c => c.discountAmount > 0)">
             <!-- 値引きがある場合は線付きで表示 -->
             <span class="discounted">
-              <span class="old-price" x-text="totalOnSitePayment + '円'">
+              <span class="old-price" x-text="formatYen(totalOnSitePayment)">
               </span>
               →
-              <span class="new-price" x-text="totalOnSitePaymentAdjusted + '円'"></span>
+              <span class="new-price" x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
             </span>
           </template>
           <template x-if="!customers.some(c => c.discountAmount > 0)">
-            <span x-text="totalOnSitePayment + '円'"></span>
+            <span x-text="formatYen(totalOnSitePayment)"></span>
           </template>
         </span>
         <div class="group-payment-method" x-show="representative.paymentType === 'group'">
@@ -332,7 +332,7 @@
       <div class="price-box">
         <div>
           <span class="label">元の金額</span>
-          <span class="value" x-text="modalOriginalPrice + '円'"></span>
+          <span class="value" x-text="formatYen(modalOriginalPrice)"></span>
         </div>
         <div>
           <span class="label">値引き額</span>

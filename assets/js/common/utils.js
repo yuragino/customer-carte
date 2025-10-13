@@ -62,3 +62,8 @@ export function formatTime(timeStr) {
   const [hh, mm] = timeStr.split(':');
   return `${Number(hh)}:${mm}`;
 }
+
+// 数値を「1,234円」形式に
+export function formatYen(amount) {
+  return isFinite(amount) ? Number(amount).toLocaleString('ja-JP') + '円' : '—';
+}
