@@ -1,9 +1,9 @@
-const CLOUDINARY_CONFIG = {
+export const CLOUDINARY_CONFIG = {
   CLOUD_NAME: 'dxq1xqypx',
   UPLOAD_PRESET: 'unsigned_preset',
 };
 
-const SEIJINSHIKI_PRICES = {
+export const SEIJINSHIKI_PRICES = {
   FURISODE: {
     KITSUKE: { MAEDORI: 13200, TOUJITSU: 16500, BOTH: 25300 },
     HAIR_MAKE: 10000,
@@ -12,12 +12,9 @@ const SEIJINSHIKI_PRICES = {
   HAKAMA: { KITSUKE: 8500 }
 };
 
-const CASUAL_PRICES = {
+export const CASUAL_PRICES = {
   RENTAL_DRESSING: 6800,
   DRESSING_ONLY: 3800,
   FOOTWEAR: 500,
   BAG: 500,
 };
-
-// 全ての定数を名前付きエクスポートする
-export { CLOUDINARY_CONFIG, SEIJINSHIKI_PRICES, CASUAL_PRICES };

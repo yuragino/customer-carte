@@ -4,7 +4,7 @@ import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-        ...getYearSettings(),
+    ...getYearSettings(),
     customers: [],
     isLoading: true,
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
