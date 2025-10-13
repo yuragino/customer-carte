@@ -100,8 +100,7 @@
               <div class="customer-details">
                 <div x-show="customer.dressingType" class="detail-row">
                   <span class="label">着付種別：</span>
-                  <span class="value"
-                    x-text="customer.dressingType === 'rentalAndDressing' ? 'レンタル＆着付' : '着付のみ'"></span>
+                  <span class="value" x-text="customer.dressingType"></span>
                 </div>
 
                 <div x-show="customer.bodyShape || customer.weight" class="detail-row">
@@ -126,7 +125,7 @@
                   <span class="label">追加レンタル：</span>
                   <span class="value">
                     <template x-for="item in customer.additionalRentals" :key="item.name">
-                      <span class="rental-item" x-text="`${item.name} (${item.price.toLocaleString()}円)`"></span>
+                      <span class="rental-item" x-text="`${item.name} (${formatYen(item.price.toLocaleString())})`"></span>
                     </template>
                   </span>
                 </div>
@@ -139,9 +138,9 @@
                 <template x-if="customer.discountAmount > 0">
                   <div>
                     現地：
-                    <span class="old-price" x-text="customer.onSitePayment + '円'"></span>
+                    <span class="old-price" x-text="formatYen(customer.onSitePayment)'"></span>
                     →
-                    <span class="new-price" x-text="customer.onSitePaymentAdjusted + '円'"></span>
+                    <span class="new-price" x-text="formatYen(customer.onSitePaymentAdjusted)"></span>
                     <template x-if="customer.discountMemo">
                       <span class="discount-memo">(<span x-text="customer.discountMemo"></span>)</span>
                     </template>
@@ -151,7 +150,7 @@
                 <!-- 値引きなしの場合 -->
                 <template x-if="!customer.discountAmount || customer.discountAmount === 0">
                   <div x-show="customer.onSitePayment"
-                    x-text="`現地：${customer.onSitePayment}円`"></div>
+                    x-text="`現地：${formatYen(customer.onSitePayment)}`"></div>
                 </template>
               </div>
             </div>
@@ -173,17 +172,17 @@
       <h2><i class="fa-solid fa-yen-sign"></i>グループ合計金額</h2>
       <div class="total-amount">
         <div class="total-item" x-show="representative.reservationMethod">
-          前払合計: <strong x-text="totalPrepayment"></strong> 円
+          前払合計: <strong x-text="formatYen(totalPrepayment)"></strong>
         </div>
         <div class="total-item" x-show="totalOnSitePayment !== totalOnSitePaymentAdjusted">
           現地支払合計:
-          <span class="old-price" x-text="totalOnSitePayment+'円'"></span>
+          <span class="old-price" x-text="formatYen(totalOnSitePayment)"></span>
           →
-          <strong class="new-price" x-text="totalOnSitePaymentAdjusted+'円'"></strong>
+          <strong class="new-price" x-text="formatYen(totalOnSitePaymentAdjusted)"></strong>
         </div>
         <div class="total-item" x-show="totalOnSitePayment > 0 && totalOnSitePayment === totalOnSitePaymentAdjusted">
           現地支払合計:
-          <strong x-text="totalOnSitePayment"></strong> 円
+          <strong x-text="formatYen(totalOnSitePayment)"></strong>
         </div>
       </div>
     </div>

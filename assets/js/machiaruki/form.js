@@ -163,10 +163,10 @@ document.addEventListener('alpine:init', () => {
     calculateCustomerPrepayment(customer) {
       if (!this.representative.reservationMethod) return 0;
 
-      if (customer.dressingType === 'rentalAndDressing') {
+      if (customer.dressingType === 'レンタル&着付') {
         return CASUAL_PRICES.RENTAL_DRESSING;
       }
-      if (customer.dressingType === 'dressingOnly') {
+      if (customer.dressingType === '着付のみ') {
         return CASUAL_PRICES.DRESSING_ONLY;
       }
       return 0;
@@ -177,9 +177,9 @@ document.addEventListener('alpine:init', () => {
       let total = 0;
       // 予約方法が選択されていない場合、着付け種別料金を現地払いに加算
       if (!this.representative.reservationMethod) {
-        if (customer.dressingType === 'rentalAndDressing') {
+        if (customer.dressingType === 'レンタル&着付') {
           total += CASUAL_PRICES.RENTAL_DRESSING;
-        } else if (customer.dressingType === 'dressingOnly') {
+        } else if (customer.dressingType === '着付のみ') {
           total += CASUAL_PRICES.DRESSING_ONLY;
         }
       }
@@ -224,7 +224,7 @@ document.addEventListener('alpine:init', () => {
         weight: null,
         height: null,
         footSize: null,
-        dressingType: 'rentalAndDressing',
+        dressingType: 'レンタル&着付',
         options: {
           footwear: false,
           obiBag: false,

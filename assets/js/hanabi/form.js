@@ -161,10 +161,10 @@ document.addEventListener('alpine:init', () => {
     calculateCustomerPrepayment(customer) {
       if (!this.representative.reservationMethod) return 0;
 
-      if (customer.dressingType === 'rentalAndDressing') {
+      if (customer.dressingType === 'レンタル&着付') {
         return CASUAL_PRICES.RENTAL_DRESSING;
       }
-      if (customer.dressingType === 'dressingOnly') {
+      if (customer.dressingType === '着付のみ') {
         return CASUAL_PRICES.DRESSING_ONLY;
       }
       return 0;
@@ -175,9 +175,9 @@ document.addEventListener('alpine:init', () => {
       let total = 0;
       // 予約方法が選択されていない場合、着付け種別料金を現地払いに加算
       if (!this.representative.reservationMethod) {
-        if (customer.dressingType === 'rentalAndDressing') {
+        if (customer.dressingType === 'レンタル&着付') {
           total += CASUAL_PRICES.RENTAL_DRESSING;
-        } else if (customer.dressingType === 'dressingOnly') {
+        } else if (customer.dressingType === '着付のみ') {
           total += CASUAL_PRICES.DRESSING_ONLY;
         }
       }
@@ -222,7 +222,7 @@ document.addEventListener('alpine:init', () => {
         weight: null,
         height: null,
         footSize: null,
-        dressingType: 'rentalAndDressing',
+        dressingType: 'レンタル&着付',
         options: {
           footwear: false,
           obiBag: false,
@@ -276,10 +276,8 @@ document.addEventListener('alpine:init', () => {
     handleImageUpload(event, customerIndex) {
       const files = event.target.files;
       if (!files) return;
-
       // 既存のプレビューURLを解放
       this.customers[customerIndex].imagePreviews.forEach(url => URL.revokeObjectURL(url));
-
       const newPreviews = [];
       const newFiles = []; // Fileオブジェクトを格納する配列
       for (const file of files) {
@@ -290,7 +288,7 @@ document.addEventListener('alpine:init', () => {
       this.customers[customerIndex].imageFiles = newFiles; // Fileオブジェクトをstateに保存
     },
 
-    //  Cloudinaryに画像をアップロードする
+    //  Cloudinaryに画像をアップロード
     async uploadImageToCloudinary(file, folderName) {
       const formData = new FormData();
       formData.append('file', file);
@@ -312,9 +310,6 @@ document.addEventListener('alpine:init', () => {
       return data.secure_url;
     },
 
-    /**
-     * フォーム全体のデータを送信する
-     */
     async submitForm() {
       this.isSubmitting = true;
       try {
@@ -364,12 +359,10 @@ document.addEventListener('alpine:init', () => {
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
         if (this.currentGroupId) {
-          // 既存のドキュメントを更新
           const docRef = doc(db, collectionName, this.currentGroupId);
           await updateDoc(docRef, dataToSave);
           alert('更新が完了しました。');
         } else {
-          // 新規ドキュメントを追加
           dataToSave.createdAt = serverTimestamp();
           const colRef = collection(db, collectionName);
           await addDoc(colRef, dataToSave);
@@ -406,11 +399,9 @@ document.addEventListener('alpine:init', () => {
         alert('リピーターチェックを行うには電話番号を入力してください。');
         return;
       }
-
       const foundYears = [];
       const currentYear = new Date().getFullYear();
       const searchYears = [currentYear - 1, currentYear - 2, currentYear - 3]; // 検索対象の過去3年
-
       for (const year of searchYears) {
         const collectionName = `${year}_fireworks`;
         try {

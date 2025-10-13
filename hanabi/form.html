@@ -212,8 +212,8 @@
               足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0"> cm
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'dressingType' + index" value="rentalAndDressing" x-model="customer.dressingType"> レンタル＆着付</label>
-              <label><input type="radio" :name="'dressingType' + index" value="dressingOnly" x-model="customer.dressingType"> 着付のみ</label>
+              <label><input type="radio" :name="'dressingType' + index" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
+              <label><input type="radio" :name="'dressingType' + index" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
             </div>
             <div class="form-cell">
               <label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label>
@@ -223,7 +223,7 @@
               <ul class="rental-list">
                 <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
                   <li>
-                    <span x-text="`${item.name} ${item.price}円`"></span>
+                    <span x-text="`${item.name} ${formatYen(item.price)}`"></span>
                     <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
                   </li>
                 </template>
@@ -274,7 +274,7 @@
       <div class="form-section totals-section">
         <span>グループ合計</span>
         <span x-show="representative.reservationMethod">
-          前払：<span x-text="totalPrepayment"></span>円
+          前払：<span x-text="formatYen(totalPrepayment)"></span>
         </span>
         <span x-show="totalOnSitePayment > 0">
           現地：
