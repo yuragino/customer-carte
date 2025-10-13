@@ -46,7 +46,7 @@
         <table>
           <tr>
             <th>予約受付日</th>
-            <td x-text="formatDate(customerData.basic.reservationDate)"></td>
+            <td x-text="formatDateOnly(customerData.basic.reservationDate)"></td>
           </tr>
           <tr>
             <th>名前</th>
@@ -106,7 +106,7 @@
             <template x-for="task in customerData.toujitsu.schedule" :key="task.id">
               <tr>
                 <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
-                <td x-text="task.start && task.end ? `${task.start} 〜 ${task.end}` : 'ー'"></td>
+                <td x-text="task.start && task.end ? `${formatTime(task.start)} 〜 ${formatTime(task.end)}` : 'ー'"></td>
               </tr>
             </template>
           </template>
@@ -114,7 +114,7 @@
             <tr x-data="{ kitsukeTask: customerData.toujitsu.schedule.find(t => t.type === 'kitsuke') }">
               <th>着付時間</th>
               <td
-                x-text="kitsukeTask && kitsukeTask.start && kitsukeTask.end ? `${kitsukeTask.start} 〜 ${kitsukeTask.end}` : 'ー'">
+                x-text="kitsukeTask && kitsukeTask.start && kitsukeTask.end ? `${formatTime(kitsukeTask.start)} 〜 ${formatTime(kitsukeTask.end)}` : 'ー'">
               </td>
             </tr>
           </template>
@@ -141,7 +141,7 @@
             <template x-for="meeting in sortedMeetings" :key="meeting.id">
               <tr>
                 <td x-text="meeting.type"></td>
-                <td x-text="formatDisplayDate(meeting.date)"></td>
+                <td x-text="formatFullDateTime(meeting.date)"></td>
                 <td x-text="meeting.place"></td>
                 <td class="note" x-text="meeting.note"></td>
               </tr>
@@ -175,18 +175,18 @@
           </tr>
           <tr>
             <th>撮影日</th>
-            <td x-text="customerData.maedori.date || 'ー'"></td>
+            <td x-text="formatDateOnly(customerData.maedori.date) || 'ー'"></td>
           </tr>
           <tr>
             <th>ヘア時間</th>
             <td
-              x-text="customerData.maedori.hairStart && customerData.maedori.hairEnd ? `${customerData.maedori.hairStart} 〜 ${customerData.maedori.hairEnd}` : 'ー'">
+              x-text="customerData.maedori.hairStart && customerData.maedori.hairEnd ? `${formatTime(customerData.maedori.hairStart)} 〜 ${formatTime(customerData.maedori.hairEnd)}` : 'ー'">
             </td>
           </tr>
           <tr>
             <th>着付時間</th>
             <td
-              x-text="customerData.maedori.kitsukeStart && customerData.maedori.kitsukeEnd ? `${customerData.maedori.kitsukeStart} 〜 ${customerData.maedori.kitsukeEnd}` : 'ー'">
+              x-text="customerData.maedori.kitsukeStart && customerData.maedori.kitsukeEnd ? `${formatTime(customerData.maedori.kitsukeStart)} 〜 ${formatTime(customerData.maedori.kitsukeEnd)}` : 'ー'">
             </td>
           </tr>
           <tr>
@@ -239,7 +239,7 @@
         <table>
           <tr>
             <th>領収日</th>
-            <td x-text="customerData.estimate.receiptDate || '未領収'"></td>
+            <td x-text="formatDateOnly(customerData.estimate.receiptDate) || '未領収'"></td>
           </tr>
         </table>
       </div>

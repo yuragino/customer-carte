@@ -1,10 +1,11 @@
 import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
-
+import { formatTimestamp } from '../common/utils.js';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
+    formatTimestamp,
     customers: [],
     isLoading: true,
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
@@ -156,14 +157,5 @@ document.addEventListener('alpine:init', () => {
       return classMap[status || '受付完了'];
     },
 
-    formatTimestamp(timestamp) {
-      if (!timestamp) return '--:--';
-      // FirestoreのTimestampオブジェクトとJSのDateオブジェクトの両方に対応
-      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-      if (isNaN(date)) return '--:--';
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${hours}:${minutes}`;
-    },
   }));
 });

@@ -28,7 +28,7 @@
       <table class="info-table">
         <tr>
           <th>来店日時</th>
-          <td x-text="formatDateTime(representative.visitDateTime)"></td>
+          <td x-text="formatFullDateTime(representative.visitDateTime)"></td>
           <th>代表者名</th>
           <td
             x-text="representative.kana ? `${representative.name} 様 (${representative.kana})` : `${representative.name} 様`" style="font-weight: bold;">

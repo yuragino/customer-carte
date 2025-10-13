@@ -1,10 +1,13 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
-
+import { formatFullDateTime, formatDateOnly, formatTime } from '../common/utils.js';
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
     ...getYearSettings(),
+    formatFullDateTime,
+    formatDateOnly,
+    formatTime,
     // ===== 状態管理 =====
     currentCustomerId: null,
     isLoading: true,
@@ -47,34 +50,12 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    // ===== ヘッダー関連 =====
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
-    },
-    changeYear() {
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.location.href = url.toString();
-    },
-
     // ===== 表示用ヘルパー =====
     get sortedMeetings() {
       if (!this.customerData.meetings || this.customerData.meetings.length === 0) {
         return [];
       }
       return [...this.customerData.meetings].sort((a, b) => new Date(a.date) - new Date(b.date));
-    },
-
-    formatDisplayDate(datetimeString) {
-      if (!datetimeString) return 'ー';
-      const date = new Date(datetimeString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${year}/${month}/${day} ${hours}:${minutes}`;
     },
 
     formatYen(amount) {
@@ -94,18 +75,12 @@ document.addEventListener('alpine:init', () => {
     },
 
     getEstimateItemName(item, index) {
-      // データにnameがあればそれを優先
+      // nameがあれば優先
       if (item.name) return item.name;
-
-      // 従来のデータ構造のためのフォールバック
+      // item.optionがあればそれを表示
+      if (item.option) return item.option;
+      // indexによるフォールバック
       if (index === 0) return '着付';
-      if (index === 1) {
-        switch (item.option) {
-          case 'hairMake': return 'ヘア＆メイク';
-          case 'hairOnly': return 'ヘアのみ';
-          default: return 'ヘアメイクなし';
-        }
-      }
       return '(名称未設定)';
     },
 
@@ -124,34 +99,6 @@ document.addEventListener('alpine:init', () => {
       return this.customerData.estimateItems.reduce((sum, item) => {
         return sum + this.calcPrice(item);
       }, 0);
-    },
-
-    formatDate(isoString) {
-      if (!isoString) return '-';
-      try {
-        const date = new Date(isoString);
-        const day = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-        return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} (${day}) ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-      } catch (e) {
-        return '-';
-      }
-    },
-
-    formatDate(dateStr) {
-      if (!dateStr) return 'ー';
-      try {
-        const date = new Date(dateStr);
-        if (isNaN(date)) return 'ー';
-        const days = ['日', '月', '火', '水', '木', '金', '土'];
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1);
-        const day = String(date.getDate());
-        const week = days[date.getDay()];
-
-        return `${year}年${month}月${day}日 (${week})`;
-      } catch (e) {
-        return 'ー';
-      }
     },
 
   }));

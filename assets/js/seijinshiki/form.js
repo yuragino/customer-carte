@@ -2,10 +2,12 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp 
 import { db } from '../common/firebase-config.js';
 import { CLOUDINARY_CONFIG, SEIJINSHIKI_PRICES } from '../common/constants.js';
 import { getYearSettings } from "../common/year-selector.js";
-
+import { uploadMediaToCloudinary } from '../common/form-utils.js';
+import { formatFullDateTime } from "../common/utils.js";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
+    formatFullDateTime,
     // ===== 状態管理 =====
     currentCustomerId: null, // 編集中のドキュメントID
     isSubmitting: false,  // フォーム送信中フラグ
@@ -57,49 +59,34 @@ document.addEventListener('alpine:init', () => {
     },
 
     async submitForm() {
-      if (!this.formData.basic.name) {
-        alert('お客様の名前は必須です。');
-        return;
-      }
       this.isSubmitting = true;
-
       try {
         this.formData.estimateItems.forEach(item => {
           if (item.name === "着付") {
             item.price = this.calcPrice(item);
           }
           if (item.name === "ヘア") {
+            item.name = item.option;
             item.price = this.calcPrice(item);
-            if (item.option === "hairMake") {
-              item.name = "ヘア&メイク";
-            } else if (item.option === "hairOnly") {
-              item.name = "ヘアのみ";
-            } else {
-              item.name = "ヘア&メイクなし"; // オプションがない場合
-              item.price = 0; // 金額も0に
+            if (item.option === "ヘアメイクなし") {
+              item.price = 0;
             }
           }
         });
         const folderName = `${this.selectedYear}_seijinshiki`;
-        const tags = [this.formData.basic.name]; // タグとしてお客様の名前を使用
-
-        // 1. 新しい画像をCloudinaryにアップロード
+        // Cloudinaryにメディアをアップロード
         const newImageUrls = await Promise.all(
-          this.newImageFiles.map(file => this.uploadMediaToCloudinary(file, folderName, tags))
+          this.newImageFiles.map(file => uploadMediaToCloudinary(file, folderName))
         );
-        // 2. 新しい動画をCloudinaryにアップロード
         const newVideoUrls = await Promise.all(
-          this.newVideoFiles.map(file => this.uploadMediaToCloudinary(file, folderName, tags))
+          this.newVideoFiles.map(file => uploadMediaToCloudinary(file, folderName))
         );
-
-        // 3. 保存するデータオブジェクトを作成
-        const dataToSave = JSON.parse(JSON.stringify(this.formData)); // ディープコピー
+        // 保存するデータオブジェクトを作成
+        const dataToSave = JSON.parse(JSON.stringify(this.formData));
         dataToSave.imageUrls.push(...newImageUrls);
         dataToSave.videoUrls.push(...newVideoUrls);
         dataToSave.updatedAt = serverTimestamp();
-
         const collectionName = `${this.selectedYear}_seijinshiki`;
-
         if (this.currentCustomerId) {
           // 更新処理
           const docRef = doc(db, collectionName, this.currentCustomerId);
@@ -189,11 +176,11 @@ document.addEventListener('alpine:init', () => {
         }
       }
       if (item.name === "ヘア" && outfit === "振袖") {
-        if (item.option === "hairMake") {
+        if (item.option === "ヘア＆メイク") {
           if (item.toujitsu && item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_MAKE * 2;
           if (item.toujitsu) return SEIJINSHIKI_PRICES.FURISODE.HAIR_MAKE;
           if (item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_MAKE;
-        } else if (item.option === "hairOnly") {
+        } else if (item.option === "ヘアのみ") {
           if (item.toujitsu && item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_ONLY * 2;
           if (item.toujitsu) return SEIJINSHIKI_PRICES.FURISODE.HAIR_ONLY;
           if (item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_ONLY;
@@ -210,7 +197,7 @@ document.addEventListener('alpine:init', () => {
     handleImageUpload(event) {
       this.newImageFiles = [...event.target.files];
       this.newImagePreviews = this.newImageFiles.map(file => URL.createObjectURL(file));
-      event.target.value = ''; // 同じファイルを選択できるようにリセット
+      event.target.value = '';
     },
     handleVideoUpload(event) {
       this.newVideoFiles = [...event.target.files];
@@ -223,22 +210,6 @@ document.addEventListener('alpine:init', () => {
         if (type === 'video') this.formData.videoUrls.splice(index, 1);
       }
     },
-    async uploadMediaToCloudinary(file, folderName, tags = []) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_CONFIG.UPLOAD_PRESET);
-      formData.append('folder', folderName);
-      formData.append('tags', tags.join(','));
-
-      const resourceType = file.type.startsWith('image/') ? 'image' : 'video';
-      const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/${resourceType}/upload`;
-
-      const response = await fetch(url, { method: 'POST', body: formData });
-      if (!response.ok) throw new Error('Cloudinaryへのアップロードに失敗しました。');
-
-      const data = await response.json();
-      return data.secure_url;
-    },
 
     // ===== ユーティリティ =====
     swapSchedule() {
@@ -247,12 +218,6 @@ document.addEventListener('alpine:init', () => {
         // 配列の要素を入れ替える
         [schedule[0], schedule[1]] = [schedule[1], schedule[0]];
       }
-    },
-    formatDisplayDate(dateStr) {
-      if (!dateStr) return '';
-      const dt = new Date(dateStr);
-      const day = ["日", "月", "火", "水", "木", "金", "土"][dt.getDay()];
-      return `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, "0")}/${String(dt.getDate()).padStart(2, "0")}(${day}) ${String(dt.getHours()).padStart(2, "0")}:${String(dt.getMinutes()).padStart(2, "0")}`;
     },
     formatYen(value) {
       if (typeof value !== 'number' || isNaN(value)) return "—";
@@ -308,9 +273,7 @@ function createInitialFormData() {
   };
 }
 
-/**
- * 打ち合わせモーダルの初期データ
- */
+// 打ち合わせモーダル
 function createInitialMeetingForm() {
   return { id: null, type: '打ち合わせ', date: '', place: '', note: '' };
 }

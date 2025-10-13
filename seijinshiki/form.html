@@ -186,7 +186,7 @@
             <template x-for="(item, index) in sortedMeetings" :key="index">
               <tr>
                 <td x-text="item.type"></td>
-                <td x-text="formatDisplayDate(item.date)"></td>
+                <td x-text="formatFullDateTime(item.date)"></td>
                 <td x-text="item.place"></td>
                 <td x-text="item.note"></td>
                 <td>
@@ -397,9 +397,9 @@
           <tr x-show="formData.basic.outfit==='振袖'">
             <td>
               <select x-model="formData.estimateItems[1].option">
-                <option value="none">ヘアメイクなし</option>
-                <option value="hairMake">ヘア＆メイク</option>
-                <option value="hairOnly">ヘアのみ</option>
+                <option value="ヘアメイクなし">ヘアメイクなし</option>
+                <option value="ヘア＆メイク">ヘア＆メイク</option>
+                <option value="ヘアのみ">ヘアのみ</option>
               </select>
             </td>
             <td class="clickable-cell">

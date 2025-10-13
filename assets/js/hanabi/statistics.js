@@ -1,6 +1,6 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { formatTime, formatTimestamp, avg, minBy, maxBy } from '../common/utils.js';
+import { formatDuration, formatTimestamp, avg, minBy, maxBy } from '../common/utils.js';
 import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
@@ -60,8 +60,8 @@ document.addEventListener('alpine:init', () => {
             guidance: guidance ? formatTimestamp(guidance) : null,
             dressing: dressing ? formatTimestamp(dressing) : null,
             sendoff: sendoff ? formatTimestamp(sendoff) : null,
-            guideToDress: guideToDress ? formatTime(guideToDress) : null,
-            total: total ? formatTime(total) : null,
+            guideToDress: guideToDress ? formatDuration(guideToDress) : null,
+            total: total ? formatDuration(total) : null,
             guideRaw: guideToDress,
             receptionDate: reception ? reception.toDate() : null
           };
@@ -89,13 +89,13 @@ document.addEventListener('alpine:init', () => {
 
       if (femaleRecords.length) {
         const minR = minBy(femaleRecords), maxR = maxBy(femaleRecords);
-        this.femaleMin = { time: formatTime(minR.guideRaw), name: minR.name, staff: minR.staff.join(', ') };
-        this.femaleMax = { time: formatTime(maxR.guideRaw), name: maxR.name, staff: maxR.staff.join(', ') };
+        this.femaleMin = { time: formatDuration(minR.guideRaw), name: minR.name, staff: minR.staff.join(', ') };
+        this.femaleMax = { time: formatDuration(maxR.guideRaw), name: maxR.name, staff: maxR.staff.join(', ') };
       }
       if (maleRecords.length) {
         const minR = minBy(maleRecords), maxR = maxBy(maleRecords);
-        this.maleMin = { time: formatTime(minR.guideRaw), name: minR.name, staff: minR.staff.join(', ') };
-        this.maleMax = { time: formatTime(maxR.guideRaw), name: maxR.name, staff: maxR.staff.join(', ') };
+        this.maleMin = { time: formatDuration(minR.guideRaw), name: minR.name, staff: minR.staff.join(', ') };
+        this.maleMax = { time: formatDuration(maxR.guideRaw), name: maxR.name, staff: maxR.staff.join(', ') };
       }
     }
   }));

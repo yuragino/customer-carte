@@ -1,9 +1,11 @@
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
+import { formatTimestamp } from '../common/utils.js';
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
     ...getYearSettings(),
+    formatTimestamp,
     groups: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
@@ -144,14 +146,6 @@ document.addEventListener('alpine:init', () => {
         '済': 'status-completed',
       };
       return classMap[currentStatus] || 'status-received';
-    },
-
-    formatTimestamp(timestamp) {
-      if (!timestamp) return '--:--';
-      const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      return `${hours}:${minutes}`;
     },
   }));
 });

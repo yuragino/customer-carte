@@ -1,8 +1,11 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
+import { formatFullDateTime, formatDateOnly, formatTime } from '../common/utils.js';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('printView', () => ({
+    formatFullDateTime,
+    formatTime,
     // ===== State =====
     isLoading: true,
     error: null,
@@ -67,36 +70,6 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ===== Helper Functions =====
-    formatDateTime(isoString) {
-      if (!isoString) return '-';
-      try {
-        const date = new Date(isoString);
-        if (isNaN(date)) return '-';
-        const day = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const dayOfMonth = date.getDate();
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-
-        return `${year}年${month}月${dayOfMonth}日（${day}）${hours}:${minutes}`;
-      } catch (e) {
-        return '-';
-      }
-    },
-    formatTime(timeStr) {
-      if (!timeStr) return '-';
-      try {
-        const d = new Date(`1970-01-01T${timeStr}`);
-        if (isNaN(d)) return '-';
-        const h = d.getHours(); // ← ゼロ埋めしない
-        const m = String(d.getMinutes()).padStart(2, '0'); // ← 分だけ2桁固定
-        return `${h}:${m}`;
-      } catch (e) {
-        return '-';
-      }
-    },
-
     getCheckpointLabel(key) {
       const labels = {
         rentalPage: 'きものレンタルページ',

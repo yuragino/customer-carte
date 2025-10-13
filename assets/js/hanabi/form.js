@@ -156,12 +156,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // --- メソッド (Methods) ---
-
-    /**
-     * 個別顧客の前払い金額を計算
-     * @param {object} customer - 顧客オブジェクト
-     * @returns {number} 前払い金額
-     */
+    // 個人の前払い金額
     calculateCustomerPrepayment(customer) {
       if (!this.representative.reservationMethod) return 0;
 
@@ -174,11 +169,7 @@ document.addEventListener('alpine:init', () => {
       return 0;
     },
 
-    /**
-     * 個別顧客の現地払い金額を計算
-     * @param {object} customer - 顧客オブジェクト
-     * @returns {number} 現地払い金額
-     */
+    // 個人の現地払い金額
     calculateCustomerOnSitePayment(customer) {
       let total = 0;
       // 予約方法が選択されていない場合、着付け種別料金を現地払いに加算
@@ -298,12 +289,7 @@ document.addEventListener('alpine:init', () => {
       this.customers[customerIndex].imageFiles = newFiles; // Fileオブジェクトをstateに保存
     },
 
-    /**
-     * Cloudinaryに画像をアップロードする
-     * @param {File} file - アップロードするファイル
-     * @param {string} folderName - 保存先のフォルダ名
-     * @returns {Promise<string>} アップロードされた画像のURL
-     */
+    //  Cloudinaryに画像をアップロードする
     async uploadImageToCloudinary(file, folderName) {
       const formData = new FormData();
       formData.append('file', file);
