@@ -5,6 +5,7 @@ import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
+    ...getYearSettings(),
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,
