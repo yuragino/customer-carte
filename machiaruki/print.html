@@ -133,11 +133,26 @@
               </div>
               <div class="payment-info">
                 <div x-show="representative.reservationMethod && customer.prepayment"
-                  x-text="`前払：${customer.prepayment}円`">
-                </div>
-                <div x-show="customer.onSitePayment"
-                  x-text="`現地：${customer.onSitePayment}円`">
-                </div>
+                  x-text="`前払：${customer.prepayment}円`"></div>
+
+                <!-- 値引きありの場合 -->
+                <template x-if="customer.discountAmount > 0">
+                  <div>
+                    現地：
+                    <span class="old-price" x-text="customer.onSitePayment + '円'"></span>
+                    →
+                    <span class="new-price" x-text="customer.onSitePaymentAdjusted + '円'"></span>
+                    <template x-if="customer.discountMemo">
+                      <span class="discount-memo">(<span x-text="customer.discountMemo"></span>)</span>
+                    </template>
+                  </div>
+                </template>
+
+                <!-- 値引きなしの場合 -->
+                <template x-if="!customer.discountAmount || customer.discountAmount === 0">
+                  <div x-show="customer.onSitePayment"
+                    x-text="`現地：${customer.onSitePayment}円`"></div>
+                </template>
               </div>
             </div>
             <div class="customer-images" x-show="customer.imageUrls && customer.imageUrls.length > 0">
@@ -154,17 +169,24 @@
       </template>
     </div>
 
-    <footer class="page-footer">
+    <div class="page-footer">
       <h2><i class="fa-solid fa-yen-sign"></i>グループ合計金額</h2>
       <div class="total-amount">
         <div class="total-item" x-show="representative.reservationMethod">
           前払合計: <strong x-text="totalPrepayment"></strong> 円
         </div>
-        <div class="total-item" x-show="totalOnSitePayment > 0">
-          現地支払合計: <strong x-text="totalOnSitePayment"></strong> 円
+        <div class="total-item" x-show="totalOnSitePayment !== totalOnSitePaymentAdjusted">
+          現地支払合計:
+          <span class="old-price" x-text="totalOnSitePayment+'円'"></span>
+          →
+          <strong class="new-price" x-text="totalOnSitePaymentAdjusted+'円'"></strong>
+        </div>
+        <div class="total-item" x-show="totalOnSitePayment > 0 && totalOnSitePayment === totalOnSitePaymentAdjusted">
+          現地支払合計:
+          <strong x-text="totalOnSitePayment"></strong> 円
         </div>
       </div>
-    </footer>
+    </div>
   </main>
 
   <div class="status-message" x-show="isLoading" x-cloak>

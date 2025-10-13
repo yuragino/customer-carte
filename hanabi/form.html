@@ -37,14 +37,15 @@
       </nav>
     </div>
   </header>
-  <div class="cancellation-status" x-show="representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
-  <div class="delete-container">
-    <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
-      <i class="fa-regular fa-trash-can"></i> カルテを削除
-    </button>
-  </div>
-  <form @submit.prevent="submitForm">
-    <main>
+
+  <main>
+    <div class="cancellation-status" x-show="representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
+    <div class="delete-container">
+      <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
+        <i class="fa-regular fa-trash-can"></i> カルテを削除
+      </button>
+    </div>
+    <form @submit.prevent="submitForm">
       <div class="form-section">
         <h2 class="section-title" @click="isRepresentativeInfoOpen = !isRepresentativeInfoOpen">
           代表者情報
@@ -159,6 +160,13 @@
                 <label><input type="checkbox" x-model="representative.checkpoints.parking"> 駐車場</label>
               </td>
             </tr>
+            <tr>
+              <th>支払い区分</th>
+              <td>
+                <label><input type="radio" name="paymentType" value="group" x-model="representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="representative.paymentType === 'group'"> グループでまとめて</label>
+                <label><input type="radio" name="paymentType" value="individual" x-model="representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="representative.paymentType === 'individual'"> 個別で支払い</label>
+              </td>
+            </tr>
           </table>
         </div>
       </div>
@@ -174,6 +182,10 @@
           <div class="header-item">追加レンタル</div>
           <div class="header-item">画像アップロード</div>
           <div class="header-item">合計</div>
+          <!-- 支払い方法は個別支払いの時のみ表示 -->
+          <template x-if="representative.paymentType === 'individual'">
+            <div class="header-item">支払い方法</div>
+          </template>
         </div>
 
         <template x-for="(customer, index) in customers" :key="customer.id">
@@ -235,8 +247,30 @@
               <template x-if="representative.reservationMethod">
                 <span>前払：<span x-text="calculateCustomerPrepayment(customer)"></span>円 </span>
               </template>
-              <span>現地：<span x-text="calculateCustomerOnSitePayment(customer)"></span>円</span>
+                <span>
+                  現地：
+                  <template x-if="customer.discountAmount > 0">
+                    <span class="discounted">
+                      <span class="old-price" x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
+                      →
+                      <span class="new-price" x-text="calculateCustomerOnSitePaymentAdjusted(customer) + '円'"></span>
+                    </span>
+                  </template>
+
+                  <template x-if="!customer.discountAmount || customer.discountAmount === 0">
+                    <span x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
+                  </template>
+
+                  <button type="button" class="edit-btn" @click="openDiscountModal(index)">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                </span>
             </div>
+            <template x-if="representative.paymentType==='individual'">
+              <div class="form-cell">
+                <input type="text" x-model="customer.paymentMethod">
+              </div>
+            </template>
           </div>
         </template>
       </div>
@@ -244,9 +278,31 @@
       <div class="form-section totals-section">
         <span>グループ合計</span>
         <template x-if="representative.reservationMethod">
-          <span>前払：<span x-text="prepayment"></span>円 </span>
+          <span>前払：<span x-text="totalPrepayment"></span>円 </span>
         </template>
-        <span>現地：<span x-text="onSitePayment"></span>円</span>
+        <template x-if="totalOnSitePayment > 0">
+          <span>
+            現地：
+            <template x-if="customers.some(c => c.discountAmount > 0)">
+              <!-- 値引きがある場合は線付きで表示 -->
+              <span class="discounted">
+                <span class="old-price"  x-text="totalOnSitePayment + '円'">
+                </span>
+                →
+                <span class="new-price" x-text="totalOnSitePaymentAdjusted + '円'"></span>
+              </span>
+            </template>
+            <template x-if="!customers.some(c => c.discountAmount > 0)">
+              <span x-text="totalOnSitePayment + '円'"></span>
+            </template>
+          </span>
+        </template>
+        <template x-if="representative.paymentType === 'group'">
+          <div class="group-payment-method">
+            支払い方法：
+            <input type="text" x-model="representative.groupPaymentMethod">
+          </div>
+        </template>
       </div>
 
       <div class="submit-container">
@@ -259,8 +315,8 @@
           <span>キャンセルの時はここにチェックをつけて更新</span>
         </label>
       </div>
-    </main>
-  </form>
+    </form>
+  </main>
 
   <div class="modal-overlay" x-show="isRentalModalOpen" @click="isRentalModalOpen = false" x-cloak>
     <div class="modal-content" @click.stop>
@@ -276,6 +332,31 @@
       <button class="submit-btn" @click="addRentalItem()">追加登録</button>
     </div>
   </div>
+
+  <div class="modal-overlay" x-show="isDiscountModalOpen" @click="isDiscountModalOpen = false" x-cloak>
+    <div class="modal-content discount-modal" @click.stop>
+      <h3>現地支払い金額の修正</h3>
+
+      <div class="price-box">
+        <div>
+          <span class="label">元の金額</span>
+          <span class="value" x-text="modalOriginalPrice + '円'"></span>
+        </div>
+        <div>
+          <span class="label">値引き額</span>
+          <span class="value">
+            <input type="number" min="0" x-model.number="discountInput" class="discount-input"> 円
+          </span>
+        </div>
+        <div>
+          <label>メモ</label>
+          <input type="text" x-model="discountMemoInput">
+        </div>
+      </div>
+      <button class="submit-btn" @click="applyDiscount()">確定</button>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       AutoKana.bind('#name', '#furigana', { katakana: false });

@@ -221,8 +221,9 @@ input[type="file"] {
     background-color: #333;
     color: #fff;
     border: none;
-    padding: 1rem 2.5rem;
-    font-size: 1rem;
+    width: 100px;
+    height: 50px;
+    font-size: 18px;
     border-radius: 4px;
     cursor: pointer;
 }
@@ -316,4 +317,84 @@ input[type="file"] {
     padding: 0.3rem;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.discounted {
+  font-weight: 600;
+  color: #d9534f; /* 赤系：修正済み強調 */
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 4px;
+}
+
+.new-price {
+  color: #28a745; /* 緑 */
+  font-weight: bold;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.edit-btn:hover {
+  color: #007bff;
+}
+
+.discount-modal {
+  text-align: center;
+  width: 320px;
+}
+
+.discount-modal h3 {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.price-box {
+  margin-bottom: 20px;
+}
+
+.price-box div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.discount-modal .label {
+  font-weight: 600;
+  color: #333;
+}
+
+.discount-modal .value {
+  font-weight: bold;
+  color: #555;
+}
+
+.discount-modal .adjusted {
+  color: #28a745;
+}
+
+.discount-input {
+  width: 100px;
+  font-size: 1rem;
+  text-align: right;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.arrow {
+  margin: 6px 0;
+  color: #bbb;
 }

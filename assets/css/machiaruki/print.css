@@ -15,7 +15,7 @@ body {
 
 .page {
   background-color: #fff;
-  width: 210mm;
+  width: 70%;
   min-height: 297mm;
   margin: 2rem auto;
   padding: 10mm;
@@ -240,4 +240,10 @@ h3 i {
     size: A4;
     margin: 10mm;
   }
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 4px;
 }

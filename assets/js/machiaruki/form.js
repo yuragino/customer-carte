@@ -34,6 +34,7 @@ document.addEventListener('alpine:init', () => {
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,
+    isDiscountModalOpen: false,
     isSubmitting: false,  // フォーム送信中フラグ
 
     // --- フォームデータ ---
@@ -56,6 +57,8 @@ document.addEventListener('alpine:init', () => {
         location: false,
         parking: false
       },
+      paymentType: 'group',
+      groupPaymentMethod: '',
       isCanceled: false,
     },
     femaleCount: 1,
@@ -68,6 +71,31 @@ document.addEventListener('alpine:init', () => {
     // --- レンタルモーダル用の一時データ ---
     newRentalItem: { name: '', price: null },
     currentTargetCustomerIndex: null,
+
+    // 金額修正モーダル用
+    discountTargetIndex: null,
+    modalOriginalPrice: 0,
+    discountInput: 0,
+    discountMemoInput: '',
+    modalAdjustedPrice: 0,
+
+    openDiscountModal(index) {
+      const customer = this.customers[index];
+      this.discountTargetIndex = index;
+      this.modalOriginalPrice = this.calculateCustomerOnSitePayment(customer);
+      this.discountInput = customer.discountAmount || 0;
+      this.discountMemoInput = customer.discountMemo || '';
+      this.modalAdjustedPrice = this.modalOriginalPrice - this.discountInput;
+      this.isDiscountModalOpen = true;
+    },
+
+    // 入力した値引き金額を適用
+    applyDiscount() {
+      const customer = this.customers[this.discountTargetIndex];
+      customer.discountAmount = this.discountInput;
+      customer.discountMemo = this.discountMemoInput;
+      this.isDiscountModalOpen = false;
+    },
 
     // --- 初期化 ---
     async init() {
@@ -130,7 +158,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // --- 算出プロパティ ---
-    get prepayment() {
+    get totalPrepayment() {
       // 予約方法が選択されていない場合は前払いなし
       if (!this.representative.reservationMethod) {
         return 0;
@@ -140,20 +168,22 @@ document.addEventListener('alpine:init', () => {
         return total + this.calculateCustomerPrepayment(customer);
       }, 0);
     },
-    get onSitePayment() {
-      // 各顧客の現地払い金額を合計
+    get totalOnSitePayment() {
+      // 値引きを考慮しない元の（合計）現地支払い金額
       return this.customers.reduce((total, customer) => {
         return total + this.calculateCustomerOnSitePayment(customer);
+      }, 0);
+    },
+    get totalOnSitePaymentAdjusted() {
+      // 値引き適用後の合計現地支払い金額を、新しいヘルパーメソッドで計算し合計
+      return this.customers.reduce((total, customer) => {
+        return total + this.calculateCustomerOnSitePaymentAdjusted(customer);
       }, 0);
     },
 
     // --- メソッド (Methods) ---
 
-    /**
-     * 個別顧客の前払い金額を計算
-     * @param {object} customer - 顧客オブジェクト
-     * @returns {number} 前払い金額
-     */
+    // 個人の前払い金額
     calculateCustomerPrepayment(customer) {
       if (!this.representative.reservationMethod) return 0;
 
@@ -166,14 +196,9 @@ document.addEventListener('alpine:init', () => {
       return 0;
     },
 
-    /**
-     * 個別顧客の現地払い金額を計算
-     * @param {object} customer - 顧客オブジェクト
-     * @returns {number} 現地払い金額
-     */
+    // 個人の現地払い金額
     calculateCustomerOnSitePayment(customer) {
       let total = 0;
-
       // 予約方法が選択されていない場合、着付け種別料金を現地払いに加算
       if (!this.representative.reservationMethod) {
         if (customer.dressingType === 'rentalAndDressing') {
@@ -182,7 +207,6 @@ document.addEventListener('alpine:init', () => {
           total += this.PRICES.DRESSING_ONLY;
         }
       }
-
       // オプション料金を加算
       if (customer.options.footwear) {
         total += this.PRICES.FOOTWEAR;
@@ -190,11 +214,17 @@ document.addEventListener('alpine:init', () => {
       if (customer.gender === 'female' && customer.options.obiBag) {
         total += this.PRICES.BAG;
       }
-
       // 追加レンタル料金を加算
       total += customer.additionalRentals.reduce((sum, item) => sum + (item.price || 0), 0);
-
       return total;
+    },
+
+    // 個人の現地払い金額（値引き後）
+    calculateCustomerOnSitePaymentAdjusted(customer) {
+      const discount = customer.discountAmount || 0;
+      const original = this.calculateCustomerOnSitePayment(customer);
+      if (discount === 0) return original;
+      return original - discount;
     },
 
     toggleRadio(event, modelName) {
@@ -226,12 +256,9 @@ document.addEventListener('alpine:init', () => {
         additionalRentals: [],
         imagePreviews: [], // 画面表示用のプレビューURL
         imageFiles: [],    // アップロード用のFileオブジェクト
-        statusTimestamps: {
-          receptionCompletedAt: null,
-          guidanceCompletedAt: null,
-          dressingCompletedAt: null,
-          sendOffCompletedAt: null
-        },
+        paymentMethod: '',
+        discountAmount: 0,
+        onSitePaymentAdjusted: 0,
       };
     },
 
@@ -356,8 +383,9 @@ document.addEventListener('alpine:init', () => {
           femaleCount: this.femaleCount,
           maleCount: this.maleCount,
           updatedAt: serverTimestamp(),
-          totalPrepayment: this.prepayment,
-          totalOnSitePayment: this.onSitePayment,
+          totalPrepayment: this.totalPrepayment,
+          totalOnSitePayment: this.totalOnSitePayment,
+          totalOnSitePaymentAdjusted: this.totalOnSitePaymentAdjusted,
         };
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存

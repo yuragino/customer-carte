@@ -63,13 +63,13 @@ document.addEventListener('alpine:init', () => {
 
         if (docSnap.exists()) {
           const data = docSnap.data();
-          // Provide default empty objects/arrays to prevent errors
           this.representative = data.representative || {};
           this.customers = data.customers || [];
           this.femaleCount = data.femaleCount ?? 0;
           this.maleCount = data.maleCount ?? 0;
 
           this.totalPrepayment = data.totalPrepayment ?? 0;
+          this.totalOnSitePaymentAdjusted = data.totalOnSitePaymentAdjusted ?? 0;
           this.totalOnSitePayment = data.totalOnSitePayment ?? 0;
         } else {
           this.error = "指定された予約データが見つかりませんでした。";
