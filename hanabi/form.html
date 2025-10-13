@@ -56,15 +56,18 @@
             <tr>
               <th>予約方法</th>
               <td>
-                <label><input type="radio" name="reservationMethod" value="じゃらん椿"
-                    @click="toggleRadio($event, 'reservationMethod')"
-                    :checked="representative.reservationMethod === 'じゃらん椿'"> じゃらん椿</label>
-                <label><input type="radio" name="reservationMethod" value="じゃらん教室"
-                    @click="toggleRadio($event, 'reservationMethod')"
-                    :checked="representative.reservationMethod === 'じゃらん教室'"> じゃらん教室</label>
-                <label><input type="radio" name="reservationMethod" value="アソビュー"
-                    @click="toggleRadio($event, 'reservationMethod')"
-                    :checked="representative.reservationMethod === 'アソビュー'"> アソビュー</label>
+                <label>
+                  <input type="radio" name="reservationMethod" value="じゃらん椿" @click="toggleRadio($event, 'reservationMethod')"
+                    :checked="representative.reservationMethod === 'じゃらん椿'"> じゃらん椿
+                </label>
+                <label>
+                  <input type="radio" name="reservationMethod" value="じゃらん教室" @click="toggleRadio($event, 'reservationMethod')"
+                    :checked="representative.reservationMethod === 'じゃらん教室'"> じゃらん教室
+                </label>
+                <label>
+                  <input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event, 'reservationMethod')"
+                    :checked="representative.reservationMethod === 'アソビュー'"> アソビュー
+                </label>
               </td>
             </tr>
             <tr>
@@ -92,25 +95,27 @@
             </tr>
             <tr>
               <th>電話番号</th>
-              <td><input type="tel" x-model="representative.phone" placeholder="080123456" inputmode="numeric"
-                  pattern="[0-9]*" class="middle-width"></td>
+              <td><input type="tel" x-model="representative.phone" placeholder="080123456" inputmode="numeric" pattern="[0-9]*" class="middle-width"></td>
             </tr>
             <tr>
               <th>交通手段</th>
               <td>
-                <label><input type="radio" name="transportation" value="car"
-                    @click="toggleRadio($event, 'transportation')" :checked="representative.transportation === 'car'">
-                  車</label>
-                <label><input type="radio" name="transportation" value="jr"
-                    @click="toggleRadio($event, 'transportation')" :checked="representative.transportation === 'jr'">
-                  JR</label>
-                <label><input type="radio" name="transportation" value="tobu"
-                    @click="toggleRadio($event, 'transportation')" :checked="representative.transportation === 'tobu'">
-                  東武</label>
-                <label><input type="radio" name="transportation" value="pickup"
-                    @click="toggleRadio($event, 'transportation')"
-                    :checked="representative.transportation === 'pickup'">
-                  送迎</label>
+                <label>
+                  <input type="radio" name="transportation" value="車" @click="toggleRadio($event, 'transportation')"
+                    :checked="representative.transportation === '車'"> 車
+                </label>
+                <label>
+                  <input type="radio" name="transportation" value="JR" @click="toggleRadio($event, 'transportation')"
+                    :checked="representative.transportation === 'JR'"> JR
+                </label>
+                <label>
+                  <input type="radio" name="transportation" value="東武" @click="toggleRadio($event, 'transportation')"
+                    :checked="representative.transportation === '東武'"> 東武
+                </label>
+                <label>
+                  <input type="radio" name="transportation" value="送迎" @click="toggleRadio($event, 'transportation')"
+                    :checked="representative.transportation === '送迎'"> 送迎
+                </label>
               </td>
             </tr>
             <tr>
@@ -138,14 +143,12 @@
               <th>リピーター</th>
               <td>
                 <template x-if="representative.selectedRepeaterYears.length === 0">
-                  <button type="button" class="checking-btn"
-                    @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする（過去3年）</button>
+                  <button type="button" class="checking-btn" @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする（過去3年）</button>
                 </template>
                 <template x-if="representative.selectedRepeaterYears.length > 0">
                   <div>
                     <span x-show="representative.selectedRepeaterYears.includes(0)">新規</span>
-                    <span x-show="!representative.selectedRepeaterYears.includes(0)"
-                      x-text="representative.selectedRepeaterYears.join(', ')"></span>
+                    <span x-show="!representative.selectedRepeaterYears.includes(0)" x-text="representative.selectedRepeaterYears.join(', ')"></span>
                   </div>
                 </template>
               </td>
@@ -209,31 +212,23 @@
               足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0"> cm
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'dressingType' + index" value="rentalAndDressing"
-                  x-model="customer.dressingType"> レンタル＆着付</label>
-              <label><input type="radio" :name="'dressingType' + index" value="dressingOnly"
-                  x-model="customer.dressingType"> 着付のみ</label>
+              <label><input type="radio" :name="'dressingType' + index" value="rentalAndDressing" x-model="customer.dressingType"> レンタル＆着付</label>
+              <label><input type="radio" :name="'dressingType' + index" value="dressingOnly" x-model="customer.dressingType"> 着付のみ</label>
             </div>
             <div class="form-cell">
-              <div><label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label></div>
-              <template x-if="customer.gender === 'female'">
-                <div><label><input type="checkbox" x-model="customer.options.obiBag"> かごバッグ</label></div>
-              </template>
+              <label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label>
+              <label x-show="customer.gender === 'female'"><input type="checkbox" x-model="customer.options.obiBag"> かごバッグ</label>
             </div>
             <div class="form-cell">
               <ul class="rental-list">
                 <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
                   <li>
                     <span x-text="`${item.name} ${item.price}円`"></span>
-                    <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)">
-                      <i class="fa-regular fa-trash-can"></i>
-                    </button>
+                    <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
                   </li>
                 </template>
               </ul>
-              <button type="button" class="add-btn" @click="openRentalModal(index)">
-                <i class="fa-solid fa-circle-plus"></i>
-              </button>
+              <button type="button" class="add-btn" @click="openRentalModal(index)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
             <div class="form-cell">
               <input type="file" multiple @change="handleImageUpload($event, index)">
@@ -244,10 +239,10 @@
               </div>
             </div>
             <div class="form-cell">
-              <template x-if="representative.reservationMethod">
-                <span>前払：<span x-text="calculateCustomerPrepayment(customer)"></span>円 </span>
-              </template>
-              <span>
+              <div x-show="representative.reservationMethod">
+                前払：<span x-text="calculateCustomerPrepayment(customer)"></span>円
+              </div>
+              <div x-show="calculateCustomerOnSitePayment(customer) > 0">
                 現地：
                 <template x-if="customer.discountAmount > 0">
                   <span class="discounted">
@@ -264,8 +259,9 @@
                 <button type="button" class="edit-btn" @click="openDiscountModal(index)">
                   <i class="fa-solid fa-pen"></i>
                 </button>
-              </span>
+              </div>
             </div>
+            <!-- 個別の支払い方法 -->
             <template x-if="representative.paymentType==='individual'">
               <div class="form-cell">
                 <input type="text" x-model="customer.paymentMethod">
@@ -277,32 +273,28 @@
 
       <div class="form-section totals-section">
         <span>グループ合計</span>
-        <template x-if="representative.reservationMethod">
-          <span>前払：<span x-text="totalPrepayment"></span>円 </span>
-        </template>
-        <template x-if="totalOnSitePayment > 0">
-          <span>
-            現地：
-            <template x-if="customers.some(c => c.discountAmount > 0)">
-              <!-- 値引きがある場合は線付きで表示 -->
-              <span class="discounted">
-                <span class="old-price" x-text="totalOnSitePayment + '円'">
-                </span>
-                →
-                <span class="new-price" x-text="totalOnSitePaymentAdjusted + '円'"></span>
+        <span x-show="representative.reservationMethod">
+          前払：<span x-text="totalPrepayment"></span>円
+        </span>
+        <span x-show="totalOnSitePayment > 0">
+          現地：
+          <template x-if="customers.some(c => c.discountAmount > 0)">
+            <!-- 値引きがある場合は線付きで表示 -->
+            <span class="discounted">
+              <span class="old-price" x-text="totalOnSitePayment + '円'">
               </span>
-            </template>
-            <template x-if="!customers.some(c => c.discountAmount > 0)">
-              <span x-text="totalOnSitePayment + '円'"></span>
-            </template>
-          </span>
-        </template>
-        <template x-if="representative.paymentType === 'group'">
-          <div class="group-payment-method">
-            支払い方法：
-            <input type="text" x-model="representative.groupPaymentMethod">
-          </div>
-        </template>
+              →
+              <span class="new-price" x-text="totalOnSitePaymentAdjusted + '円'"></span>
+            </span>
+          </template>
+          <template x-if="!customers.some(c => c.discountAmount > 0)">
+            <span x-text="totalOnSitePayment + '円'"></span>
+          </template>
+        </span>
+        <div class="group-payment-method" x-show="representative.paymentType === 'group'">
+          支払い方法：
+          <input type="text" x-model="representative.groupPaymentMethod">
+        </div>
       </div>
 
       <div class="submit-container">

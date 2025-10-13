@@ -267,6 +267,8 @@ document.addEventListener('alpine:init', () => {
     },
 
     removeRentalItem(customerIndex, itemIndex) {
+      const confirmed = window.confirm('この項目を削除しますか？');
+      if (!confirmed) return;
       this.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
     },
 

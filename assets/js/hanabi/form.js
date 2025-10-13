@@ -20,7 +20,7 @@ document.addEventListener('alpine:init', () => {
       visitTime: '',
       address: '',
       phone: '',
-      transportation: 'car',
+      transportation: '車',
       lineType: '椿LINE',
       selectedRepeaterYears: [],
       notes: '',
@@ -275,6 +275,8 @@ document.addEventListener('alpine:init', () => {
     },
 
     removeRentalItem(customerIndex, itemIndex) {
+      const confirmed = window.confirm('この項目を削除しますか？');
+      if (!confirmed) return;
       this.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
     },
 
