@@ -1,22 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { db } from '../common/firebase-config.js';
 
-// ----- FirebaseとCloudinaryの設定 -----
-const firebaseConfig = {
-  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
-  authDomain: "kimono-coordinate.firebaseapp.com",
-  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
-  projectId: "kimono-coordinate",
-  storageBucket: "kimono-coordinate.firebasestorage.app",
-  messagingSenderId: "399031825104",
-  appId: "1:399031825104:web:5ea4da3fb129cf935724d5",
-  measurementId: "G-VVTT0QVXQQ"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ----- Alpine.js Component -----
 document.addEventListener('alpine:init', () => {
   Alpine.data('printView', () => ({
     // ===== State =====

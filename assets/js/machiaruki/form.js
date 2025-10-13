@@ -1,36 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
-  authDomain: "kimono-coordinate.firebaseapp.com",
-  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
-  projectId: "kimono-coordinate",
-  storageBucket: "kimono-coordinate.firebasestorage.app",
-  messagingSenderId: "399031825104",
-  appId: "1:399031825104:web:639225192503ab895724d5",
-  measurementId: "G-MCBZVD9D22"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
+import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { db } from '../common/firebase-config.js';
+import { CLOUDINARY_CONFIG, CASUAL_PRICES } from '../common/constants.js';
 const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
-    // --- 定数 (Constants) ---
-    PRICES: {
-      RENTAL_DRESSING: 6800,
-      DRESSING_ONLY: 3800,
-      FOOTWEAR: 500,
-      BAG: 500,
-    },
-
-    CLOUDINARY_CONFIG: {
-      CLOUD_NAME: 'dxq1xqypx',
-      UPLOAD_PRESET: 'unsigned_preset',
-    },
-
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,
@@ -188,10 +162,10 @@ document.addEventListener('alpine:init', () => {
       if (!this.representative.reservationMethod) return 0;
 
       if (customer.dressingType === 'rentalAndDressing') {
-        return this.PRICES.RENTAL_DRESSING;
+        return CASUAL_PRICES.RENTAL_DRESSING;
       }
       if (customer.dressingType === 'dressingOnly') {
-        return this.PRICES.DRESSING_ONLY;
+        return CASUAL_PRICES.DRESSING_ONLY;
       }
       return 0;
     },
@@ -202,17 +176,17 @@ document.addEventListener('alpine:init', () => {
       // 予約方法が選択されていない場合、着付け種別料金を現地払いに加算
       if (!this.representative.reservationMethod) {
         if (customer.dressingType === 'rentalAndDressing') {
-          total += this.PRICES.RENTAL_DRESSING;
+          total += CASUAL_PRICES.RENTAL_DRESSING;
         } else if (customer.dressingType === 'dressingOnly') {
-          total += this.PRICES.DRESSING_ONLY;
+          total += CASUAL_PRICES.DRESSING_ONLY;
         }
       }
       // オプション料金を加算
       if (customer.options.footwear) {
-        total += this.PRICES.FOOTWEAR;
+        total += CASUAL_PRICES.FOOTWEAR;
       }
       if (customer.gender === 'female' && customer.options.obiBag) {
-        total += this.PRICES.BAG;
+        total += CASUAL_PRICES.BAG;
       }
       // 追加レンタル料金を加算
       total += customer.additionalRentals.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -323,10 +297,10 @@ document.addEventListener('alpine:init', () => {
     async uploadImageToCloudinary(file, folderName) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('upload_preset', this.CLOUDINARY_CONFIG.UPLOAD_PRESET);
+      formData.append('upload_preset', CLOUDINARY_CONFIG.UPLOAD_PRESET);
       formData.append('folder', folderName);
 
-      const url = `https://api.cloudinary.com/v1_1/${this.CLOUDINARY_CONFIG.CLOUD_NAME}/image/upload`;
+      const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/image/upload`;
 
       const response = await fetch(url, {
         method: 'POST',

@@ -1,19 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
-  authDomain: "kimono-coordinate.firebaseapp.com",
-  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
-  projectId: "kimono-coordinate",
-  storageBucket: "kimono-coordinate.firebasestorage.app",
-  messagingSenderId: "399031825104",
-  appId: "1:399031825104:web:639225192503ab895724d5",
-  measurementId: "G-MCBZVD9D22"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { db } from '../common/firebase-config.js';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({

@@ -1,42 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
-  authDomain: "kimono-coordinate.firebaseapp.com",
-  projectId: "kimono-coordinate",
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// 時間・分・秒にフォーマット
-const formatTime = minutes => {
-  if (minutes === null) return null;
-  const totalSec = Math.round(minutes * 60);
-
-  const h = Math.floor(totalSec / 3600);
-  const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-
-  if (h > 0) {
-    return `${h}時間${m}分${s}秒`;
-  } else if (m > 0) {
-    return `${m}分${s}秒`;
-  } else {
-    return `${s}秒`;
-  }
-};
-
-// 時刻を HH:MM に整形
-const formatTimestamp = ts => {
-  if (!ts) return null;
-  const d = ts.toDate();
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-};
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { db } from '../common/firebase-config.js';
+import { formatTime, formatTimestamp, avg, minBy, maxBy } from '../common/utils.js';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
-    // --- ヘッダー関連 ---
     selectedYear: new Date().getFullYear(),
     get yearOptions() {
       const currentYear = new Date().getFullYear();
@@ -73,7 +40,6 @@ document.addEventListener('alpine:init', () => {
       const maleRecords = [];
 
       if (snapshot.empty) {
-        // データが無い → ここで空のまま終了
         this.customerStats = [];
         return;
       }
@@ -126,14 +92,9 @@ document.addEventListener('alpine:init', () => {
         return a.receptionDate - b.receptionDate;
       });
 
-      // 平均時間
-      const avg = arr => arr.length ? formatTime(arr.reduce((acc, c) => acc + c.guideRaw, 0) / arr.length) : null;
+      // 平均時間 (案内 -> 着付)
       this.femaleAvg = avg(femaleRecords);
       this.maleAvg = avg(maleRecords);
-
-      // 最短 & 最長
-      const minBy = arr => arr.reduce((p, c) => p.guideRaw < c.guideRaw ? p : c);
-      const maxBy = arr => arr.reduce((p, c) => p.guideRaw > c.guideRaw ? p : c);
 
       if (femaleRecords.length) {
         const minR = minBy(femaleRecords), maxR = maxBy(femaleRecords);
@@ -148,4 +109,3 @@ document.addEventListener('alpine:init', () => {
     }
   }));
 });
-// cSpell:ignore firestore

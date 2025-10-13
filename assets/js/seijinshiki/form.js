@@ -1,37 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { db } from '../common/firebase-config.js';
+import { CLOUDINARY_CONFIG, SEIJINSHIKI_PRICES } from '../common/constants.js';
 
-// ----- FirebaseとCloudinaryの設定 -----
-const firebaseConfig = {
-  apiKey: "AIzaSyBOMtAoCObyoalTk6_nVpGlsnLcGSw4Jzc",
-  authDomain: "kimono-coordinate.firebaseapp.com",
-  databaseURL: "https://kimono-coordinate-default-rtdb.firebaseio.com",
-  projectId: "kimono-coordinate",
-  storageBucket: "kimono-coordinate.firebasestorage.app",
-  messagingSenderId: "399031825104",
-  appId: "1:399031825104:web:5ea4da3fb129cf935724d5",
-  measurementId: "G-VVTT0QVXQQ"
-};
-
-const CLOUDINARY_CONFIG = {
-  CLOUD_NAME: 'dxq1xqypx', // あなたのCloudinaryクラウド名
-  UPLOAD_PRESET: 'unsigned_preset', // あなたのアップロードプリセット名
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ----- 定数定義 -----
-const PRICE = {
-  FURISODE: {
-    KITSUKE: { MAEDORI: 13200, TOUJITSU: 16500, BOTH: 25300 },
-    HAIR_MAKE: 10000,
-    HAIR_ONLY: 6000,
-  },
-  HAKAMA: { KITSUKE: 8500 }
-};
-
-// ----- Alpine.jsコンポーネント -----
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     // ===== 状態管理 =====
@@ -216,22 +186,22 @@ document.addEventListener('alpine:init', () => {
       const outfit = this.formData.basic.outfit;
       if (item.name === "着付") {
         if (outfit === "振袖") {
-          if (item.toujitsu && item.maedori) return PRICE.FURISODE.KITSUKE.BOTH;
-          if (item.toujitsu) return PRICE.FURISODE.KITSUKE.TOUJITSU;
-          if (item.maedori) return PRICE.FURISODE.KITSUKE.MAEDORI;
+          if (item.toujitsu && item.maedori) return SEIJINSHIKI_PRICES.FURISODE.KITSUKE.BOTH;
+          if (item.toujitsu) return SEIJINSHIKI_PRICES.FURISODE.KITSUKE.TOUJITSU;
+          if (item.maedori) return SEIJINSHIKI_PRICES.FURISODE.KITSUKE.MAEDORI;
         } else if (outfit === "袴") {
-          return item.toujitsu ? PRICE.HAKAMA.KITSUKE : 0;
+          return item.toujitsu ? SEIJINSHIKI_PRICES.HAKAMA.KITSUKE : 0;
         }
       }
       if (item.name === "ヘア" && outfit === "振袖") {
         if (item.option === "hairMake") {
-          if (item.toujitsu && item.maedori) return PRICE.FURISODE.HAIR_MAKE * 2;
-          if (item.toujitsu) return PRICE.FURISODE.HAIR_MAKE;
-          if (item.maedori) return PRICE.FURISODE.HAIR_MAKE;
+          if (item.toujitsu && item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_MAKE * 2;
+          if (item.toujitsu) return SEIJINSHIKI_PRICES.FURISODE.HAIR_MAKE;
+          if (item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_MAKE;
         } else if (item.option === "hairOnly") {
-          if (item.toujitsu && item.maedori) return PRICE.FURISODE.HAIR_ONLY * 2;
-          if (item.toujitsu) return PRICE.FURISODE.HAIR_ONLY;
-          if (item.maedori) return PRICE.FURISODE.HAIR_ONLY;
+          if (item.toujitsu && item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_ONLY * 2;
+          if (item.toujitsu) return SEIJINSHIKI_PRICES.FURISODE.HAIR_ONLY;
+          if (item.maedori) return SEIJINSHIKI_PRICES.FURISODE.HAIR_ONLY;
         }
       }
       return (item.toujitsu || item.maedori) ? (item.price || 0) : 0;
