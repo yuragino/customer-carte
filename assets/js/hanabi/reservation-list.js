@@ -155,4 +155,3 @@ document.addEventListener('alpine:init', () => {
     },
   }));
 });
-// cspell:ignore Firestore

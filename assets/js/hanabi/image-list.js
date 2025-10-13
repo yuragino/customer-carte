@@ -54,4 +54,3 @@ document.addEventListener('alpine:init', () => {
     },
   }));
 });
-// cSpell:ignore jalan kitsuke firestore geta yukata
