@@ -32,9 +32,9 @@ const WEEK_DAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 // ISO文字列 → 日付＋時刻（例: 2025年05月03日(土) 14:45）
 export function formatFullDateTime(isoString) {
-  if (!isoString) return 'ー';
+  if (!isoString) return '-';
   const date = new Date(isoString);
-  if (isNaN(date)) return 'ー';
+  if (isNaN(date)) return '-';
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
@@ -46,9 +46,9 @@ export function formatFullDateTime(isoString) {
 
 // ISO文字列 → 日付のみ（例: 2025年5月3日(土)）
 export function formatDateOnly(isoString) {
-  if (!isoString) return 'ー';
+  if (!isoString) return '-';
   const date = new Date(isoString);
-  if (isNaN(date)) return 'ー';
+  if (isNaN(date)) return '-';
   const y = date.getFullYear();
   const m = date.getMonth() + 1;
   const d = date.getDate();
@@ -58,7 +58,7 @@ export function formatDateOnly(isoString) {
 
 // 時刻フォーマット（例: 06:09 → 6:09）
 export function formatTime(timeStr) {
-  if (!timeStr) return 'ー';
+  if (!timeStr) return '-';
   const [hh, mm] = timeStr.split(':');
   return `${Number(hh)}:${mm}`;
 }
