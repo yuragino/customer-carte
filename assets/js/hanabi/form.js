@@ -1,16 +1,10 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { CLOUDINARY_CONFIG, CASUAL_PRICES } from '../common/constants.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
-    // --- ヘッダー関連 ---
-    selectedYear: new Date().getFullYear(),
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
-    },
-
     // --- UIの状態 ---
     isRepresentativeInfoOpen: true,
     isRentalModalOpen: false,
@@ -79,10 +73,7 @@ document.addEventListener('alpine:init', () => {
     // --- 初期化 ---
     async init() {
       const params = new URLSearchParams(window.location.search);
-
-      const yearFromUrl = params.get('year');
-      this.selectedYear = yearFromUrl ? parseInt(yearFromUrl) : new Date().getFullYear();
-
+      this.initYearSelector();
       const groupId = params.get('group');
       this.currentGroupId = groupId;
 
@@ -99,9 +90,6 @@ document.addEventListener('alpine:init', () => {
 
     // --- Firestoreからデータを取得し、フォームに反映させるメソッド ---
     async loadFormData(groupId) {
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.history.pushState({}, '', url);
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
         const docRef = doc(db, collectionName, groupId);

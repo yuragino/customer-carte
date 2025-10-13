@@ -1,8 +1,10 @@
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
+    ...getYearSettings(),
     groups: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
@@ -22,24 +24,12 @@ document.addEventListener('alpine:init', () => {
       '見送り完了': 'sendOffCompletedAt',
     },
 
-    selectedYear: new Date().getFullYear(),
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
-    },
-
     init() {
-      const params = new URLSearchParams(window.location.search);
-
-      const yearFromUrl = params.get('year');
-      this.selectedYear = yearFromUrl ? parseInt(yearFromUrl) : new Date().getFullYear();
+      this.initYearSelector();
       this.fetchSchedule();
     },
 
     async fetchSchedule() {
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.history.pushState({}, '', url);
       this.groups = [];
       const collectionName = `${this.selectedYear}_fireworks`;
       try {

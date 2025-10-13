@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, getDoc, updateDoc} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 const COLLECTION_NAME = 'machiaruki';
 

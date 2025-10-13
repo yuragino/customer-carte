@@ -1,10 +1,11 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
-  Alpine.data('app', () => ({
+  Alpine.data('App', () => ({
+    ...getYearSettings(),
     // ===== 状態管理 =====
-    selectedYear: new Date().getFullYear(),
     currentCustomerId: null,
     isLoading: true,
     errorMessage: '',
@@ -13,7 +14,7 @@ document.addEventListener('alpine:init', () => {
     // ===== 初期化処理 =====
     async init() {
       const params = new URLSearchParams(window.location.search);
-      this.selectedYear = parseInt(params.get('year')) || new Date().getFullYear();
+      this.initYearSelector();
       this.currentCustomerId = params.get('customer');
 
       if (this.currentCustomerId) {

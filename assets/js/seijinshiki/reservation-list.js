@@ -1,8 +1,10 @@
 import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
+        ...getYearSettings(),
     customers: [],
     isLoading: true,
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
@@ -23,24 +25,13 @@ document.addEventListener('alpine:init', () => {
       '見送り完了': 'sendOffCompletedAt',
     },
 
-    selectedYear: new Date().getFullYear(),
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
-    },
-
     init() {
-      const params = new URLSearchParams(window.location.search);
-      this.selectedYear = parseInt(params.get('year')) || new Date().getFullYear();
+      this.initYearSelector();
       this.fetchSchedule();
     },
 
     async fetchSchedule() {
       this.isLoading = true;
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.history.pushState({}, '', url);
-
       this.customers = [];
       const collectionName = `${this.selectedYear}_seijinshiki`;
       try {

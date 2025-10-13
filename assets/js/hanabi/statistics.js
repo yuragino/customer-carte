@@ -1,14 +1,11 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { formatTime, formatTimestamp, avg, minBy, maxBy } from '../common/utils.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
-    selectedYear: new Date().getFullYear(),
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
-    },
+    ...getYearSettings(),
 
     customerStats: [],
     femaleAvg: null, maleAvg: null,
@@ -16,17 +13,11 @@ document.addEventListener('alpine:init', () => {
     maleMin: null, maleMax: null,
 
     async init() {
-      const params = new URLSearchParams(window.location.search);
-      const yearFromUrl = params.get('year');
-      this.selectedYear = yearFromUrl ? parseInt(yearFromUrl) : new Date().getFullYear();
+      this.initYearSelector();
       await this.loadStatistics();
     },
 
     async loadStatistics() {
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.history.pushState({}, '', url);
-
       this.customerStats = [];
       this.femaleAvg = this.maleAvg = null;
       this.femaleMin = this.femaleMax = null;

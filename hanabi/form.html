@@ -22,7 +22,7 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
-        <select x-model.number="selectedYear">
+        <select x-model.number="selectedYear" @change="changeYear()">
           <template x-for="year in yearOptions" :key="year">
             <option :value="year" x-text="year" :selected="year === selectedYear"></option>
           </template>
@@ -247,24 +247,24 @@
               <template x-if="representative.reservationMethod">
                 <span>前払：<span x-text="calculateCustomerPrepayment(customer)"></span>円 </span>
               </template>
-                <span>
-                  現地：
-                  <template x-if="customer.discountAmount > 0">
-                    <span class="discounted">
-                      <span class="old-price" x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
-                      →
-                      <span class="new-price" x-text="calculateCustomerOnSitePaymentAdjusted(customer) + '円'"></span>
-                    </span>
-                  </template>
+              <span>
+                現地：
+                <template x-if="customer.discountAmount > 0">
+                  <span class="discounted">
+                    <span class="old-price" x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
+                    →
+                    <span class="new-price" x-text="calculateCustomerOnSitePaymentAdjusted(customer) + '円'"></span>
+                  </span>
+                </template>
 
-                  <template x-if="!customer.discountAmount || customer.discountAmount === 0">
-                    <span x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
-                  </template>
+                <template x-if="!customer.discountAmount || customer.discountAmount === 0">
+                  <span x-text="calculateCustomerOnSitePayment(customer) + '円'"></span>
+                </template>
 
-                  <button type="button" class="edit-btn" @click="openDiscountModal(index)">
-                    <i class="fa-solid fa-pen"></i>
-                  </button>
-                </span>
+                <button type="button" class="edit-btn" @click="openDiscountModal(index)">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+              </span>
             </div>
             <template x-if="representative.paymentType==='individual'">
               <div class="form-cell">
@@ -286,7 +286,7 @@
             <template x-if="customers.some(c => c.discountAmount > 0)">
               <!-- 値引きがある場合は線付きで表示 -->
               <span class="discounted">
-                <span class="old-price"  x-text="totalOnSitePayment + '円'">
+                <span class="old-price" x-text="totalOnSitePayment + '円'">
                 </span>
                 →
                 <span class="new-price" x-text="totalOnSitePaymentAdjusted + '円'"></span>

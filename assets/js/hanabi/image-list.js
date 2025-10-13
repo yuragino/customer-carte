@@ -1,30 +1,18 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    // --- ヘッダー関連 ---
-    selectedYear: new Date().getFullYear(),
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2, currentYear - 3];
-    },
-
+    ...getYearSettings(),
     customersWithImage: [],
 
     async init() {
-      const params = new URLSearchParams(window.location.search);
-
-      const yearFromUrl = params.get('year');
-      this.selectedYear = yearFromUrl ? Number(yearFromUrl) : new Date().getFullYear();
+      this.initYearSelector();
       await this.loadData();
     },
 
     async loadData() {
-      const url = new URL(window.location.href);
-      url.searchParams.set('year', this.selectedYear);
-      window.history.pushState({}, '', url);
-
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
         const colRef = collection(db, collectionName);

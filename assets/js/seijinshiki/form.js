@@ -1,11 +1,12 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { CLOUDINARY_CONFIG, SEIJINSHIKI_PRICES } from '../common/constants.js';
+import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
+    ...getYearSettings(),
     // ===== 状態管理 =====
-    selectedYear: new Date().getFullYear(),
     currentCustomerId: null, // 編集中のドキュメントID
     isSubmitting: false,  // フォーム送信中フラグ
 
@@ -26,18 +27,12 @@ document.addEventListener('alpine:init', () => {
     // ===== 初期化処理 =====
     async init() {
       const params = new URLSearchParams(window.location.search);
-      this.selectedYear = parseInt(params.get('year')) || new Date().getFullYear();
+      this.initYearSelector();
       this.currentCustomerId = params.get('customer');
 
       if (this.currentCustomerId) {
         await this.loadFormData(this.currentCustomerId);
       }
-    },
-
-    // ===== ヘッダー =====
-    get yearOptions() {
-      const currentYear = new Date().getFullYear();
-      return [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
     },
 
     // ===== データ読み込み・保存 =====
