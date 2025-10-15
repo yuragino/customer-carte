@@ -12,6 +12,11 @@ export const SEIJINSHIKI_PRICES = {
   HAKAMA: { KITSUKE: 8500 }
 };
 
+export const OUTFIT_KEY_MAP = {
+  "振袖": "FURISODE",
+  "袴": "HAKAMA"
+}
+
 export const CASUAL_PRICES = {
   RENTAL_DRESSING: 6800,
   DRESSING_ONLY: 3800,

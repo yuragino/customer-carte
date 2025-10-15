@@ -358,10 +358,6 @@ textarea:focus {
   display: inline;
 }
 
-.toggle-check i {
-  cursor: pointer;
-}
-
 /* 項目カラムのセル全体を中央寄せ */
 .estimate-card table td:first-child {
   text-align: center;

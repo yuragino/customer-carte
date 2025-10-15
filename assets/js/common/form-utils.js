@@ -5,7 +5,7 @@ export async function uploadMediaToCloudinary(file, folderName) {
   formData.append('file', file);
   formData.append('upload_preset', CLOUDINARY_CONFIG.UPLOAD_PRESET);
   formData.append('folder', folderName);
-  
+
   const resourceType = file.type.startsWith('image/') ? 'image' : 'video';
   const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/${resourceType}/upload`;
 
@@ -14,4 +14,13 @@ export async function uploadMediaToCloudinary(file, folderName) {
 
   const data = await response.json();
   return data.secure_url;
+}
+
+// 配列で渡してアップロード
+export async function uploadMediaArrayToCloudinary(files, folderName) {
+  if (!files || files.length === 0) return [];
+  const uploadPromises = files.map(file =>
+    uploadMediaToCloudinary(file, folderName)
+  );
+  return await Promise.all(uploadPromises);
 }

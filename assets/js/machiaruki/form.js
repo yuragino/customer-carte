@@ -1,8 +1,9 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { CLOUDINARY_CONFIG, CASUAL_PRICES } from '../common/constants.js';
-const COLLECTION_NAME = 'machiaruki';
+import { CASUAL_PRICES } from '../common/constants.js';
 import { formatYen } from "../common/utils.js";
+import { uploadMediaToCloudinary } from "../common/form-utils.js";
+const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
@@ -157,12 +158,9 @@ document.addEventListener('alpine:init', () => {
       }, 0);
     },
 
-    // --- メソッド (Methods) ---
-
     // 個人の前払い金額
     calculateCustomerPrepayment(customer) {
       if (!this.representative.reservationMethod) return 0;
-
       if (customer.dressingType === 'レンタル&着付') {
         return CASUAL_PRICES.RENTAL_DRESSING;
       }
@@ -293,45 +291,18 @@ document.addEventListener('alpine:init', () => {
     },
 
     /**
-     * Cloudinaryに画像をアップロードする
-     * @param {File} file - アップロードするファイル
-     * @param {string} folderName - 保存先のフォルダ名
-     * @returns {Promise<string>} アップロードされた画像のURL
-     */
-    async uploadImageToCloudinary(file, folderName) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_CONFIG.UPLOAD_PRESET);
-      formData.append('folder', folderName);
-
-      const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/image/upload`;
-
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Cloudinaryへの画像アップロードに失敗しました。');
-      }
-
-      const data = await response.json();
-      return data.secure_url;
-    },
-
-    /**
      * フォーム全体のデータを送信する
      */
     async submitForm() {
       this.isSubmitting = true;
       try {
         const folderName = COLLECTION_NAME;
-        // 2. 顧客データ内の画像URLを準備
+        // 顧客データ内の画像URLを準備
         const processedCustomers = await Promise.all(this.customers.map(async (customer) => {
           // 新しい画像ファイルがある場合のみ、アップロード処理を実行
           if (customer.imageFiles && customer.imageFiles.length > 0) {
             const newImageUrls = await Promise.all(
-              customer.imageFiles.map(file => this.uploadImageToCloudinary(file, folderName))
+              customer.imageFiles.map(file => uploadMediaToCloudinary(file, folderName))
             );
 
             // Firestoreに保存する用の新しい顧客オブジェクトを作成
