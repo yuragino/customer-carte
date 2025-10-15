@@ -55,69 +55,69 @@
         <table>
           <tr>
             <th>予約受付日</th>
-            <td><input type="date" x-model="formData.basic.reservationDate"></td>
+            <td><input type="date" x-model="formData.basicInfo.reservationDate"></td>
           </tr>
           <tr>
             <th>名前</th>
-            <td><input type="text" x-model="formData.basic.name" id="name" required></td>
+            <td><input type="text" x-model="formData.basicInfo.name" id="name" required></td>
           </tr>
           <tr>
             <th>ふりがな</th>
-            <td><input type="text" x-model="formData.basic.kana" id="furigana"></td>
+            <td><input type="text" x-model="formData.basicInfo.kana" id="furigana"></td>
           </tr>
           <tr>
             <th>紹介者</th>
-            <td><input type="text" x-model="formData.basic.introducer"></td>
+            <td><input type="text" x-model="formData.basicInfo.introducer"></td>
           </tr>
           <tr>
             <th>住所</th>
-            <td><input type="text" x-model="formData.basic.address"></td>
+            <td><input type="text" x-model="formData.basicInfo.address"></td>
           </tr>
           <tr>
             <th>LINE</th>
             <td class="radio-group">
-              <label><input type="radio" value="教室LINE" x-model="formData.basic.lineType"> 教室LINE</label>
-              <label><input type="radio" value="椿LINE" x-model="formData.basic.lineType"> 椿LINE</label>
-              <label><input type="radio" value="お客様LINE" x-model="formData.basic.lineType"> お客様LINE</label>
+              <label><input type="radio" value="教室LINE" x-model="formData.basicInfo.lineType"> 教室LINE</label>
+              <label><input type="radio" value="椿LINE" x-model="formData.basicInfo.lineType"> 椿LINE</label>
+              <label><input type="radio" value="お客様LINE" x-model="formData.basicInfo.lineType"> お客様LINE</label>
             </td>
           </tr>
           <tr>
             <th>電話番号</th>
-            <td><input type="tel" placeholder="09012345678" x-model="formData.basic.phone" inputmode="numeric"
+            <td><input type="tel" placeholder="09012345678" x-model="formData.basicInfo.phone" inputmode="numeric"
                 pattern="[0-9]*"></td>
           </tr>
           <tr>
             <th>身長</th>
-            <td><input type="number" x-model.number="formData.basic.height"> cm</td>
+            <td><input type="number" x-model.number="formData.basicInfo.height"> cm</td>
           </tr>
           <tr>
             <th>足サイズ</th>
-            <td><input type="number" x-model.number="formData.basic.footSize"> cm</td>
+            <td><input type="number" x-model.number="formData.basicInfo.footSize"> cm</td>
           </tr>
           <tr>
             <th>衣装</th>
             <td>
-              <button type="button" class="toggle-btn" :class="formData.basic.outfit === '振袖' ? 'active-yes':'inactive'"
-                @click="formData.basic.outfit = '振袖'">振袖</button>
-              <button type="button" class="toggle-btn" :class="formData.basic.outfit === '袴' ? 'active-yes':'inactive'"
-                @click="formData.basic.outfit = '袴'">袴</button>
+              <button type="button" class="toggle-btn" :class="formData.basicInfo.outfit === '振袖' ? 'active-yes':'inactive'"
+                @click="formData.basicInfo.outfit = '振袖'">振袖</button>
+              <button type="button" class="toggle-btn" :class="formData.basicInfo.outfit === '袴' ? 'active-yes':'inactive'"
+                @click="formData.basicInfo.outfit = '袴'">袴</button>
             </td>
           </tr>
-          <tr x-show="formData.basic.outfit">
+          <tr x-show="formData.basicInfo.outfit">
             <th>利用形態</th>
             <td class="radio-group">
-              <label><input type="radio" value="自前" x-model="formData.basic.rentalType"> 自前</label>
-              <label><input type="radio" value="レンタル" x-model="formData.basic.rentalType"> レンタル</label>
-              <label><input type="radio" value="一部レンタル" x-model="formData.basic.rentalType"> 一部レンタル</label>
+              <label><input type="radio" value="自前" x-model="formData.basicInfo.rentalType"> 自前</label>
+              <label><input type="radio" value="レンタル" x-model="formData.basicInfo.rentalType"> レンタル</label>
+              <label><input type="radio" value="一部レンタル" x-model="formData.basicInfo.rentalType"> 一部レンタル</label>
             </td>
           </tr>
-          <tr x-show="formData.basic.outfit === '振袖'">
+          <tr x-show="formData.basicInfo.outfit === '振袖'">
             <th>ヘアメイク担当</th>
-            <td><input type="text" x-model="formData.basic.hairMakeStaff"></td>
+            <td><input type="text" x-model="formData.basicInfo.hairMakeStaff"></td>
           </tr>
-          <tr x-show="formData.basic.outfit">
+          <tr x-show="formData.basicInfo.outfit">
             <th>備考</th>
-            <td><textarea rows="2" x-model="formData.basic.outfitMemo"></textarea></td>
+            <td><textarea rows="2" x-model="formData.basicInfo.outfitMemo"></textarea></td>
           </tr>
         </table>
       </div>
@@ -127,14 +127,14 @@
           <i class="fa-regular fa-calendar-check"></i>
           <span>当日スケジュール</span>
           <button type="button" @click="swapSchedule()" class="btn title-actions"
-            x-show="formData.basic.outfit === '振袖'">
+            x-show="formData.basicInfo.outfit === '振袖'">
             <i class="fa-solid fa-arrows-up-down"></i>
             <span>入れ替え</span>
           </button>
         </h2>
         <table>
-          <template x-if="formData.basic.outfit === '振袖'">
-            <template x-for="task in formData.toujitsu.schedule" :key="task.id">
+          <template x-if="formData.basicInfo.outfit === '振袖'">
+            <template x-for="task in formData.toujitsuInfo.schedule" :key="task.id">
               <tr>
                 <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
                 <td>
@@ -144,19 +144,19 @@
               </tr>
             </template>
           </template>
-          <template x-if="formData.basic.outfit === '袴'">
+          <template x-if="formData.basicInfo.outfit === '袴'">
             <tr>
               <th>着付時間</th>
               <td>
-                <input type="time" x-model="formData.toujitsu.schedule.find(t => t.type === 'kitsuke').start"> 〜
-                <input type="time" x-model="formData.toujitsu.schedule.find(t => t.type === 'kitsuke').end">
+                <input type="time" x-model="formData.toujitsuInfo.schedule.find(t => t.type === 'kitsuke').start"> 〜
+                <input type="time" x-model="formData.toujitsuInfo.schedule.find(t => t.type === 'kitsuke').end">
               </td>
             </tr>
           </template>
           <tr>
             <th>備考</th>
             <td>
-              <textarea x-model="formData.toujitsu.note" rows="2"></textarea>
+              <textarea x-model="formData.toujitsuInfo.note" rows="2"></textarea>
             </td>
           </tr>
         </table>
@@ -183,19 +183,19 @@
             </tr>
           </thead>
           <tbody>
-            <template x-for="(item, index) in sortedMeetings" :key="index">
+            <template x-for="(meeting, index) in sortedMeetings" :key="meeting.id">
               <tr>
-                <td x-text="item.type"></td>
-                <td x-text="formatFullDateTime(item.date)"></td>
-                <td x-text="item.place"></td>
-                <td x-text="item.note"></td>
+                <td x-text="meeting.type"></td>
+                <td x-text="formatFullDateTime(meeting.date)"></td>
+                <td x-text="meeting.place"></td>
+                <td x-text="meeting.note"></td>
                 <td>
-                  <button type="button" class="btn-edit" @click="openMeetingModal(item)">
+                  <button type="button" class="btn-edit" @click="openMeetingModal(meeting.id)">
                     <i class="fa-solid fa-pen"></i>
                   </button>
                 </td>
                 <td>
-                  <button type="button" class="btn-del" @click="deleteMeeting(item)">
+                  <button type="button" class="btn-del" @click="deleteMeeting(meeting.id)">
                     <i class="fa-solid fa-trash"></i>
                   </button>
                 </td>
@@ -205,7 +205,7 @@
         </table>
       </div>
 
-      <div x-show="meetingModalVisible" class="modal-bg" @click.self="closeMeetingModal()" x-cloak>
+      <div x-show="isMeetingModalOpen" class="modal-bg" @click.self="closeMeetingModal()" x-cloak>
         <div class="modal-box">
           <i class="fa-solid fa-xmark close-btn" @click="closeMeetingModal()"></i>
           <div>
@@ -234,7 +234,7 @@
             <textarea x-model="meetingForm.note"></textarea>
           </div>
           <div class="modal-actions">
-            <button type="button" class="btn" @click="saveMeeting()">保存</button>
+            <button type="button" class="btn" @click="saveMeetingData()">保存</button>
           </div>
         </div>
       </div>
@@ -245,21 +245,21 @@
           <span>前撮り</span>
           <div class="title-actions">
             <button type="button" class="toggle-btn"
-              :class="formData.maedoriStatus === 'あり' ? 'active-yes' : 'inactive'"
-              @click="formData.maedoriStatus = 'あり'">
+              :class="formData.maedoriInfo.status === 'あり' ? 'active-yes' : 'inactive'"
+              @click="formData.maedoriInfo.status = 'あり'">
               <i class="fa-solid fa-circle-check"></i> あり
             </button>
-            <button type="button" class="toggle-btn" :class="formData.maedoriStatus === 'なし' ? 'active-no' : 'inactive'"
-              @click="formData.maedoriStatus = 'なし'">
+            <button type="button" class="toggle-btn" :class="formData.maedoriInfo.status === 'なし' ? 'active-no' : 'inactive'"
+              @click="formData.maedoriInfo.status = 'なし'">
               <i class="fa-solid fa-circle-xmark"></i> なし
             </button>
           </div>
         </h2>
-        <table x-show="formData.maedoriStatus === 'あり'">
+        <table x-show="formData.maedoriInfo.status === 'あり'">
           <tr>
             <th>種類</th>
             <td>
-              <select x-model="formData.maedori.type">
+              <select x-model="formData.maedoriInfo.type">
                 <option>スタジオ</option>
                 <option>ロケ</option>
                 <option>スタジオ＆ロケ</option>
@@ -268,40 +268,40 @@
           </tr>
           <tr>
             <th>カメラマン</th>
-            <td><input type="text" x-model="formData.maedori.camera"></td>
+            <td><input type="text" x-model="formData.maedoriInfo.camera"></td>
           </tr>
           <tr>
             <th>撮影日</th>
-            <td><input type="date" x-model="formData.maedori.date"></td>
+            <td><input type="date" x-model="formData.maedoriInfo.date"></td>
           </tr>
           <tr>
             <th>ヘア時間</th>
-            <td><input type="time" x-model="formData.maedori.hairStart"> 〜 <input type="time"
-                x-model="formData.maedori.hairEnd"></td>
+            <td><input type="time" x-model="formData.maedoriInfo.hairStart"> 〜 <input type="time"
+                x-model="formData.maedoriInfo.hairEnd"></td>
           </tr>
           <tr>
             <th>着付時間</th>
-            <td><input type="time" x-model="formData.maedori.kitsukeStart"> 〜 <input type="time"
-                x-model="formData.maedori.kitsukeEnd"></td>
+            <td><input type="time" x-model="formData.maedoriInfo.kitsukeStart"> 〜 <input type="time"
+                x-model="formData.maedoriInfo.kitsukeEnd"></td>
           </tr>
           <tr>
             <th>撮影時間</th>
-            <td><input type="time" x-model="formData.maedori.shootStart"> 〜 <input type="time"
-                x-model="formData.maedori.shootEnd"></td>
+            <td><input type="time" x-model="formData.maedoriInfo.shootStart"> 〜 <input type="time"
+                x-model="formData.maedoriInfo.shootEnd"></td>
           </tr>
           <tr>
             <th>着付場所</th>
-            <td><input type="text" x-model="formData.maedori.place"></td>
+            <td><input type="text" x-model="formData.maedoriInfo.place"></td>
           </tr>
           <tr>
             <th>備考</th>
-            <td><textarea x-model="formData.maedori.note"></textarea></td>
+            <td><textarea x-model="formData.maedoriInfo.note"></textarea></td>
           </tr>
         </table>
-        <table x-show="formData.maedoriStatus === 'なし'">
+        <table x-show="formData.maedoriInfo.status === 'なし'">
           <tr>
             <th>備考</th>
-            <td><textarea x-model="formData.maedori.note"></textarea></td>
+            <td><textarea x-model="formData.maedoriInfo.note"></textarea></td>
           </tr>
         </table>
       </div>
@@ -375,85 +375,79 @@
             <td>着付</td>
             <td class="clickable-cell">
               <label class="toggle-check">
-                <input
-                  type="checkbox"
-                  x-model.boolean="formData.estimateItems.kitsuke.toujitsu"
-                  :disabled="formData.basic.outfit === '袴'">
+                <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasToujitsu">
                 <i class="fa-regular fa-circle-xmark"></i>
                 <i class="fa-regular fa-circle-check"></i>
               </label>
             </td>
             <td class="clickable-cell">
               <label class="toggle-check">
-                <input
-                  type="checkbox"
-                  x-model.boolean="formData.estimateItems.kitsuke.maedori"
-                  :disabled="formData.basic.outfit === '袴'">
+                <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasMaedori">
                 <i class="fa-regular fa-circle-xmark"></i>
                 <i class="fa-regular fa-circle-check"></i>
               </label>
             </td>
             <td>
-              <div class="total" x-text="formatYen(calcPrice(formData.estimateItems.kitsuke))"></div>
+              <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
             </td>
             <td></td>
           </tr>
 
-          <tr x-show="formData.basic.outfit === '振袖'">
+          <tr x-show="formData.basicInfo.outfit === '振袖'">
             <td>
-              <select x-model="formData.estimateItems.hair.option">
+              <select x-model="formData.estimateInfo.hairMake.type">
                 <option value="ヘア＆メイク">ヘア＆メイク</option>
                 <option value="ヘアのみ">ヘアのみ</option>
                 <option value="ヘアメイクなし">ヘアメイクなし</option>
               </select>
             </td>
             <td class="clickable-cell">
-              <template x-if="formData.estimateItems.hair.option === 'ヘアメイクなし'">
+              <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
                 <span class="disabled-label">対象外</span>
               </template>
-              <template x-if="formData.estimateItems.hair.option !== 'ヘアメイクなし'">
+              <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
                 <label class="toggle-check">
                   <input
                     type="checkbox"
-                    x-model.boolean="formData.estimateItems.hair.toujitsu">
+                    x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
               </template>
             </td>
             <td class="clickable-cell">
-              <template x-if="formData.estimateItems.hair.option === 'ヘアメイクなし'">
+              <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
                 <span class="disabled-label">対象外</span>
               </template>
-              <template x-if="formData.estimateItems.hair.option !== 'ヘアメイクなし'">
+              <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
                 <label class="toggle-check">
                   <input
                     type="checkbox"
-                    x-model.boolean="formData.estimateItems.hair.maedori">
+                    x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
               </template>
             </td>
             <td>
-              <div class="total" x-text="formatYen(calcPrice(formData.estimateItems.hair))"></div>
+              <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></div>
             </td>
             <td></td>
           </tr>
 
-          <template x-for="(item,index) in formData.estimateItems.options" :key="index">
+          <template x-for="(item,index) in formData.estimateInfo.options" :key="index">
             <tr>
               <td><input type="text" x-model="item.name"></td>
               <td class="clickable-cell">
                 <label class="toggle-check">
-                  <input type="checkbox" x-model="item.toujitsu">
+                  <input type="checkbox" x-model="item.hasToujitsu">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
               </td>
               <td class="clickable-cell">
                 <label class="toggle-check">
-                  <input type="checkbox" x-model="item.maedori">
+                  <input type="checkbox" x-model="item.hasMaedori">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
@@ -480,7 +474,7 @@
         <table>
           <tr>
             <th>領収日</th>
-            <td><input id="receiptDate" type="date" x-model="formData.estimate.receiptDate"></td>
+            <td><input type="date" x-model="formData.estimateInfo.receiptDate"></td>
           </tr>
         </table>
       </div>

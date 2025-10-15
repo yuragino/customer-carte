@@ -54,8 +54,8 @@ document.addEventListener('alpine:init', () => {
 
         const record = {
           id: doc.id,
-          name: cust.basic?.name || '名無し',
-          gender: cust.basic?.outfit === '振袖' ? 'female' : 'male',
+          name: cust.basicInfo?.name || '名無し',
+          gender: cust.basicInfo?.outfit === '振袖' ? 'female' : 'male',
           staff: cust.staff || [],
           reception: reception ? formatTimestamp(reception) : null,
           guidance: guidance ? formatTimestamp(guidance) : null,

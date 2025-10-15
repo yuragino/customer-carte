@@ -82,7 +82,7 @@ document.addEventListener('alpine:init', () => {
 
       if (groupId) {
         // 編集モード：既存データを読み込む
-        await this.loadFormData(groupId);
+        await this.loadData(groupId);
       } else {
         // 新規登録モード：初期データを設定
         this.updateCustomerList();
@@ -92,7 +92,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // --- Firestoreからデータを取得し、フォームに反映させるメソッド ---
-    async loadFormData(groupId) {
+    async loadData(groupId) {
       try {
         const docRef = doc(db, COLLECTION_NAME, groupId);
         const docSnap = await getDoc(docRef);

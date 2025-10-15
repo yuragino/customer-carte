@@ -39,79 +39,79 @@
 
     <div x-show="!isLoading && errorMessage" class="error-message" x-text="errorMessage"></div>
 
-    <div class="page" x-show="!isLoading && customerData.basic" x-cloak>
+    <div class="page" x-show="!isLoading && formData.basicInfo" x-cloak>
       <h2 x-text="`${selectedYear}成人式着付受付`"></h2>
       <div class="card">
         <h2><i class="fa-regular fa-circle-user"></i> 基本情報</h2>
         <table>
           <tr>
             <th>予約受付日</th>
-            <td x-text="formatDateOnly(customerData.basic.reservationDate)"></td>
+            <td x-text="formatDateOnly(formData.basicInfo.reservationDate)"></td>
           </tr>
           <tr>
             <th>名前</th>
             <td>
-              <span class="furigana" x-text="customerData.basic.kana"></span>
-              <span class="name" x-text="customerData.basic.name"></span>
+              <span class="furigana" x-text="formData.basicInfo.kana"></span>
+              <span class="name" x-text="formData.basicInfo.name"></span>
               様
             </td>
           </tr>
           <tr>
             <th>紹介者</th>
-            <td x-text="customerData.basic.introducer || 'ー'"></td>
+            <td x-text="formData.basicInfo.introducer || 'ー'"></td>
           </tr>
           <tr>
             <th>住所</th>
-            <td x-text="customerData.basic.address || 'ー'"></td>
+            <td x-text="formData.basicInfo.address || 'ー'"></td>
           </tr>
           <tr>
             <th>LINE</th>
-            <td x-text="customerData.basic.lineType || 'ー'"></td>
+            <td x-text="formData.basicInfo.lineType || 'ー'"></td>
           </tr>
           <tr>
             <th>電話番号</th>
-            <td x-text="customerData.basic.phone || 'ー'"></td>
+            <td x-text="formData.basicInfo.phone || 'ー'"></td>
           </tr>
           <tr>
             <th>身長</th>
-            <td x-text="customerData.basic.height ? `${customerData.basic.height} cm` : 'ー'"></td>
+            <td x-text="formData.basicInfo.height ? `${formData.basicInfo.height} cm` : 'ー'"></td>
           </tr>
           <tr>
             <th>足サイズ</th>
-            <td x-text="customerData.basic.footSize ? `${customerData.basic.footSize} cm` : 'ー'"></td>
+            <td x-text="formData.basicInfo.footSize ? `${formData.basicInfo.footSize} cm` : 'ー'"></td>
           </tr>
           <tr>
             <th>衣装</th>
-            <td x-text="customerData.basic.outfit || 'ー'"></td>
+            <td x-text="formData.basicInfo.outfit || 'ー'"></td>
           </tr>
-          <tr x-show="customerData.basic.outfit">
+          <tr x-show="formData.basicInfo.outfit">
             <th>利用形態</th>
-            <td x-text="customerData.basic.rentalType || 'ー'"></td>
+            <td x-text="formData.basicInfo.rentalType || 'ー'"></td>
           </tr>
-          <tr x-show="customerData.basic.outfit === '振袖'">
+          <tr x-show="formData.basicInfo.outfit === '振袖'">
             <th>ヘアメイク担当</th>
-            <td x-text="customerData.basic.hairMakeStaff || 'ー'"></td>
+            <td x-text="formData.basicInfo.hairMakeStaff || 'ー'"></td>
           </tr>
-          <tr x-show="customerData.basic.outfit">
+          <tr x-show="formData.basicInfo.outfit">
             <th>備考</th>
-            <td class="note" x-text="customerData.basic.outfitMemo || 'ー'"></td>
+            <td class="note" x-text="formData.basicInfo.outfitMemo || 'ー'"></td>
           </tr>
         </table>
       </div>
 
       <div class="card">
         <h2><i class="fa-regular fa-calendar-check"></i> 当日スケジュール</h2>
-        <table x-show="customerData.basic.outfit">
-          <template x-if="customerData.basic.outfit === '振袖'">
-            <template x-for="task in customerData.toujitsu.schedule" :key="task.id">
+        <table x-show="formData.basicInfo.outfit">
+          <template x-if="formData.basicInfo.outfit === '振袖'">
+            <template x-for="task in formData.toujitsuInfo.schedule" :key="task.id">
               <tr>
                 <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
                 <td x-text="task.start && task.end ? `${formatTime(task.start)} 〜 ${formatTime(task.end)}` : 'ー'"></td>
               </tr>
             </template>
           </template>
-          <template x-if="customerData.basic.outfit === '袴'">
-            <tr x-data="{ kitsukeTask: customerData.toujitsu.schedule.find(t => t.type === 'kitsuke') }">
+          <template x-if="formData.basicInfo.outfit === '袴'">
+            <tr x-data="{ kitsukeTask: formData.toujitsuInfo.schedule.find(t => t.type === 'kitsuke') }">
               <th>着付時間</th>
               <td
                 x-text="kitsukeTask && kitsukeTask.start && kitsukeTask.end ? `${formatTime(kitsukeTask.start)} 〜 ${formatTime(kitsukeTask.end)}` : 'ー'">
@@ -120,10 +120,10 @@
           </template>
           <tr>
             <th>備考</th>
-            <td class="note" x-text="customerData.toujitsu.note || 'ー'"></td>
+            <td class="note" x-text="formData.toujitsuInfo.note || 'ー'"></td>
           </tr>
         </table>
-        <p x-show="!customerData.basic.outfit">衣装が選択されていません。</p>
+        <p x-show="!formData.basicInfo.outfit">衣装が選択されていません。</p>
       </div>
 
       <div class="card">
@@ -155,53 +155,53 @@
 
       <div class="card">
         <h2><i class="fa-solid fa-camera-retro"></i> 前撮り</h2>
-        <div x-show="customerData.maedoriStatus === 'なし'">
+        <div x-show="formData.maedoriInfo.status === 'なし'">
           <p>なし</p>
-          <table x-show="customerData.maedori.note">
+          <table x-show="formData.maedoriInfo.note">
             <tr>
               <th>備考</th>
-              <td class="note" x-text="customerData.maedori.note"></td>
+              <td class="note" x-text="formData.maedoriInfo.note"></td>
             </tr>
           </table>
         </div>
-        <table x-show="customerData.maedoriStatus === 'あり'">
+        <table x-show="formData.maedoriInfo.status === 'あり'">
           <tr>
             <th>種類</th>
-            <td x-text="customerData.maedori.type || 'ー'"></td>
+            <td x-text="formData.maedoriInfo.type || 'ー'"></td>
           </tr>
           <tr>
             <th>カメラマン</th>
-            <td x-text="customerData.maedori.camera || 'ー'"></td>
+            <td x-text="formData.maedoriInfo.camera || 'ー'"></td>
           </tr>
           <tr>
             <th>撮影日</th>
-            <td x-text="formatDateOnly(customerData.maedori.date) || 'ー'"></td>
+            <td x-text="formatDateOnly(formData.maedoriInfo.date) || 'ー'"></td>
           </tr>
           <tr>
             <th>ヘア時間</th>
             <td
-              x-text="customerData.maedori.hairStart && customerData.maedori.hairEnd ? `${formatTime(customerData.maedori.hairStart)} 〜 ${formatTime(customerData.maedori.hairEnd)}` : 'ー'">
+              x-text="formData.maedoriInfo.hairStart && formData.maedoriInfo.hairEnd ? `${formatTime(formData.maedoriInfo.hairStart)} 〜 ${formatTime(formData.maedoriInfo.hairEnd)}` : 'ー'">
             </td>
           </tr>
           <tr>
             <th>着付時間</th>
             <td
-              x-text="customerData.maedori.kitsukeStart && customerData.maedori.kitsukeEnd ? `${formatTime(customerData.maedori.kitsukeStart)} 〜 ${formatTime(customerData.maedori.kitsukeEnd)}` : 'ー'">
+              x-text="formData.maedoriInfo.kitsukeStart && formData.maedoriInfo.kitsukeEnd ? `${formatTime(formData.maedoriInfo.kitsukeStart)} 〜 ${formatTime(formData.maedoriInfo.kitsukeEnd)}` : 'ー'">
             </td>
           </tr>
           <tr>
             <th>撮影時間</th>
             <td
-              x-text="customerData.maedori.shootStart && customerData.maedori.shootEnd ? `${customerData.maedori.shootStart} 〜 ${customerData.maedori.shootEnd}` : 'ー'">
+              x-text="formData.maedoriInfo.shootStart && formData.maedoriInfo.shootEnd ? `${formData.maedoriInfo.shootStart} 〜 ${formData.maedoriInfo.shootEnd}` : 'ー'">
             </td>
           </tr>
           <tr>
             <th>着付場所</th>
-            <td x-text="customerData.maedori.place || 'ー'"></td>
+            <td x-text="formData.maedoriInfo.place || 'ー'"></td>
           </tr>
           <tr>
             <th>備考</th>
-            <td class="note" x-text="customerData.maedori.note || 'ー'"></td>
+            <td class="note" x-text="formData.maedoriInfo.note || 'ー'"></td>
           </tr>
         </table>
       </div>
@@ -217,12 +217,27 @@
             </tr>
           </thead>
           <tbody>
-            <template x-for="(item, index) in customerData.estimateItems" :key="index">
-              <tr>
-                <td x-text="getEstimateItemName(item, index)"></td>
-                <td x-text="getEstimateUsageText(item)"></td>
-                <td class="price-col" x-text="formatYen(calcPrice(item))"></td>
-              </tr>
+            <!-- kitsuke -->
+            <tr>
+              <td x-text="formData.estimateInfo.kitsuke.name"></td>
+              <td x-text="getTimingLabel(formData.estimateInfo.kitsuke)"></td>
+              <td class="price-col" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></td>
+            </tr>
+            <!-- hairMake -->
+            <tr>
+              <td x-text="formData.estimateInfo.hairMake.type"></td>
+              <td x-text="getTimingLabel(formData.estimateInfo.hairMake)"></td>
+              <td class="price-col" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></td>
+            </tr>
+            <!-- options が存在する場合のみ -->
+            <template x-if="formData.estimateInfo.options.length > 0">
+              <template x-for="(option, index) in formData.estimateInfo.options" :key="index">
+                <tr>
+                  <td x-text="option.name"></td>
+                  <td x-text="getTimingLabel(option)"></td>
+                  <td class="price-col" x-text="formatYen(option.price)"></td>
+                </tr>
+              </template>
             </template>
           </tbody>
           <tfoot>
@@ -239,7 +254,7 @@
         <table>
           <tr>
             <th>領収日</th>
-            <td x-text="formatDateOnly(customerData.estimate.receiptDate) || '未領収'"></td>
+            <td x-text="formatDateOnly(formData.estimateInfo.receiptDate)"></td>
           </tr>
         </table>
       </div>

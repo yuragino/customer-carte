@@ -45,8 +45,8 @@ document.addEventListener('alpine:init', () => {
       const query = normalizeForSearch(this.searchQuery);
 
       return this.customers.filter(c => {
-        const kana = normalizeForSearch(c.basic?.kana || "");
-        const name = normalizeForSearch(c.basic?.name || "");
+        const kana = normalizeForSearch(c.basicInfo?.kana || "");
+        const name = normalizeForSearch(c.basicInfo?.name || "");
         return kana.includes(query) || name.includes(query);
       });
     },

@@ -9,7 +9,9 @@ export const SEIJINSHIKI_PRICES = {
     HAIR_MAKE: 10000,
     HAIR_ONLY: 6000,
   },
-  HAKAMA: { KITSUKE: 8500 }
+  HAKAMA: {
+    KITSUKE: { MAEDORI: 8500, TOUJITSU: 8500, BOTH: 17000 }
+  }
 };
 
 export const OUTFIT_KEY_MAP = {

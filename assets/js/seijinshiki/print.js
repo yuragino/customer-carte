@@ -1,6 +1,7 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
+import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils.js';
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
@@ -12,89 +13,77 @@ document.addEventListener('alpine:init', () => {
     // ===== 状態管理 =====
     currentCustomerId: null,
     isLoading: true,
-    errorMessage: '',
-    customerData: {},
+    formData: {},
 
-    // ===== 初期化処理 =====
+    get collectionName() {
+      return `${this.selectedYear}_seijinshiki`;
+    },
+    get docRef() {
+      return doc(db, this.collectionName, this.currentCustomerId);
+    },
+    get totalAmount() {
+      const { kitsuke, hairMake, options } = this.formData.estimateInfo;
+      const baseTotal = this.calcPrice(kitsuke) + this.calcPrice(hairMake);
+      const optionsTotal = options.reduce((sum, option) => sum + option.price, 0);
+      return baseTotal + optionsTotal;
+    },
+    get sortedMeetings() {
+      return [...this.formData.meetings].sort((a, b) => new Date(a.date) - new Date(b.date));
+    },
+
     async init() {
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
       this.currentCustomerId = params.get('customer');
-
-      if (this.currentCustomerId) {
-        await this.loadCustomerData();
-      } else {
-        this.errorMessage = 'お客様が指定されていません。';
-        this.isLoading = false;
-      }
+      if (this.currentCustomerId) await this.loadData();
     },
 
-    // ===== データ読み込み =====
-    async loadCustomerData() {
+    async loadData() {
       this.isLoading = true;
-      this.errorMessage = '';
       try {
-        const collectionName = `${this.selectedYear}_seijinshiki`;
-        const docRef = doc(db, collectionName, this.currentCustomerId);
-        const docSnap = await getDoc(docRef);
-
+        const docSnap = await getDoc(this.docRef);
         if (docSnap.exists()) {
-          this.customerData = docSnap.data();
+          this.formData = docSnap.data();
         } else {
-          this.errorMessage = '指定されたデータが見つかりませんでした。';
+          alert('指定されたデータが見つかりませんでした。');
+          this.currentCustomerId = null;
         }
       } catch (error) {
         console.error("データ取得エラー: ", error);
-        this.errorMessage = 'データの読み込みに失敗しました。';
+        alert('データの読み込みに失敗しました。');
       } finally {
         this.isLoading = false;
       }
     },
 
-    // ===== 表示用ヘルパー =====
-    get sortedMeetings() {
-      if (!this.customerData.meetings || this.customerData.meetings.length === 0) {
-        return [];
-      }
-      return [...this.customerData.meetings].sort((a, b) => new Date(a.date) - new Date(b.date));
-    },
-
-    getEstimateUsageText(item) {
-      const forToujitsu = item.toujitsu;
-      const forMaedori = item.maedori;
-
-      if (item.option === 'none') return '対象外';
-      if (forToujitsu && forMaedori) return '前撮り＆当日';
-      if (forToujitsu) return '当日のみ';
-      if (forMaedori) return '前撮りのみ';
+    getTimingLabel(item) {
+      const { hasToujitsu, hasMaedori } = item;
+      const both = hasToujitsu && hasMaedori;
+      if (item.type === 'ヘアメイクなし') return '対象外';
+      if (both) return '前撮り＆当日';
+      if (hasToujitsu) return '当日のみ';
+      if (hasMaedori) return '前撮りのみ';
       return 'なし';
     },
 
-    getEstimateItemName(item, index) {
-      // nameがあれば優先
-      if (item.name) return item.name;
-      // item.optionがあればそれを表示
-      if (item.option) return item.option;
-      // indexによるフォールバック
-      if (index === 0) return '着付';
-      return '(名称未設定)';
-    },
-
-    // ===== 計算ロジック (シンプル版) =====
     calcPrice(item) {
-      const count = (item.toujitsu ? 1 : 0) + (item.maedori ? 1 : 0);
-      if (count === 0 || item.option === 'none') return 0;
-
-      // 全ての項目で item.price を参照する
-      const basePrice = item.price || 0;
-      return basePrice * count;
-    },
-
-    get totalAmount() {
-      if (!this.customerData.estimateItems) return 0;
-      return this.customerData.estimateItems.reduce((sum, item) => {
-        return sum + this.calcPrice(item);
-      }, 0);
+      const outfitKey = OUTFIT_KEY_MAP[this.formData.basicInfo.outfit];
+      const priceTable = SEIJINSHIKI_PRICES[outfitKey];
+      const { hasToujitsu, hasMaedori } = item;
+      const both = hasToujitsu && hasMaedori;
+      if (item.name === '着付') {
+        if (both) return priceTable.KITSUKE.BOTH;
+        if (hasToujitsu) return priceTable.KITSUKE.TOUJITSU;
+        if (hasMaedori) return priceTable.KITSUKE.MAEDORI;
+      }
+      if (item.name === 'ヘアメイク') {
+        if (outfitKey !== 'FURISODE') return 0;
+        let unitPrice = 0;
+        if (item.type === 'ヘア＆メイク') unitPrice = priceTable.HAIR_MAKE;
+        else if (item.type === 'ヘアのみ') unitPrice = priceTable.HAIR_ONLY;
+        return (hasToujitsu + hasMaedori) * unitPrice;
+      }
+      return 0;
     },
 
   }));

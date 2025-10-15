@@ -49,7 +49,7 @@
       <div class="accordion">
         <button @click="toggleAccordion(customer.id)">
           <div class="accordion-text">
-            <span x-text="customer.basic.name"></span>
+            <span x-text="customer.basicInfo.name"></span>
           </div>
           <i class="fa-solid chevron" :class="isOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         </button>

@@ -47,8 +47,8 @@ document.addEventListener('alpine:init', () => {
           if (a.isCanceled !== b.isCanceled) {
             return a.isCanceled ? 1 : -1;
           }
-          const timeA = a.toujitsu?.schedule[0]?.start || '99:99';
-          const timeB = b.toujitsu?.schedule[0]?.start || '99:99';
+          const timeA = a.toujitsuInfo?.schedule[0]?.start || '99:99';
+          const timeB = b.toujitsuInfo?.schedule[0]?.start || '99:99';
           return timeA.localeCompare(timeB);
         });
 

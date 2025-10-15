@@ -70,18 +70,18 @@
 
         <template x-for="customer in customers" :key="customer.id">
           <tr :class="{'is-canceled': customer.isCanceled}">
-            <td x-text="customer.toujitsu?.schedule[0]?.start || '--:--'"></td>
+            <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
 
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
 
             <td>
-              <span :class="customer.basic?.outfit === '振袖' ? 'gender-female' : 'gender-male'"
-                x-text="customer.basic?.name || '名前なし'"></span>
+              <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'"
+                x-text="customer.basicInfo?.name || '名前なし'"></span>
             </td>
 
             <td>
               <div class="booth-radios">
-                <template x-for="booth in customer.basic?.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale"
+                <template x-for="booth in customer.basicInfo?.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale"
                   :key="booth">
                   <label :class="{'disabled': customer.isCanceled}">
                     <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
