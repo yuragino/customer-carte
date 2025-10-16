@@ -115,6 +115,7 @@ document.addEventListener('alpine:init', () => {
         imagePreviews: [], imageFiles: [],
         paymentMethod: '',
         discountAmount: 0,
+        discountMemo: '',
         onSitePaymentAdjusted: 0,
       };
     },
@@ -131,49 +132,38 @@ document.addEventListener('alpine:init', () => {
 
     // ==== 画像処理 ====
     handleImageUpload(event, customerIndex) {
-      const files = event.target.files;
-      if (!files) return;
-      this.formData.customers[customerIndex].imagePreviews.forEach(url => URL.revokeObjectURL(url));
-      const newPreviews = [];
-      const newFiles = [];
-      for (const file of files) {
-        newPreviews.push(URL.createObjectURL(file));
-        newFiles.push(file);
-      }
-      this.formData.customers[customerIndex].imagePreviews = newPreviews;
-      this.formData.customers[customerIndex].imageFiles = newFiles;
+      const files = [...(event.target.files || [])];
+      const customer = this.formData.customers[customerIndex];
+      customer.imagePreviews.forEach(URL.revokeObjectURL);
+      customer.imagePreviews = files.map(f => URL.createObjectURL(f));
+      customer.imageFiles = files;
+    },
+
+    async processCustomerData() {
+      return Promise.all(this.formData.customers.map(async (c) => {
+        const { imageFiles, imagePreviews, ...data } = c;
+        data.imageUrls = await uploadMediaToCloudinary(imageFiles, COLLECTION_NAME);
+        return data;
+      }));
     },
 
     async submitForm() {
       this.isSubmitting = true;
       try {
-        // --- 顧客データの画像アップロード処理 ---
-        const processedCustomers = await Promise.all(
-          this.formData.customers.map(async (customer) => {
-            const { imageFiles, imagePreviews, ...customerData } = customer;
-            const newImageUrls = await uploadMediaToCloudinary(imageFiles, COLLECTION_NAME);
-            customerData.imageUrls = newImageUrls;
-            return customerData;
-          })
-        );
-        const dataToSave = {
-          ...this.formData,
-          customers: processedCustomers,
-          updatedAt: serverTimestamp(),
-        };
-        const collectionRef = collection(db, COLLECTION_NAME);
+        const customers = await this.processCustomerData();
+        const data = { ...this.formData, customers, updatedAt: serverTimestamp() };
+        const col = collection(db, COLLECTION_NAME);
         if (this.docId) {
-          await updateDoc(this.docRef, dataToSave);
+          await updateDoc(this.docRef, data);
           alert('更新が完了しました。');
         } else {
-          dataToSave.createdAt = serverTimestamp();
-          await addDoc(collectionRef, dataToSave);
+          await addDoc(col, { ...data, createdAt: serverTimestamp() });
           alert('登録が完了しました。');
-          window.location.href = './index.html';
+          location.href = './index.html';
         }
-      } catch (error) {
-        console.error("登録エラー: ", error);
-        alert(`登録中にエラーが発生しました。\n${error.message}`);
+      } catch (err) {
+        console.error('登録エラー', err);
+        alert(`登録中にエラーが発生しました。\n${err.message}`);
       } finally {
         this.isSubmitting = false;
       }
@@ -198,7 +188,7 @@ document.addEventListener('alpine:init', () => {
     },
     addRentalItem() {
       const { name, price } = this.rentalModal.input
-      if (name === '') return;
+      if (name === '') return alert('項目名を入力してください');
       this.formData.customers[this.activeCustomerIndex].additionalRentals.push({ name, price })
       this.rentalModal.isOpen = false
     },
