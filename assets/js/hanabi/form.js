@@ -215,7 +215,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // 顧客データオブジェクトのテンプレートを作成する
-    createCustomerTemplate(gender, id) {
+    createInitialCustomerData(gender, id) {
       return {
         id: id,
         gender: gender,
@@ -249,7 +249,7 @@ document.addEventListener('alpine:init', () => {
           existingCustomer.gender = gender;
           newCustomerList.push(existingCustomer);
         } else {
-          newCustomerList.push(this.createCustomerTemplate(gender, Date.now() + i));
+          newCustomerList.push(this.createInitialCustomerData(gender, Date.now() + i));
         }
       }
       this.customers = newCustomerList;

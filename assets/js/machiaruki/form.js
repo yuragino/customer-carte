@@ -105,7 +105,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ==== 顧客データ関連 ====
-    createCustomerTemplate(gender, id) {
+    createInitialCustomerData(gender, id) {
       return {
         id, gender, name: '',
         bodyShape: null, weight: null, height: null, footSize: null,
@@ -125,7 +125,7 @@ document.addEventListener('alpine:init', () => {
       this.formData.customers = Array.from({ length: totalCount }, (_, i) => {
         const gender = i < femaleCount ? 'female' : 'male';
         const existingCustomer = customers[i];
-        return existingCustomer ? { ...existingCustomer, gender } : this.createCustomerTemplate(gender, `${Date.now()}-${i}`);
+        return existingCustomer ? { ...existingCustomer, gender } : this.createInitialCustomerData(gender, `${Date.now()}-${i}`);
       });
     },
 
@@ -198,7 +198,7 @@ document.addEventListener('alpine:init', () => {
     },
     addRentalItem() {
       const { name, price } = this.rentalModal.input
-      if (name !== '') return;
+      if (name === '') return;
       this.formData.customers[this.activeCustomerIndex].additionalRentals.push({ name, price })
       this.rentalModal.isOpen = false
     },
@@ -252,5 +252,3 @@ document.addEventListener('alpine:init', () => {
 
   }));
 });
-
-// 380行
