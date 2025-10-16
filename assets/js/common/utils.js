@@ -67,3 +67,12 @@ export function formatTime(timeStr) {
 export function formatYen(amount) {
   return isFinite(amount) ? Number(amount).toLocaleString('ja-JP') + '円' : '—';
 }
+
+export function toggleRadioUtil(event, modelName, targetObj) {
+  const clickedValue = event.target.value;
+  if (targetObj[modelName] === clickedValue) {
+    setTimeout(() => { targetObj[modelName] = null; }, 0);
+  } else {
+    targetObj[modelName] = clickedValue;
+  }
+}

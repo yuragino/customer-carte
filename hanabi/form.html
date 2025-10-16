@@ -231,7 +231,7 @@
               <button type="button" class="add-btn" @click="openRentalModal(index)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
             <div class="form-cell">
-              <input type="file" @change="handleImageUpload($event, index)">
+              <input type="file" @change="prepareMediaPreview($event, index)">
               <div class="preview-container">
                 <template x-for="src in customer.imagePreviews" :key="src">
                   <img :src="src" class="preview-image">

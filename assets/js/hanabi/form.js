@@ -275,7 +275,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     // 画像選択時の処理。プレビューURLとFileオブジェクトの両方を保存する
-    handleImageUpload(event, customerIndex) {
+    prepareMediaPreview(event, customerIndex) {
       const files = event.target.files;
       if (!files) return;
       // 既存のプレビューURLを解放

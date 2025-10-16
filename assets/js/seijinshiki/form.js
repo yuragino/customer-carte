@@ -2,7 +2,7 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp 
 import { db } from '../common/firebase-config.js';
 import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { getYearSettings } from '../common/year-selector.js';
-import { uploadMediaArrayToCloudinary } from '../common/form-utils.js';
+import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from '../common/media-utils.js';
 import { formatFullDateTime, formatYen } from '../common/utils.js';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -15,12 +15,6 @@ document.addEventListener('alpine:init', () => {
 
     // --- フォーム全体のデータ ---
     formData: createInitialFormData(),
-
-    // --- メディアファイル管理 ---
-    newImageFiles: [],
-    newVideoFiles: [],
-    newImagePreviews: [],
-    newVideoPreviews: [],
 
     // --- 打ち合わせモーダル用 ---
     isMeetingModalOpen: false,
@@ -72,10 +66,14 @@ document.addEventListener('alpine:init', () => {
         const newImageUrls = await uploadMediaArrayToCloudinary(this.newImageFiles, this.collectionName);
         const newVideoUrls = await uploadMediaArrayToCloudinary(this.newVideoFiles, this.collectionName);
         // 保存するデータオブジェクトを作成
+        const { newImageFiles, newVideoFiles, newImagePreviews, newVideoPreviews, ...mediaForSave } = this.formData.media;
         const dataToSave = {
           ...this.formData,
-          imageUrls: [...this.formData.imageUrls, ...newImageUrls],
-          videoUrls: [...this.formData.videoUrls, ...newVideoUrls],
+          media: {
+            ...mediaForSave,
+            imageUrls: [...mediaForSave.imageUrls, ...newImageUrls],
+            videoUrls: [...mediaForSave.videoUrls, ...newVideoUrls],
+          },
           updatedAt: serverTimestamp(),
         };
         const collectionRef = collection(db, this.collectionName);
@@ -158,23 +156,12 @@ document.addEventListener('alpine:init', () => {
       return 0;
     },
     // ===== メディア処理 =====
-    handleMediaUpload(event, type) {
-      const files = [...event.target.files];
-      const previews = files.map(file => URL.createObjectURL(file));
-      if (type === 'image') {
-        this.newImageFiles = files;
-        this.newImagePreviews = previews;
-      } else {
-        this.newVideoFiles = files;
-        this.newVideoPreviews = previews;
-      }
-      event.target.value = '';
+    prepareMediaPreview(event, type) {
+      prepareMediaPreviewUtil(event, type, this.formData.media);
     },
-    removeMedia(type, index) {
-      if (confirm('このメディアを削除しますか？')) {
-        if (type === 'image') this.formData.imageUrls.splice(index, 1);
-        if (type === 'video') this.formData.videoUrls.splice(index, 1);
-      }
+
+    removeMedia(mediaType, index) {
+      removeMediaUtil(mediaType, index, this.formData.media);
     },
 
     // ===== ユーティリティ =====
@@ -214,8 +201,14 @@ function createInitialFormData() {
       options: [],
       receiptDate: ''
     },
-    imageUrls: [],
-    videoUrls: [],
+    media: {
+      imageUrls: [],
+      videoUrls: [],
+      newImageFiles: [],
+      newVideoFiles: [],
+      newImagePreviews: [],
+      newVideoPreviews: [],
+    },
     isCanceled: false,
   };
 }

@@ -42,11 +42,8 @@
 
     <form @submit.prevent="submitForm">
       <div class="form-section">
-        <h2 class="section-title" @click="isRepresentativeInfoOpen = !isRepresentativeInfoOpen">
-          代表者情報
-          <i class="fa-solid" :class="isRepresentativeInfoOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-        </h2>
-        <div x-show="isRepresentativeInfoOpen">
+        <h2 class="section-title">代表者情報</h2>
+        <div>
           <table class="form-table">
             <tr>
               <th>予約方法</th>
@@ -222,10 +219,28 @@
               <button type="button" class="add-btn" @click="openRentalModal(customerIndex)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
             <div class="form-cell">
-              <input type="file" @change="handleImageUpload($event, customerIndex)">
+              <label class="file-upload-label">
+                <i class="fa-solid fa-camera"></i>
+                <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, customerIndex)">
+              </label>
               <div class="preview-container">
-                <template x-for="src in customer.imagePreviews" :key="src">
-                  <img :src="src" class="preview-image">
+                <!-- 保存済み -->
+                <template x-for="(url, index) in customer.imageUrls" :key="url">
+                  <div class="preview-item">
+                    <img :src="url" class="preview-image">
+                    <button type="button" class="btn-del" @click="removeMedia(customerIndex,'saved-image',index)">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </template>
+                <!-- 新規追加プレビュー -->
+                <template x-for="(src, index) in customer.newImagePreviews" :key="src">
+                  <div class="preview-item">
+                    <img :src="src" class="preview-image">
+                    <button type="button" class="btn-del" @click="removeMedia(customerIndex,'new-image',index)">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
                 </template>
               </div>
             </div>

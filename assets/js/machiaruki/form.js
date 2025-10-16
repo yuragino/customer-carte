@@ -1,46 +1,25 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { CASUAL_PRICES } from '../common/constants.js';
-import { formatYen } from "../common/utils.js";
-import { uploadMediaToCloudinary } from "../common/form-utils.js";
+import { formatYen, toggleRadioUtil } from "../common/utils.js";
+import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/media-utils.js";
 const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('App', () => ({
     formatYen,
-    activeCustomerIndex: null,    // 一時的に操作中の顧客を指す共通インデックス
-    docId: null, // パラメータ
-    isRepresentativeInfoOpen: true,
+    activeCustomerIndex: null, // 一時的に操作中の顧客を指す共通インデックス
+    docId: null,              // パラメータ
     isSubmitting: false,
-
-    formData: {
-      representative: {
-        reservationMethod: null, name: '', kana: '',
-        visitDateTime: '', finishTime: '', returnTime: '',
-        address: '', phone: '',
-        transportation: '車', lineType: '椿LINE',
-        notes: '',
-        checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
-        paymentType: 'group', groupPaymentMethod: '',
-        isCanceled: false,
-      },
-      femaleCount: 1, maleCount: 1,
-      customers: []
-    },
+    formData: createInitialFormData(),
     rentalModal: {
       isOpen: false,
-      input: {
-        name: '',
-        price: null,
-      },
+      input: { name: '', price: null },
     },
     discountModal: {
       isOpen: false,
       originalPrice: 0,
-      input: {
-        amount: 0,
-        memo: '',
-      },
+      input: { amount: 0, memo: '' },
       adjustedPrice: 0,
     },
 
@@ -82,7 +61,6 @@ document.addEventListener('alpine:init', () => {
         const docSnap = await getDoc(this.docRef);
         if (docSnap.exists()) {
           this.formData = docSnap.data();
-          this.isRepresentativeInfoOpen = true;
         } else {
           alert('指定されたデータが見つかりませんでした。');
           this.docId = null;
@@ -94,90 +72,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     toggleRadio(event, modelName) {
-      const clickedValue = event.target.value;
-      if (this.formData.representative[modelName] === clickedValue) {
-        setTimeout(() => {
-          this.formData.representative[modelName] = null;
-        }, 0);
-      } else {
-        this.formData.representative[modelName] = clickedValue;
-      }
-    },
-
-    // ==== 顧客データ関連 ====
-    createInitialCustomerData(gender, id) {
-      return {
-        id, gender, name: '',
-        bodyShape: null, weight: null, height: null, footSize: null,
-        dressingType: 'レンタル&着付',
-        options: { footwear: false, obiBag: false },
-        additionalRentals: [],
-        imagePreviews: [], imageFiles: [],
-        paymentMethod: '',
-        discountAmount: 0,
-        discountMemo: '',
-        onSitePaymentAdjusted: 0,
-      };
-    },
-
-    updateCustomerList() {
-      const { femaleCount, maleCount, customers } = this.formData;
-      const totalCount = femaleCount + maleCount;
-      this.formData.customers = Array.from({ length: totalCount }, (_, i) => {
-        const gender = i < femaleCount ? 'female' : 'male';
-        const existingCustomer = customers[i];
-        return existingCustomer ? { ...existingCustomer, gender } : this.createInitialCustomerData(gender, `${Date.now()}-${i}`);
-      });
-    },
-
-    // ==== 画像処理 ====
-    handleImageUpload(event, customerIndex) {
-      const files = [...(event.target.files || [])];
-      const customer = this.formData.customers[customerIndex];
-      customer.imagePreviews.forEach(URL.revokeObjectURL);
-      customer.imagePreviews = files.map(f => URL.createObjectURL(f));
-      customer.imageFiles = files;
-    },
-
-    async processCustomerData() {
-      return Promise.all(this.formData.customers.map(async (c) => {
-        const { imageFiles, imagePreviews, ...data } = c;
-        data.imageUrls = await uploadMediaToCloudinary(imageFiles, COLLECTION_NAME);
-        return data;
-      }));
-    },
-
-    async submitForm() {
-      this.isSubmitting = true;
-      try {
-        const customers = await this.processCustomerData();
-        const data = { ...this.formData, customers, updatedAt: serverTimestamp() };
-        const col = collection(db, COLLECTION_NAME);
-        if (this.docId) {
-          await updateDoc(this.docRef, data);
-          alert('更新が完了しました。');
-        } else {
-          await addDoc(col, { ...data, createdAt: serverTimestamp() });
-          alert('登録が完了しました。');
-          location.href = './index.html';
-        }
-      } catch (err) {
-        console.error('登録エラー', err);
-        alert(`登録中にエラーが発生しました。\n${err.message}`);
-      } finally {
-        this.isSubmitting = false;
-      }
-    },
-
-    async deleteForm() {
-      if (!confirm('このカルテを削除しますか？')) return;
-      try {
-        await deleteDoc(this.docRef);
-        window.location.href = './index.html';
-      } catch (error) {
-        console.error("削除エラー: ", error);
-        alert(`削除中にエラーが発生しました。\n${error.message}`);
-      }
+      toggleRadioUtil(event, modelName, this.formData.representative);
     },
 
     // 追加レンタル
@@ -214,6 +109,67 @@ document.addEventListener('alpine:init', () => {
       this.discountModal.isOpen = false;
     },
 
+    updateCustomerList() {
+      const { femaleCount, maleCount, customers } = this.formData;
+      const totalCount = femaleCount + maleCount;
+      this.formData.customers = Array.from({ length: totalCount }, (_, i) => {
+        const gender = i < femaleCount ? 'female' : 'male';
+        const existingCustomer = customers[i];
+        return existingCustomer ? { ...existingCustomer, gender } : createInitialCustomerData(gender, `${Date.now()}-${i}`);
+      });
+    },
+
+    // ==== 画像処理 ====
+    prepareMediaPreview(event, customerIndex) {
+      prepareMediaPreviewUtil(event, 'image', this.formData.customers[customerIndex]);
+    },
+
+    removeMedia(customerIndex, mediaType, index) {
+      removeMediaUtil(mediaType, index, this.formData.customers[customerIndex]);
+    },
+
+    async processCustomerData() {
+      return Promise.all(this.formData.customers.map(async (customer) => {
+        const { newImageFiles, newImagePreviews, ...customerForSave } = customer;
+        const newImageUrls = await uploadMediaArrayToCloudinary(newImageFiles, COLLECTION_NAME);
+        customerForSave.imageUrls = [...customer.imageUrls, ...newImageUrls];
+        return customerForSave;
+      }));
+    },
+
+    async submitForm() {
+      this.isSubmitting = true;
+      try {
+        const customers = await this.processCustomerData();
+        const data = { ...this.formData, customers, updatedAt: serverTimestamp() };
+        const col = collection(db, COLLECTION_NAME);
+        if (this.docId) {
+          await updateDoc(this.docRef, data);
+          alert('更新が完了しました。');
+        } else {
+          await addDoc(col, { ...data, createdAt: serverTimestamp() });
+          alert('登録が完了しました。');
+          location.href = './index.html';
+        }
+      } catch (err) {
+        console.error('登録エラー', err);
+        alert(`登録中にエラーが発生しました。\n${err.message}`);
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+
+    async deleteForm() {
+      if (!confirm('このカルテを削除しますか？')) return;
+      try {
+        await deleteDoc(this.docRef);
+        window.location.href = './index.html';
+      } catch (error) {
+        console.error("削除エラー: ", error);
+        alert(`削除中にエラーが発生しました。\n${error.message}`);
+      }
+    },
+
     // ==== 料金関係 ====
     calculateCustomerPrepayment(customer) {
       if (this.formData.representative.reservationMethod === null) return 0;
@@ -242,3 +198,36 @@ document.addEventListener('alpine:init', () => {
 
   }));
 });
+
+function createInitialFormData() {
+  return {
+    representative: {
+      reservationMethod: null, name: '', kana: '',
+      visitDateTime: '', finishTime: '', returnTime: '',
+      address: '', phone: '',
+      transportation: '車', lineType: '椿LINE',
+      notes: '',
+      checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
+      paymentType: 'group', groupPaymentMethod: '',
+      isCanceled: false,
+    },
+    femaleCount: 1, maleCount: 1,
+    customers: []
+  }
+}
+function createInitialCustomerData(gender, id) {
+  return {
+    id, gender, name: '',
+    bodyShape: null, weight: null, height: null, footSize: null,
+    dressingType: 'レンタル&着付',
+    options: { footwear: false, obiBag: false },
+    additionalRentals: [],
+    imageUrls: [],          // ← DBに保存済みのURL群
+    newImageFiles: [],      // ← Fileオブジェクト群
+    newImagePreviews: [],   // ← プレビュー表示用 blob:URL 群
+    paymentMethod: '',
+    discountAmount: 0,
+    discountMemo: '',
+    onSitePaymentAdjusted: 0,
+  };
+}

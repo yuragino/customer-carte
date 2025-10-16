@@ -81,12 +81,6 @@ select {
     font-size: 1rem;
 }
 
-input[type="file"] {
-    width: auto;
-    max-width: 110px;
-    flex: 0 0 auto;
-}
-
 .middle-width {
     width: 15rem;
 }
@@ -397,4 +391,31 @@ input[type="file"] {
 .arrow {
   margin: 6px 0;
   color: #bbb;
+}
+
+/* input自体は見えなくする */
+.file-upload-label input[type="file"] {
+  display: none;
+}
+
+/* ラベル全体でクリック可能にする */
+.form-cell .file-upload-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eee;
+  border-radius: 6px;
+  padding: 8px;
+  transition: background-color 0.2s ease;
+  margin: 0;
+}
+
+.file-upload-label:hover {
+  background-color: #ddd;
+}
+
+/* アイコンの見た目を統一 */
+.file-upload-label i {
+  font-size: 1.2em;
+  color: #555;
 }

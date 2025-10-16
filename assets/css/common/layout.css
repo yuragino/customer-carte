@@ -101,3 +101,14 @@ input:disabled {
 label:has(input:disabled) {
   cursor: default;
 }
+
+.btn-del {
+  background: none;
+  color: #dc2626;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-del:hover {
+  color: #b91c1c;
+}

@@ -312,19 +312,22 @@
           <tr>
             <th>画像</th>
             <td>
-              <input type="file" multiple accept="image/*" @change="handleMediaUpload($event, 'image')">
+              <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, 'image')">
               <div class="preview-container">
-                <template x-for="(url, index) in formData.imageUrls" :key="url">
+                <template x-for="(url, index) in formData.media.imageUrls" :key="url">
                   <div class="preview-item">
                     <img :src="url" class="preview-image">
-                    <button type="button" class="btn-del" @click="removeMedia('image', index)">
+                    <button type="button" class="btn-del" @click="removeMedia('saved-image', index)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
                 </template>
-                <template x-for="src in newImagePreviews" :key="src">
+                <template x-for="(src, index) in formData.media.newImagePreviews" :key="src">
                   <div class="preview-item">
                     <img :src="src" class="preview-image">
+                    <button type="button" class="btn-del" @click="removeMedia('new-image', index)">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
                   </div>
                 </template>
               </div>
@@ -333,19 +336,22 @@
           <tr>
             <th>動画</th>
             <td>
-              <input type="file" multiple accept="video/*" @change="handleMediaUpload($event, 'video')">
+              <input type="file" multiple accept="video/*" @change="prepareMediaPreview($event, 'video')">
               <div class="preview-container">
-                <template x-for="(url, index) in formData.videoUrls" :key="url">
+                <template x-for="(url, index) in formData.media.videoUrls" :key="url">
                   <div class="preview-item">
                     <video :src="url" class="preview-image" controls></video>
-                    <button type="button" class="btn-del" @click="removeMedia('video', index)">
+                    <button type="button" class="btn-del" @click="removeMedia('saved-video', index)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
                 </template>
-                <template x-for="src in newVideoPreviews" :key="src">
+                <template x-for="(src, index) in formData.media.newVideoPreviews" :key="src">
                   <div class="preview-item">
                     <video :src="src" class="preview-image" controls></video>
+                    <button type="button" class="btn-del" @click="removeMedia('new-video', index)">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
                   </div>
                 </template>
               </div>
