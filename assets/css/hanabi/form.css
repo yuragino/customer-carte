@@ -83,7 +83,7 @@ select {
 
 input[type="file"] {
     width: auto;
-    max-width: 100px;
+    max-width: 110px;
     flex: 0 0 auto;
 }
 

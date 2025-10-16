@@ -38,7 +38,7 @@
   </header>
   <div class="cancellation-status" x-show="formData.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
   <div class="delete-container">
-    <button type="button" class="delete-btn" x-show="currentCustomerId" @click="deleteForm">
+    <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
       <i class="fa-regular fa-trash-can"></i> カルテを削除
     </button>
   </div>
@@ -48,8 +48,8 @@
         <h2>
           <i class="fa-regular fa-circle-user"></i>
           <span>基本情報</span>
-          <div class="title-actions" x-show="currentCustomerId">
-            <a :href="`print.html?year=${selectedYear}&customer=${currentCustomerId}`" target="_blank">印刷用ページ</a>
+          <div class="title-actions" x-show="docId">
+            <a :href="`print.html?year=${selectedYear}&customer=${docId}`" target="_blank">印刷用ページ</a>
           </div>
         </h2>
         <table>
@@ -312,7 +312,7 @@
           <tr>
             <th>画像</th>
             <td>
-              <input type="file" multiple accept="image/*" @change="handleImageUpload($event)">
+              <input type="file" multiple accept="image/*" @change="handleMediaUpload($event, 'image')">
               <div class="preview-container">
                 <template x-for="(url, index) in formData.imageUrls" :key="url">
                   <div class="preview-item">
@@ -333,7 +333,7 @@
           <tr>
             <th>動画</th>
             <td>
-              <input type="file" multiple accept="video/*" @change="handleVideoUpload($event)">
+              <input type="file" multiple accept="video/*" @change="handleMediaUpload($event, 'video')">
               <div class="preview-container">
                 <template x-for="(url, index) in formData.videoUrls" :key="url">
                   <div class="preview-item">
@@ -481,10 +481,10 @@
 
       <div class="actions">
         <button type="submit" class="btn register-btn" :disabled="isSubmitting"
-          x-text="isSubmitting ? '処理中...' : (currentCustomerId ? '更新' : '登録')"></button>
+          x-text="isSubmitting ? '処理中...' : (docId ? '更新' : '登録')"></button>
       </div>
 
-      <div class="cancellation-status" x-show="currentCustomerId">
+      <div class="cancellation-status" x-show="docId">
         <label for="cancellation-toggle">
           <input type="checkbox" id="cancellation-toggle" x-model="formData.isCanceled">
           <span>キャンセルの時はここにチェックをつけて更新</span>

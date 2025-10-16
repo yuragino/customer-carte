@@ -31,7 +31,7 @@ document.addEventListener('alpine:init', () => {
     // ===== Initialization =====
     async init() {
       const params = new URLSearchParams(window.location.search);
-      const groupId = params.get('group');
+      const groupId = params.get('docId');
 
       if (!groupId) {
         this.error = "予約IDが指定されていません。";

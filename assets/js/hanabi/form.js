@@ -43,7 +43,7 @@ document.addEventListener('alpine:init', () => {
     customers: [], // 顧客詳細データ（人数に応じて動的に生成）
 
     // --- 編集モードのためのプロパティ ---
-    currentGroupId: null,
+    docId: null,
 
     // --- レンタルモーダル用の一時データ ---
     newRentalItem: { name: '', price: null },
@@ -78,8 +78,8 @@ document.addEventListener('alpine:init', () => {
     async init() {
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
-      const groupId = params.get('group');
-      this.currentGroupId = groupId;
+      const groupId = params.get('docId');
+      this.docId = groupId;
 
       if (groupId) {
         // 編集モード：既存データを読み込む
@@ -338,8 +338,8 @@ document.addEventListener('alpine:init', () => {
         };
 
         // 4. 新規か更新かを判断して、Firestoreにデータを保存
-        if (this.currentGroupId) {
-          const docRef = doc(db, collectionName, this.currentGroupId);
+        if (this.docId) {
+          const docRef = doc(db, collectionName, this.docId);
           await updateDoc(docRef, dataToSave);
           alert('更新が完了しました。');
         } else {
@@ -363,7 +363,7 @@ document.addEventListener('alpine:init', () => {
       this.isSubmitting = true;
       try {
         const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, this.currentGroupId);
+        const docRef = doc(db, collectionName, this.docId);
         await deleteDoc(docRef);
         window.location.href = './index.html'; // 削除後、予約一覧ページへ遷移
       } catch (error) {

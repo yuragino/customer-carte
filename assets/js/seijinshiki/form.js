@@ -10,7 +10,7 @@ document.addEventListener('alpine:init', () => {
     formatFullDateTime,
     formatYen,
     // ===== 状態管理 =====
-    currentCustomerId: null,
+    docId: null,
     isSubmitting: false,
 
     // --- フォーム全体のデータ ---
@@ -31,7 +31,7 @@ document.addEventListener('alpine:init', () => {
       return `${this.selectedYear}_seijinshiki`;
     },
     get docRef() {
-      return doc(db, this.collectionName, this.currentCustomerId);
+      return doc(db, this.collectionName, this.docId);
     },
     get totalAmount() {
       const { kitsuke, hairMake, options } = this.formData.estimateInfo;
@@ -46,8 +46,8 @@ document.addEventListener('alpine:init', () => {
     async init() {
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
-      this.currentCustomerId = params.get('customer');
-      if (this.currentCustomerId) await this.loadData();
+      this.docId = params.get('docId');
+      if (this.docId) await this.loadData();
     },
 
     async loadData() {
@@ -57,7 +57,7 @@ document.addEventListener('alpine:init', () => {
           this.formData = docSnap.data();
         } else {
           alert('指定されたデータが見つかりませんでした。');
-          this.currentCustomerId = null;
+          this.docId = null;
         }
       } catch (error) {
         console.error('データ取得エラー:', error);
@@ -79,18 +79,12 @@ document.addEventListener('alpine:init', () => {
           updatedAt: serverTimestamp(),
         };
         const collectionRef = collection(db, this.collectionName);
-        if (this.currentCustomerId) {
-          await updateDoc(this.docRef, {
-            ...dataToSave,
-            updatedAt: serverTimestamp(),
-          });
+        if (this.docId) {
+          await updateDoc(this.docRef, dataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(collectionRef, {
-            ...dataToSave,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-          });
+          dataToSave.createdAt = serverTimestamp();
+          await addDoc(collectionRef, dataToSave);
           alert('登録が完了しました。');
           window.location.href = `./index.html?year=${this.selectedYear}`;
         }
@@ -127,14 +121,8 @@ document.addEventListener('alpine:init', () => {
     saveMeetingData() {
       const targetIndex = this.formData.meetings.findIndex(m => m.id === this.currentMeetingId);
       const updatedMeetingData = { ...this.meetingForm, id: this.currentMeetingId };
-      // 見つからなければ新規登録してreturn
-      if (targetIndex === -1) {
-        this.formData.meetings.push(updatedMeetingData);
-        this.closeMeetingModal();
-        return;
-      }
-      // 見つかった場合だけ上書き
-      this.formData.meetings.splice(targetIndex, 1, updatedMeetingData);
+      if (targetIndex === -1) this.formData.meetings.push(updatedMeetingData);
+      else this.formData.meetings.splice(targetIndex, 1, updatedMeetingData);
       this.closeMeetingModal();
     },
     deleteMeeting(meetingId) {
@@ -170,14 +158,16 @@ document.addEventListener('alpine:init', () => {
       return 0;
     },
     // ===== メディア処理 =====
-    handleImageUpload(event) {
-      this.newImageFiles = [...event.target.files];
-      this.newImagePreviews = this.newImageFiles.map(file => URL.createObjectURL(file));
-      event.target.value = '';
-    },
-    handleVideoUpload(event) {
-      this.newVideoFiles = [...event.target.files];
-      this.newVideoPreviews = this.newVideoFiles.map(file => URL.createObjectURL(file));
+    handleMediaUpload(event, type) {
+      const files = [...event.target.files];
+      const previews = files.map(file => URL.createObjectURL(file));
+      if (type === 'image') {
+        this.newImageFiles = files;
+        this.newImagePreviews = previews;
+      } else {
+        this.newVideoFiles = files;
+        this.newVideoPreviews = previews;
+      }
       event.target.value = '';
     },
     removeMedia(type, index) {

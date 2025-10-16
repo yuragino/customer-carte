@@ -41,7 +41,7 @@
   <main>
     <div class="cancellation-status" x-show="representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
     <div class="delete-container">
-      <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
+      <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
         <i class="fa-regular fa-trash-can"></i> カルテを削除
       </button>
     </div>
@@ -231,7 +231,7 @@
               <button type="button" class="add-btn" @click="openRentalModal(index)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
             <div class="form-cell">
-              <input type="file" multiple @change="handleImageUpload($event, index)">
+              <input type="file" @change="handleImageUpload($event, index)">
               <div class="preview-container">
                 <template x-for="src in customer.imagePreviews" :key="src">
                   <img :src="src" class="preview-image">
@@ -299,9 +299,9 @@
 
       <div class="submit-container">
         <button type="submit" class="submit-btn" :disabled="isSubmitting"
-          x-text="isSubmitting ? '処理中...' : (currentGroupId ? '更新' : '登録')"></button>
+          x-text="isSubmitting ? '処理中...' : (docId ? '更新' : '登録')"></button>
       </div>
-      <div class="cancellation-status" x-show="currentGroupId != null">
+      <div class="cancellation-status" x-show="docId != null">
         <label for="cancellation-toggle">
           <input type="checkbox" id="cancellation-toggle" x-model="representative.isCanceled">
           <span>キャンセルの時はここにチェックをつけて更新</span>

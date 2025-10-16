@@ -120,7 +120,7 @@
 
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
-                  <a :href="`form.html?group=${group.groupId}&year=${selectedYear}`" class="detail-link"
+                  <a :href="`form.html?docId=${group.groupId}&year=${selectedYear}`" class="detail-link"
                     :class="{'notes-exist-link': group.representative.notes}">
                     <i class="fa-solid fa-square-up-right"></i>
                   </a>

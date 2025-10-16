@@ -22,20 +22,20 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <nav class="header-nav">
-        <a href="./index.html">予約一覧</a>
+        <a href="./customerIndex.html">予約一覧</a>
         <a href="./form.html">新規登録</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <div class="cancellation-status" x-show="representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
+    <div class="cancellation-status" x-show="formData.representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
     <div class="delete-container">
-      <button type="button" class="delete-btn" x-show="currentGroupId" @click="deleteForm">
+      <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
         <i class="fa-regular fa-trash-can"></i> カルテを削除
       </button>
       <!-- 印刷 -->
-      <a :href="`./print.html?group=${currentGroupId}`" target="_blank" class="print-btn" x-show="currentGroupId">
+      <a :href="`./print.html?docId=${docId}`" target="_blank" class="print-btn" x-show="docId">
         印刷用ページ
       </a>
     </div>
@@ -53,53 +53,53 @@
               <td>
                 <label>
                   <input type="radio" name="reservationMethod" value="じゃらん椿" @click="toggleRadio($event, 'reservationMethod')"
-                    :checked="representative.reservationMethod === 'じゃらん椿'"> じゃらん椿
+                    :checked="formData.representative.reservationMethod === 'じゃらん椿'"> じゃらん椿
                 </label>
                 <label>
                   <input type="radio" name="reservationMethod" value="じゃらん教室" @click="toggleRadio($event, 'reservationMethod')"
-                    :checked="representative.reservationMethod === 'じゃらん教室'"> じゃらん教室
+                    :checked="formData.representative.reservationMethod === 'じゃらん教室'"> じゃらん教室
                 </label>
                 <label>
                   <input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event, 'reservationMethod')"
-                    :checked="representative.reservationMethod === 'アソビュー'"> アソビュー
+                    :checked="formData.representative.reservationMethod === 'アソビュー'"> アソビュー
                 </label>
               </td>
             </tr>
             <tr>
               <th>代表者名</th>
-              <td><input type="text" x-model="representative.name" id="name" required class="middle-width"></td>
+              <td><input type="text" x-model="formData.representative.name" id="name" required class="middle-width"></td>
             </tr>
             <tr>
               <th>ふりがな</th>
-              <td><input type="text" x-model="representative.kana" id="furigana" class="middle-width"></td>
+              <td><input type="text" x-model="formData.representative.kana" id="furigana" class="middle-width"></td>
             </tr>
             <tr>
               <th>来店日時</th>
-              <td><input type="datetime-local" x-model="representative.visitDateTime" class="middle-width"></td>
+              <td><input type="datetime-local" x-model="formData.representative.visitDateTime" class="middle-width"></td>
             </tr>
             <tr>
               <th>仕上がり時間</th>
-              <td><input type="time" x-model="representative.finishTime" class="middle-width"></td>
+              <td><input type="time" x-model="formData.representative.finishTime" class="middle-width"></td>
             </tr>
             <tr>
               <th>お戻り予定時間</th>
-              <td><input type="time" x-model="representative.returnTime" class="middle-width"></td>
+              <td><input type="time" x-model="formData.representative.returnTime" class="middle-width"></td>
             </tr>
             <tr>
               <th>人数</th>
               <td class="person-count">
-                女 <input type="number" min="0" x-model.number="femaleCount">
-                男 <input type="number" min="0" x-model.number="maleCount">
+                女 <input type="number" min="0" x-model.number="formData.femaleCount">
+                男 <input type="number" min="0" x-model.number="formData.maleCount">
               </td>
             </tr>
             <tr>
               <th>住所</th>
-              <td><input type="text" class="full-width" x-model="representative.address"></td>
+              <td><input type="text" class="full-width" x-model="formData.representative.address"></td>
             </tr>
             <tr>
               <th>電話番号</th>
               <td>
-                <input type="tel" x-model="representative.phone" placeholder="080123456" class="middle-width" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" x-model="formData.representative.phone" placeholder="080123456" class="middle-width" inputmode="numeric" pattern="[0-9]*">
               </td>
             </tr>
             <tr>
@@ -107,19 +107,19 @@
               <td>
                 <label>
                   <input type="radio" name="transportation" value="車" @click="toggleRadio($event, 'transportation')"
-                    :checked="representative.transportation === '車'"> 車
+                    :checked="formData.representative.transportation === '車'"> 車
                 </label>
                 <label>
                   <input type="radio" name="transportation" value="JR" @click="toggleRadio($event, 'transportation')"
-                    :checked="representative.transportation === 'JR'"> JR
+                    :checked="formData.representative.transportation === 'JR'"> JR
                 </label>
                 <label>
                   <input type="radio" name="transportation" value="東武" @click="toggleRadio($event, 'transportation')"
-                    :checked="representative.transportation === '東武'"> 東武
+                    :checked="formData.representative.transportation === '東武'"> 東武
                 </label>
                 <label>
                   <input type="radio" name="transportation" value="送迎" @click="toggleRadio($event, 'transportation')"
-                    :checked="representative.transportation === '送迎'"> 送迎
+                    :checked="formData.representative.transportation === '送迎'"> 送迎
                 </label>
               </td>
             </tr>
@@ -128,37 +128,37 @@
               <td>
                 <label>
                   <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
-                    :checked="representative.lineType === '椿LINE'"> 椿LINE
+                    :checked="formData.representative.lineType === '椿LINE'"> 椿LINE
                 </label>
                 <label>
                   <input type="radio" name="lineType" value="教室LINE" @click="toggleRadio($event, 'lineType')"
-                    :checked="representative.lineType === '教室LINE'"> 教室LINE
+                    :checked="formData.representative.lineType === '教室LINE'"> 教室LINE
                 </label>
                 <label>
                   <input type="radio" name="lineType" value="お客様LINE" @click="toggleRadio($event, 'lineType')"
-                    :checked="representative.lineType === 'お客様LINE'"> お客様LINE
+                    :checked="formData.representative.lineType === 'お客様LINE'"> お客様LINE
                 </label>
               </td>
             </tr>
             <tr>
               <th>備考</th>
-              <td><input type="text" class="full-width" x-model="representative.notes"></td>
+              <td><input type="text" class="full-width" x-model="formData.representative.notes"></td>
             </tr>
             <tr>
               <th>お伝え事項</th>
               <td>
-                <label><input type="checkbox" x-model="representative.checkpoints.rentalPage"> きものレンタルページ</label>
-                <label><input type="checkbox" x-model="representative.checkpoints.footwearBag"> 履物バッグ</label>
-                <label><input type="checkbox" x-model="representative.checkpoints.price"> 料金</label>
-                <label><input type="checkbox" x-model="representative.checkpoints.location"> 当店の場所</label>
-                <label><input type="checkbox" x-model="representative.checkpoints.parking"> 駐車場</label>
+                <label><input type="checkbox" x-model="formData.representative.checkpoints.rentalPage"> きものレンタルページ</label>
+                <label><input type="checkbox" x-model="formData.representative.checkpoints.footwearBag"> 履物バッグ</label>
+                <label><input type="checkbox" x-model="formData.representative.checkpoints.price"> 料金</label>
+                <label><input type="checkbox" x-model="formData.representative.checkpoints.location"> 当店の場所</label>
+                <label><input type="checkbox" x-model="formData.representative.checkpoints.parking"> 駐車場</label>
               </td>
             </tr>
             <tr>
               <th>支払い区分</th>
               <td>
-                <label><input type="radio" name="paymentType" value="group" x-model="representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="representative.paymentType === 'group'"> グループでまとめて</label>
-                <label><input type="radio" name="paymentType" value="individual" x-model="representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="representative.paymentType === 'individual'"> 個別で支払い</label>
+                <label><input type="radio" name="paymentType" value="group" x-model="formData.representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="formData.representative.paymentType === 'group'"> グループでまとめて</label>
+                <label><input type="radio" name="paymentType" value="individual" x-model="formData.representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="formData.representative.paymentType === 'individual'"> 個別で支払い</label>
               </td>
             </tr>
           </table>
@@ -177,24 +177,24 @@
           <div class="header-item">画像アップロード</div>
           <div class="header-item">合計</div>
           <!-- 支払い方法は個別支払いの時のみ表示 -->
-          <template x-if="representative.paymentType === 'individual'">
+          <template x-if="formData.representative.paymentType === 'individual'">
             <div class="header-item">支払い方法</div>
           </template>
         </div>
 
-        <template x-for="(customer, index) in customers" :key="customer.id">
+        <template x-for="(customer, customerIndex) in formData.customers" :key="customer.id">
           <div class="customer-column">
             <div class="form-cell">
               <input type="text" x-model="customer.name">
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'gender' + index" value="female" x-model="customer.gender"> 女</label>
-              <label><input type="radio" :name="'gender' + index" value="male" x-model="customer.gender"> 男</label>
+              <label><input type="radio" :name="'gender' + customerIndex" value="female" x-model="customer.gender"> 女</label>
+              <label><input type="radio" :name="'gender' + customerIndex" value="male" x-model="customer.gender"> 男</label>
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'bodyShape' + index" value="S" x-model="customer.bodyShape"> S</label>
-              <label><input type="radio" :name="'bodyShape' + index" value="M" x-model="customer.bodyShape"> M</label>
-              <label><input type="radio" :name="'bodyShape' + index" value="L" x-model="customer.bodyShape"> L</label>
+              <label><input type="radio" :name="'bodyShape' + customerIndex" value="S" x-model="customer.bodyShape"> S</label>
+              <label><input type="radio" :name="'bodyShape' + customerIndex" value="M" x-model="customer.bodyShape"> M</label>
+              <label><input type="radio" :name="'bodyShape' + customerIndex" value="L" x-model="customer.bodyShape"> L</label>
               <input type="number" class="small-input" x-model.number="customer.weight" min="0">
               <span x-text="customer.gender === 'female' ? '号' : 'kg'"></span>
             </div>
@@ -203,8 +203,8 @@
               足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0"> cm
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'dressingType' + index" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
-              <label><input type="radio" :name="'dressingType' + index" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
+              <label><input type="radio" :name="'dressingType' + customerIndex" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
+              <label><input type="radio" :name="'dressingType' + customerIndex" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
             </div>
             <div class="form-cell">
               <label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label>
@@ -215,14 +215,14 @@
                 <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
                   <li>
                     <span x-text="`${item.name} ${formatYen(item.price)}`"></span>
-                    <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
+                    <button type="button" class="delete-btn" @click="removeRentalItem(customerIndex, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
                   </li>
                 </template>
               </ul>
-              <button type="button" class="add-btn" @click="openRentalModal(index)"><i class="fa-solid fa-circle-plus"></i></button>
+              <button type="button" class="add-btn" @click="openRentalModal(customerIndex)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
             <div class="form-cell">
-              <input type="file" multiple @change="handleImageUpload($event, index)">
+              <input type="file" @change="handleImageUpload($event, customerIndex)">
               <div class="preview-container">
                 <template x-for="src in customer.imagePreviews" :key="src">
                   <img :src="src" class="preview-image">
@@ -230,7 +230,7 @@
               </div>
             </div>
             <div class="form-cell">
-              <div x-show="representative.reservationMethod">
+              <div x-show="formData.representative.reservationMethod">
                 前払：<span x-text="formatYen(calculateCustomerPrepayment(customer))"></span>
               </div>
               <div x-show="calculateCustomerOnSitePayment(customer) > 0">
@@ -247,13 +247,13 @@
                   <span x-text="formatYen(calculateCustomerOnSitePayment(customer))"></span>
                 </template>
 
-                <button type="button" class="edit-btn" @click="openDiscountModal(index)">
+                <button type="button" class="edit-btn" @click="openDiscountModal(customerIndex)">
                   <i class="fa-solid fa-pen"></i>
                 </button>
               </div>
             </div>
             <!-- 個別の支払い方法 -->
-            <template x-if="representative.paymentType==='individual'">
+            <template x-if="formData.representative.paymentType==='individual'">
               <div class="form-cell">
                 <input type="text" x-model="customer.paymentMethod">
               </div>
@@ -264,12 +264,12 @@
 
       <div class="form-section totals-section">
         <span>グループ合計</span>
-        <span x-show="representative.reservationMethod">
+        <span x-show="formData.representative.reservationMethod">
           前払：<span x-text="formatYen(totalPrepayment)"></span>
         </span>
         <span x-show="totalOnSitePayment > 0">
           現地：
-          <template x-if="customers.some(c => c.discountAmount > 0)">
+          <template x-if="formData.customers.some(c => c.discountAmount > 0)">
             <!-- 値引きがある場合は線付きで表示 -->
             <span class="discounted">
               <span class="old-price" x-text="formatYen(totalOnSitePayment)">
@@ -278,61 +278,58 @@
               <span class="new-price" x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
             </span>
           </template>
-          <template x-if="!customers.some(c => c.discountAmount > 0)">
+          <template x-if="!formData.customers.some(c => c.discountAmount > 0)">
             <span x-text="formatYen(totalOnSitePayment)"></span>
           </template>
         </span>
-        <div class="group-payment-method" x-show="representative.paymentType === 'group'">
+        <div class="group-payment-method" x-show="formData.representative.paymentType === 'group'">
           支払い方法：
-          <input type="text" x-model="representative.groupPaymentMethod">
+          <input type="text" x-model="formData.representative.groupPaymentMethod">
         </div>
       </div>
 
       <div class="submit-container">
-        <button type="submit" class="submit-btn" :disabled="isSubmitting" x-text="isSubmitting ? '処理中...' : (currentGroupId ? '更新' : '登録')"></button>
+        <button type="submit" class="submit-btn" :disabled="isSubmitting" x-text="isSubmitting ? '処理中...' : (docId ? '更新' : '登録')"></button>
       </div>
-      <div class="cancellation-status" x-show="currentGroupId != null">
+      <div class="cancellation-status" x-show="docId != null">
         <label for="cancellation-toggle">
-          <input type="checkbox" id="cancellation-toggle" x-model="representative.isCanceled">
+          <input type="checkbox" id="cancellation-toggle" x-model="formData.representative.isCanceled">
           <span>キャンセルの時はここにチェックをつけて更新</span>
         </label>
       </div>
     </form>
   </main>
 
-  <div class="modal-overlay" x-show="isRentalModalOpen" @click="isRentalModalOpen = false" x-cloak>
+  <div class="modal-overlay" x-show="rentalModal.isOpen" @click="rentalModal.isOpen = false" x-cloak>
     <div class="modal-content" @click.stop>
       <h3>レンタル追加登録</h3>
       <div class="modal-form">
         <label>項目</label>
-        <input type="text" x-model="newRentalItem.name">
+        <input type="text" x-model="rentalModal.input.name">
       </div>
       <div class="modal-form">
         <label>価格(円)</label>
-        <input type="number" x-model.number="newRentalItem.price">
+        <input type="number" x-model.number="rentalModal.input.price">
       </div>
       <button class="submit-btn" @click="addRentalItem()">追加登録</button>
     </div>
   </div>
 
-  <div class="modal-overlay" x-show="isDiscountModalOpen" @click="isDiscountModalOpen = false" x-cloak>
+  <div class="modal-overlay" x-show="discountModal.isOpen" @click="discountModal.isOpen = false" x-cloak>
     <div class="modal-content discount-modal" @click.stop>
       <h3>現地支払い金額の修正</h3>
-
       <div class="price-box">
         <div>
           <span class="label">元の金額</span>
-          <span class="value" x-text="formatYen(modalOriginalPrice)"></span>
+          <span class="value" x-text="formatYen(discountModal.originalPrice)"></span>
         </div>
         <div>
           <span class="label">値引き額</span>
-          <span class="value">
-            <input type="number" min="0" x-model.number="discountInput" class="discount-input"> 円
-          </span>
+          <span class="value"><input type="number" min="0" x-model.number="discountModal.input.amount" class="discount-input"> 円</span>
         </div>
         <div>
           <label>メモ</label>
-          <input type="text" x-model="discountMemoInput">
+          <input type="text" x-model="discountModal.input.memo">
         </div>
       </div>
       <button class="submit-btn" @click="applyDiscount()">確定</button>

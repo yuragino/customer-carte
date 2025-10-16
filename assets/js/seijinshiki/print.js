@@ -11,7 +11,7 @@ document.addEventListener('alpine:init', () => {
     formatTime,
     formatYen,
     // ===== 状態管理 =====
-    currentCustomerId: null,
+    docId: null,
     isLoading: true,
     formData: {},
 
@@ -19,7 +19,7 @@ document.addEventListener('alpine:init', () => {
       return `${this.selectedYear}_seijinshiki`;
     },
     get docRef() {
-      return doc(db, this.collectionName, this.currentCustomerId);
+      return doc(db, this.collectionName, this.docId);
     },
     get totalAmount() {
       const { kitsuke, hairMake, options } = this.formData.estimateInfo;
@@ -34,8 +34,8 @@ document.addEventListener('alpine:init', () => {
     async init() {
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
-      this.currentCustomerId = params.get('customer');
-      if (this.currentCustomerId) await this.loadData();
+      this.docId = params.get('docId');
+      if (this.docId) await this.loadData();
     },
 
     async loadData() {
@@ -46,7 +46,7 @@ document.addEventListener('alpine:init', () => {
           this.formData = docSnap.data();
         } else {
           alert('指定されたデータが見つかりませんでした。');
-          this.currentCustomerId = null;
+          this.docId = null;
         }
       } catch (error) {
         console.error("データ取得エラー: ", error);
