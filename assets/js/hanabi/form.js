@@ -1,9 +1,9 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { CASUAL_PRICES } from '../common/constants.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { formatYen } from "../common/utils/format-utils.js";
 import { toggleRadioUtil } from "../common/utils/ui-utils.js";
+import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 
 document.addEventListener('alpine:init', () => {
@@ -169,29 +169,17 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ==== 料金関係 ====
+    // 前払い
     calculateCustomerPrepayment(customer) {
-      if (this.formData.representative.reservationMethod === null) return 0;
-      if (customer.dressingType === 'レンタル&着付') return CASUAL_PRICES.RENTAL_DRESSING;
-      if (customer.dressingType === '着付のみ') return CASUAL_PRICES.DRESSING_ONLY;
-      return 0;
+      return calculateCustomerPayment(this, customer, 'prepayment');
     },
+    // 現地払い（値引き前）
     calculateCustomerOnSitePayment(customer) {
-      let total = 0;
-      if (this.formData.representative.reservationMethod === null) {
-        if (customer.dressingType === 'レンタル&着付') total += CASUAL_PRICES.RENTAL_DRESSING;
-        else if (customer.dressingType === '着付のみ') total += CASUAL_PRICES.DRESSING_ONLY;
-      }
-      // オプション料金
-      if (customer.options.footwear) total += CASUAL_PRICES.FOOTWEAR;
-      if (customer.gender === 'female' && customer.options.obiBag) total += CASUAL_PRICES.BAG;
-      // 追加レンタル料金
-      total += customer.additionalRentals.reduce((sum, item) => sum + (item.price || 0), 0);
-      return total;
+      return calculateCustomerPayment(this, customer, 'onSite');
     },
+    // 現地払い（値引き後）
     calculateCustomerOnSitePaymentAdjusted(customer) {
-      const discount = customer.discountAmount || 0;
-      const original = this.calculateCustomerOnSitePayment(customer);
-      return discount > 0 ? original - discount : original;
+      return calculateCustomerPayment(this, customer, 'onSiteAdjusted', true);
     },
 
     async checkRepeaterStatus() {
