@@ -8,7 +8,6 @@ document.addEventListener('alpine:init', () => {
     formatTime,
     formatYen,
     // ===== State =====
-    isLoading: true,
     error: null,
     representative: {},
     customers: [],
@@ -35,7 +34,6 @@ document.addEventListener('alpine:init', () => {
 
       if (!groupId) {
         this.error = "予約IDが指定されていません。";
-        this.isLoading = false;
         return;
       }
 
@@ -65,8 +63,6 @@ document.addEventListener('alpine:init', () => {
       } catch (e) {
         console.error("Error loading document:", e);
         this.error = "データの読み込み中にエラーが発生しました。";
-      } finally {
-        this.isLoading = false;
       }
     },
 

@@ -35,11 +35,7 @@
   </header>
 
   <main>
-    <div x-show="isLoading" class="loading-indicator">読み込み中...</div>
-
-    <div x-show="!isLoading && errorMessage" class="error-message" x-text="errorMessage"></div>
-
-    <div class="page" x-show="!isLoading && formData.basicInfo" x-cloak>
+    <div class="page" x-show="formData.basicInfo" x-cloak>
       <h2 x-text="`${selectedYear}成人式着付受付`"></h2>
       <div class="card">
         <h2><i class="fa-regular fa-circle-user"></i> 基本情報</h2>

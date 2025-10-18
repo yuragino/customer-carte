@@ -1,7 +1,8 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
-
+import { handleError } from "../common/utils/ui-utils.js";
+const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -14,12 +15,9 @@ document.addEventListener('alpine:init', () => {
 
     async loadData() {
       try {
-        const collectionName = `${this.selectedYear}_fireworks`;
-        const colRef = collection(db, collectionName);
+        const colRef = collection(db, COLLECTION_NAME);
         const snapshot = await getDocs(colRef);
-
         const customersList = [];
-
         snapshot.forEach(doc => {
           const data = doc.data();
           if (!data.customers) return;
@@ -38,8 +36,7 @@ document.addEventListener('alpine:init', () => {
 
         this.customersWithImage = customersList;
       } catch (error) {
-        console.error('データ取得エラー:', error);
-        alert('データの取得に失敗しました。');
+        handleError('データの取得', error);
       }
     },
     nextImage(cardIndex) {

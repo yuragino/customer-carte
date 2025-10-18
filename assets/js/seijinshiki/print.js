@@ -3,6 +3,7 @@ import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils/format-utils.js';
+const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -12,12 +13,8 @@ document.addEventListener('alpine:init', () => {
     formatYen,
     // ===== 状態管理 =====
     docId: null,
-    isLoading: true,
     formData: {},
 
-    get collectionName() {
-      return `${this.selectedYear}_seijinshiki`;
-    },
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
     },
@@ -39,7 +36,6 @@ document.addEventListener('alpine:init', () => {
     },
 
     async loadData() {
-      this.isLoading = true;
       try {
         const docSnap = await getDoc(this.docRef);
         if (docSnap.exists()) {
@@ -51,9 +47,7 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         console.error("データ取得エラー: ", error);
         alert('データの読み込みに失敗しました。');
-      } finally {
-        this.isLoading = false;
-      }
+      } 
     },
 
     getTimingLabel(item) {

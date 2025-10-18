@@ -2,7 +2,7 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp,
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { formatYen } from "../common/utils/format-utils.js";
-import { toggleRadioUtil } from "../common/utils/ui-utils.js";
+import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 const COLLECTION_NAME = 'fireworks';
@@ -61,12 +61,11 @@ document.addEventListener('alpine:init', () => {
         if (docSnap.exists()) {
           this.formData = docSnap.data();
         } else {
-          alert('指定されたデータが見つかりませんでした。');
+          handleError('データの読み込み', error);
           this.docId = null;
         }
       } catch (error) {
-        console.error('データ取得エラー:', error);
-        alert('データの読み込みに失敗しました。');
+        handleError('データの取得', error);
       }
     },
 
@@ -151,8 +150,7 @@ document.addEventListener('alpine:init', () => {
           location.href = './index.html';
         }
       } catch (err) {
-        console.error('登録エラー', err);
-        alert(`登録中にエラーが発生しました。\n${err.message}`);
+        handleError('データの登録', error);
       } finally {
         this.isSubmitting = false;
       }
@@ -164,8 +162,7 @@ document.addEventListener('alpine:init', () => {
         await deleteDoc(this.docRef);
         window.location.href = './index.html';
       } catch (error) {
-        console.error("削除エラー: ", error);
-        alert(`削除中にエラーが発生しました。\n${error.message}`);
+        handleError('データの削除', error);
       }
     },
 
@@ -198,8 +195,7 @@ document.addEventListener('alpine:init', () => {
           .sort((a, b) => a - b);
         this.formData.representative.repeaterYears = foundYears;
       } catch (err) {
-        console.error('リピーターチェックエラー:', err);
-        alert('リピーター照合中にエラーが発生しました。');
+        handleError('リピーターチェック', error);
       }
     }
 

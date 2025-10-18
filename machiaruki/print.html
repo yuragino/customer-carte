@@ -16,7 +16,7 @@
 </head>
 
 <body x-data="printView">
-  <main class="page" x-show="!isLoading && !error">
+  <main class="page">
     <header class="page-header">
       <h1>まち歩き予約受付</h1>
       <div class="print-button-container">
@@ -187,13 +187,6 @@
       </div>
     </div>
   </main>
-
-  <div class="status-message" x-show="isLoading" x-cloak>
-    <p><i class="fa-solid fa-spinner fa-spin"></i> データを読み込んでいます...</p>
-  </div>
-  <div class="status-message" x-show="error" x-cloak>
-    <p><i class="fa-solid fa-circle-exclamation"></i> <span x-text="error"></span></p>
-  </div>
 </body>
 
 </html>

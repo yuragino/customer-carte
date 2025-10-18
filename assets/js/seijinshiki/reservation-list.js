@@ -9,7 +9,6 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings(),
     formatTimestamp,
     customers: [],
-    isLoading: true,
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
     boothOptionsMale: ['C1', 'C2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
@@ -34,63 +33,45 @@ document.addEventListener('alpine:init', () => {
     },
 
     async loadReservationSchedule() {
-      this.groups = [];
+      this.customers = [];
       try {
         const yearQuery = query(collection(db, COLLECTION_NAME), where('eventYear', '==', this.selectedYear));
         const snapshot = await getDocs(yearQuery);
-        this.groups = snapshot.docs
-          .map(doc => ({ groupId: doc.id, ...doc.data() }))
+        this.customers = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
           .sort((a, b) => {
             // キャンセルの有無 → 時間の順
-            const cancelOrder = Number(a.representative.isCanceled) - Number(b.representative.isCanceled);
+            const cancelOrder = Number(a.isCanceled) - Number(b.isCanceled);
             if (cancelOrder !== 0) return cancelOrder;
-            return a.representative.visitTime.localeCompare(b.representative.visitTime);
+            return a.toujitsuInfo?.schedule[0]?.start.localeCompare(b.toujitsuInfo?.schedule[0]?.start);
           });
       } catch (error) {
         handleError('データの取得', error);
       }
     },
 
-    async updateCustomerField(customerId, field, value,) {
-      const docRef = doc(db, COLLECTION_NAME, customerId);
+    async updateCustomerField(customerId, field, value, checked = null) {
       try {
-        await updateDoc(docRef, { [field]: value });
-        console.log(`顧客ID:${customerId} の ${field} を更新しました。`);
-      } catch (error) {
-        console.error(`${field} の更新に失敗しました:`, error);
-        alert(`${field} の更新に失敗しました。`);
-        // エラー発生時はデータを再取得して画面を元に戻す
-        this.loadReservationSchedule();
-      }
-    },
-
-    async updateCustomerField(groupId, customerId, field, value, checked = null) {
-      try {
-        const docRef = doc(db, COLLECTION_NAME, groupId);
+        const docRef = doc(db, COLLECTION_NAME, customerId);
         const docSnap = await getDoc(docRef);
-
-        const customers = docSnap.data().customers;
-        const target = customers.find(c => c.id === customerId);
-
+        const customer = docSnap.data();
         // ===== フィールドごとの更新ロジック =====
         if (field === "staff") {
-          const staffList = new Set(target.staff ?? []);
+          const staffList = new Set(customer.staff ?? []);
           checked === true ? staffList.add(value) : staffList.delete(value);
-          target.staff = [...staffList];
+          customer.staff = [...staffList];
         } else {
-          target[field] = value;
+          customer[field] = value;
         }
-        await updateDoc(docRef, { customers });
+        await updateDoc(docRef, { ...customer });
       } catch (error) {
         handleError(`${field}の更新`, error);
       }
     },
 
-    async updateStatus(group, customerId) {
+    async updateStatus(customer) {
       try {
-        const docRef = doc(db, COLLECTION_NAME, group.groupId);
-        const customer = group.customers.find(c => c.id === customerId);
-
+        const docRef = doc(db, COLLECTION_NAME, customer.id);
         const currentStatus = customer.status ?? '受付完了';
         const nextStatus = this.nextStatusMap[currentStatus];
         if (!nextStatus) return;
@@ -99,7 +80,7 @@ document.addEventListener('alpine:init', () => {
         const timestampKey = this.statusToTimestampKey[currentStatus];
         (customer.statusTimestamps ??= {})[timestampKey] = new Date();
 
-        await updateDoc(docRef, { customers: group.customers });
+        await updateDoc(docRef, { ...customer });
       } catch (error) {
         handleError('ステータスの更新', error);
         this.loadReservationSchedule();

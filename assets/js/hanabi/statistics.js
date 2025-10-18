@@ -2,7 +2,8 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/f
 import { db } from '../common/firebase-config.js';
 import { formatDuration, formatTimestamp, avg, minBy, maxBy } from '../common/utils/format-utils.js';
 import { getYearSettings } from "../common/year-selector.js";
-
+import { handleError } from "../common/utils/ui-utils.js";
+const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -23,8 +24,7 @@ document.addEventListener('alpine:init', () => {
       this.femaleMin = this.femaleMax = null;
       this.maleMin = this.maleMax = null;
 
-      const colRef = collection(db, `${this.selectedYear}_fireworks`);
-      const snapshot = await getDocs(colRef);
+      const snapshot = await getDocs(db, COLLECTION_NAME);
 
       const stats = [];
       const femaleRecords = [];
