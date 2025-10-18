@@ -11,7 +11,7 @@ document.addEventListener('alpine:init', () => {
     customers: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
     boothOptionsMale: ['C1', 'C2'],
-    staffOptions: ['佐藤', '鈴木', '松本'],
+    staffOptions: ['小林', '谷口', '大矢'],
 
     nextStatusMap: {
       '受付完了': '案内完了',
@@ -50,20 +50,10 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    async updateCustomerField(customerId, field, value, checked = null) {
+    async updateCustomerField(customerId, field, value) {
       try {
         const docRef = doc(db, COLLECTION_NAME, customerId);
-        const docSnap = await getDoc(docRef);
-        const customer = docSnap.data();
-        // ===== フィールドごとの更新ロジック =====
-        if (field === "staff") {
-          const staffList = new Set(customer.staff ?? []);
-          checked === true ? staffList.add(value) : staffList.delete(value);
-          customer.staff = [...staffList];
-        } else {
-          customer[field] = value;
-        }
-        await updateDoc(docRef, { ...customer });
+        await updateDoc(docRef, { [field]: value });
       } catch (error) {
         handleError(`${field}の更新`, error);
       }

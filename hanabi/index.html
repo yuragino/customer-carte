@@ -68,15 +68,12 @@
               </template>
               <td><span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span></td>
               <td>
-                <div class="booth-radios">
-                  <template x-for="booth in customer.gender === 'female' ? boothOptionsFemale :boothOptionsMale" :key="booth">
-                    <label :class="{'disabled': group.representative.isCanceled}">
-                      <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
-                        @change="updateCustomerField(group.groupId, customer.id, 'booth', customer.booth)"
-                        :disabled="group.representative.isCanceled">
-                      <span x-text="booth"></span>
-                    </label>
+                <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)" :disabled="customer.isCanceled">
+                  <option value="">--</option>
+                  <template x-for="booth in customer.basicInfo.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale" :key="booth">
+                    <option :value="booth" x-text="booth"></option>
                   </template>
+                </select>
                 </div>
               </td>
               <td>

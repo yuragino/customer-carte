@@ -43,7 +43,8 @@
           <th>来店時刻</th>
           <th>名前</th>
           <th>ブース</th>
-          <th>担当者</th>
+          <th>肌着</th>
+          <th>送り出し</th>
           <th>ステータス</th>
           <th>詳細</th>
         </tr>
@@ -62,34 +63,35 @@
             <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
             <td>
-              <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'"
-                x-text="customer.basicInfo?.name || '名前なし'"></span>
+              <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'" x-text="customer.basicInfo.name"></span>
             </td>
             <td>
-              <div class="booth-radios">
-                <template x-for="booth in customer.basicInfo?.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale"
-                  :key="booth">
-                  <label :class="{'disabled': customer.isCanceled}">
-                    <input type="radio" :name="`booth-${customer.id}`" :value="booth" x-model="customer.booth"
-                      @change="updateCustomerField(customer.id, 'booth', customer.booth)"
-                      :disabled="customer.isCanceled">
-                    <span x-text="booth"></span>
-                  </label>
+              <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)":disabled="customer.isCanceled">
+                <option value="">--</option>
+                <template x-for="booth in customer.basicInfo.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale" :key="booth">
+                  <option :value="booth" x-text="booth"></option>
                 </template>
-              </div>
+              </select>
             </td>
             <td>
-              <div class="staff-checkboxes">
-                <template x-for="staff in staffOptions" :key="staff">
-                  <label :class="{'disabled': customer.isCanceled}">
-                    <input type="checkbox" :value="staff" :name="`staff-${customer.id}-${staff}`"
-                      :checked="(customer.staff || []).includes(staff)"
-                      @change="updateCustomerField(customer.id, 'staff', staff, $event.target.checked)"
-                      :disabled="customer.isCanceled">
-                    <span x-text="staff"></span>
-                  </label>
+              <select x-model="customer.undergarmentStaff"
+                @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)"
+                :disabled="customer.isCanceled">
+                <option value="">--</option>
+                <template x-for="staff in staffOptions" :key="`u-${staff}`">
+                  <option :value="staff" x-text="staff"></option>
                 </template>
-              </div>
+              </select>
+            </td>
+            <td>
+              <select x-model="customer.sendoffStaff"
+                @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)"
+                :disabled="customer.isCanceled">
+                <option value="">--</option>
+                <template x-for="staff in staffOptions" :key="`s-${staff}`">
+                  <option :value="staff" x-text="staff"></option>
+                </template>
+              </select>
             </td>
             <td>
               <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)"
