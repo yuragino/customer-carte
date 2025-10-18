@@ -42,8 +42,7 @@
     <form @submit.prevent="submitForm">
       <div class="card">
         <h2>
-          <i class="fa-regular fa-circle-user"></i>
-          <span>基本情報</span>
+          <span x-text="`${selectedYear}年成人式`" style="color: blue;"></span>
           <div class="title-actions" x-show="docId">
             <a :href="`print.html?year=${selectedYear}&docId=${docId}`" target="_blank">印刷用ページ</a>
           </div>

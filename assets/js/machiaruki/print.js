@@ -1,7 +1,7 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { formatFullDateTime, formatTime, formatYen } from '../common/utils/format-utils.js';
-
+const COLLECTION_NAME = 'machiaruki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('printView', () => ({
     formatFullDateTime,
@@ -43,8 +43,7 @@ document.addEventListener('alpine:init', () => {
     // ===== Data Loading =====
     async loadReservationData(groupId) {
       try {
-        // NOTE: Assumes the collection is named 'machiaruki'
-        const docRef = doc(db, 'machiaruki', groupId);
+        const docRef = doc(db, COLLECTION_NAME, groupId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -60,8 +59,8 @@ document.addEventListener('alpine:init', () => {
         } else {
           this.error = "指定された予約データが見つかりませんでした。";
         }
-      } catch (e) {
-        console.error("Error loading document:", e);
+      } catch (error) {
+        console.error("Error loading document:", error);
         this.error = "データの読み込み中にエラーが発生しました。";
       }
     },
