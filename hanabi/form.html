@@ -143,13 +143,13 @@
             <tr>
               <th>リピーター</th>
               <td>
-                <template x-if="formData.representative.selectedRepeaterYears.length === 0">
+                <template x-if="formData.representative.repeaterYears.length === 0">
                   <button type="button" class="checking-btn" @click="checkRepeaterStatus()">電話番号を照合してリピーターかどうかチェックする（過去3年）</button>
                 </template>
-                <template x-if="formData.representative.selectedRepeaterYears.length > 0">
+                <template x-if="formData.representative.repeaterYears.length > 0">
                   <div>
-                    <span x-show="formData.representative.selectedRepeaterYears.includes(0)">新規</span>
-                    <span x-show="!formData.representative.selectedRepeaterYears.includes(0)" x-text="formData.representative.selectedRepeaterYears.join(', ')"></span>
+                    <span x-show="formData.representative.repeaterYears.includes(0)">新規</span>
+                    <span x-show="!formData.representative.repeaterYears.includes(0)" x-text="formData.representative.repeaterYears.join(', ')"></span>
                   </div>
                 </template>
               </td>

@@ -19,7 +19,7 @@ document.addEventListener('alpine:init', () => {
       return `${this.selectedYear}_seijinshiki`;
     },
     get docRef() {
-      return doc(db, this.collectionName, this.docId);
+      return doc(db, COLLECTION_NAME, this.docId);
     },
     get totalAmount() {
       const { kitsuke, hairMake, options } = this.formData.estimateInfo;

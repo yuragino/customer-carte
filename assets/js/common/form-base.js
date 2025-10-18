@@ -53,7 +53,7 @@ export function createFormBase({ collectionName, extraMethods = {} }) {
     // Firestore関連
     // -------------------------------------
     get docRef() {
-      return this.docId ? doc(db, this.collectionName, this.docId) : null;
+      return this.docId ? doc(db, COLLECTION_NAME, this.docId) : null;
     },
 
     async init() {
@@ -87,7 +87,7 @@ export function createFormBase({ collectionName, extraMethods = {} }) {
       try {
         const customers = await this.processCustomerData();
         const data = { ...this.formData, customers, updatedAt: serverTimestamp() };
-        const col = collection(db, this.collectionName);
+        const col = collection(db, COLLECTION_NAME);
 
         if (this.docId) {
           await updateDoc(this.docRef, data);
@@ -168,7 +168,7 @@ export function createFormBase({ collectionName, extraMethods = {} }) {
       return Promise.all(
         this.formData.customers.map(async (customer) => {
           const { newImageFiles, newImagePreviews, ...customerForSave } = customer;
-          const newImageUrls = await uploadMediaArrayToCloudinary(newImageFiles, this.collectionName);
+          const newImageUrls = await uploadMediaArrayToCloudinary(newImageFiles, COLLECTION_NAME);
           customerForSave.imageUrls = [...customer.imageUrls, ...newImageUrls];
           return customerForSave;
         })

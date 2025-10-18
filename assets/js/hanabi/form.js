@@ -5,6 +5,7 @@ import { formatYen } from "../common/utils/format-utils.js";
 import { toggleRadioUtil } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
+const COLLECTION_NAME = 'fireworks';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -25,11 +26,8 @@ document.addEventListener('alpine:init', () => {
       adjustedPrice: 0,
     },
 
-    get collectionName() {
-      return `${this.selectedYear}_fireworks`;
-    },
     get docRef() {
-      return doc(db, this.collectionName, this.docId);
+      return doc(db, COLLECTION_NAME, this.docId);
     },
     // 各顧客の前払い金額を合計
     get totalPrepayment() {
@@ -65,6 +63,7 @@ document.addEventListener('alpine:init', () => {
           this.formData = docSnap.data();
         } else {
           alert('指定されたデータが見つかりませんでした。');
+          this.docId = null;
         }
       } catch (error) {
         console.error('データ取得エラー:', error);
@@ -92,6 +91,7 @@ document.addEventListener('alpine:init', () => {
       if (!confirm('この項目を削除しますか？')) return;
       this.formData.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
     },
+
     // 値引き調整
     openDiscountModal(customerIndex) {
       const customer = this.formData.customers[customerIndex];
@@ -118,6 +118,7 @@ document.addEventListener('alpine:init', () => {
         return existingCustomer ? { ...existingCustomer, gender } : createInitialCustomerData(gender, `${Date.now()}-${i}`);
       });
     },
+
     // ==== 画像処理 ====
     prepareMediaPreview(event, customerIndex) {
       prepareMediaPreviewUtil(event, 'image', this.formData.customers[customerIndex]);
@@ -127,25 +128,26 @@ document.addEventListener('alpine:init', () => {
       removeMediaUtil(mediaType, index, this.formData.customers[customerIndex]);
     },
 
-    async processCustomerData() {
+    async uploadCustomerImages() {
       return Promise.all(this.formData.customers.map(async (customer) => {
-        const { newImageFiles, newImagePreviews, ...customerForSave } = customer;
-        const newImageUrls = await uploadMediaArrayToCloudinary(newImageFiles, this.collectionName);
-        customerForSave.imageUrls = [...customer.imageUrls, ...newImageUrls];
-        return customerForSave;
+        const { newImageFiles, newImagePreviews, ...customerToSave } = customer;
+        const newImageUrls = await uploadMediaArrayToCloudinary(newImageFiles, COLLECTION_NAME);
+        customerToSave.imageUrls = [...customer.imageUrls, ...newImageUrls];
+        return customerToSave;
       }));
     },
+
     async submitForm() {
       this.isSubmitting = true;
       try {
-        const customers = await this.processCustomerData();
-        const data = { ...this.formData, customers, updatedAt: serverTimestamp() };
-        const col = collection(db, this.collectionName);
+        const customersToSave = await this.uploadCustomerImages();
+        const formDataToSave = { ...this.formData, customers: customersToSave, updatedAt: serverTimestamp() };
+        const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
-          await updateDoc(this.docRef, data);
+          await updateDoc(this.docRef, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(col, { ...data, createdAt: serverTimestamp() });
+          await addDoc(collectionRef, { ...formDataToSave, eventYear: this.selectedYear, createdAt: serverTimestamp() });
           alert('登録が完了しました。');
           location.href = './index.html';
         }
@@ -183,29 +185,22 @@ document.addEventListener('alpine:init', () => {
     },
 
     async checkRepeaterStatus() {
-      if (!this.representative.phone) {
-        alert('リピーターチェックを行うには電話番号を入力してください。');
-        return;
-      }
-      const foundYears = [];
-      const currentYear = new Date().getFullYear();
-      const searchYears = [currentYear - 1, currentYear - 2, currentYear - 3]; // 検索対象の過去3年
-      for (const year of searchYears) {
-        const collectionName = `${year}_fireworks`;
-        try {
-          const q = query(collection(db, collectionName), where('representative.phone', '==', this.representative.phone));
-          const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            foundYears.push(year);
-          }
-        } catch (error) {
-          console.warn(`Error checking collection ${collectionName}: `, error);
+      const phone = this.formData.representative.phone;
+      if (phone === '') return alert('リピーターチェックを行うには電話番号を入力してください。');
+      try {
+        const repeaterQuery = query(collection(db, COLLECTION_NAME), where('representative.phone', '==', phone));
+        const snapshot = await getDocs(repeaterQuery);
+        if (snapshot.empty) {
+          this.formData.representative.repeaterYears = [0];
+          return;
         }
-      }
-      if (foundYears.length > 0) {
-        this.representative.selectedRepeaterYears = foundYears;
-      } else {
-        this.representative.selectedRepeaterYears = [0];
+        const foundYears = snapshot.docs
+          .map(doc => doc.data().eventYear)
+          .sort((a, b) => a - b);
+        this.formData.representative.repeaterYears = foundYears;
+      } catch (err) {
+        console.error('リピーターチェックエラー:', err);
+        alert('リピーター照合中にエラーが発生しました。');
       }
     }
 
@@ -218,7 +213,7 @@ function createInitialFormData() {
       visitDateTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
       transportation: '車', lineType: '椿LINE',
-      selectedRepeaterYears: [], notes: '',
+      repeaterYears: [], notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
       paymentType: 'group', groupPaymentMethod: '',
       isCanceled: false,

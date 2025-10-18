@@ -4,6 +4,8 @@ import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { getYearSettings } from '../common/year-selector.js';
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from '../common/utils/media-utils.js';
 import { formatFullDateTime, formatYen } from '../common/utils/format-utils.js';
+const COLLECTION_NAME = 'seijinshiki';
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -21,11 +23,8 @@ document.addEventListener('alpine:init', () => {
     meetingForm: createInitialMeetingForm(),
     currentMeetingId: null,
 
-    get collectionName() {
-      return `${this.selectedYear}_seijinshiki`;
-    },
     get docRef() {
-      return doc(db, this.collectionName, this.docId);
+      return doc(db, COLLECTION_NAME, this.docId);
     },
     get totalAmount() {
       const { kitsuke, hairMake, options } = this.formData.estimateInfo;
@@ -59,30 +58,32 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    async uploadAllMedia() {
+      const newImageUrls = await uploadMediaArrayToCloudinary(this.newImageFiles, COLLECTION_NAME);
+      const newVideoUrls = await uploadMediaArrayToCloudinary(this.newVideoFiles, COLLECTION_NAME);
+      return { newImageUrls, newVideoUrls };
+    },
+
     async submitForm() {
       this.isSubmitting = true;
       try {
-        // Cloudinaryにメディアをアップロード
-        const newImageUrls = await uploadMediaArrayToCloudinary(this.newImageFiles, this.collectionName);
-        const newVideoUrls = await uploadMediaArrayToCloudinary(this.newVideoFiles, this.collectionName);
-        // 保存するデータオブジェクトを作成
-        const { newImageFiles, newVideoFiles, newImagePreviews, newVideoPreviews, ...mediaForSave } = this.formData.media;
-        const dataToSave = {
+        const { newImageUrls, newVideoUrls } = await this.uploadAllMedia();
+        const { newImageFiles, newVideoFiles, newImagePreviews, newVideoPreviews, ...mediaToSave } = this.formData.media;
+        const formDataToSave = {
           ...this.formData,
           media: {
-            ...mediaForSave,
-            imageUrls: [...mediaForSave.imageUrls, ...newImageUrls],
-            videoUrls: [...mediaForSave.videoUrls, ...newVideoUrls],
+            ...mediaToSave,
+            imageUrls: [...mediaToSave.imageUrls, ...newImageUrls],
+            videoUrls: [...mediaToSave.videoUrls, ...newVideoUrls],
           },
           updatedAt: serverTimestamp(),
         };
-        const collectionRef = collection(db, this.collectionName);
+        const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
-          await updateDoc(this.docRef, dataToSave);
+          await updateDoc(this.docRef, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          dataToSave.createdAt = serverTimestamp();
-          await addDoc(collectionRef, dataToSave);
+          await addDoc(collectionRef, { ...formDataToSave, eventYear: this.selectedYear, createdAt: serverTimestamp() });
           alert('登録が完了しました。');
           window.location.href = `./index.html?year=${this.selectedYear}`;
         }
@@ -176,6 +177,7 @@ document.addEventListener('alpine:init', () => {
 
 function createInitialFormData() {
   return {
+    year: selectedYear,
     basicInfo: {
       reservationDate: '',
       name: '', kana: '', introducer: '', phone: '', address: '',
