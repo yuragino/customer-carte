@@ -2,6 +2,7 @@ import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc, query, wh
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
+import { handleError } from "../common/utils/ui-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -33,32 +34,20 @@ document.addEventListener('alpine:init', () => {
     },
 
     async loadReservationSchedule() {
-      this.isLoading = true;
-      this.customers = [];
+      this.groups = [];
       try {
         const yearQuery = query(collection(db, COLLECTION_NAME), where('eventYear', '==', this.selectedYear));
         const snapshot = await getDocs(yearQuery);
-        const fetchedCustomers = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-
-        // お客様リストのソート
-        fetchedCustomers.sort((a, b) => {
-          if (a.isCanceled !== b.isCanceled) {
-            return a.isCanceled ? 1 : -1;
-          }
-          const timeA = a.toujitsuInfo?.schedule[0]?.start || '99:99';
-          const timeB = b.toujitsuInfo?.schedule[0]?.start || '99:99';
-          return timeA.localeCompare(timeB);
-        });
-
-        this.customers = fetchedCustomers;
+        this.groups = snapshot.docs
+          .map(doc => ({ groupId: doc.id, ...doc.data() }))
+          .sort((a, b) => {
+            // キャンセルの有無 → 時間の順
+            const cancelOrder = Number(a.representative.isCanceled) - Number(b.representative.isCanceled);
+            if (cancelOrder !== 0) return cancelOrder;
+            return a.representative.visitTime.localeCompare(b.representative.visitTime);
+          });
       } catch (error) {
-        console.error("データの取得に失敗しました: ", error);
-        alert("データの取得に失敗しました。");
-      } finally {
-        this.isLoading = false;
+        handleError('データの取得', error);
       }
     },
 
@@ -74,75 +63,51 @@ document.addEventListener('alpine:init', () => {
         this.loadReservationSchedule();
       }
     },
-    async updateCustomerStaff(customerId, staffName, checked) {
-      const docRef = doc(db, COLLECTION_NAME, customerId);
+
+    async updateCustomerField(groupId, customerId, field, value, checked = null) {
       try {
-        // 一度現在のデータを取得
-        const snap = await getDoc(docRef);
-        if (!snap.exists()) throw new Error("Document not found");
-        const customer = snap.data();
+        const docRef = doc(db, COLLECTION_NAME, groupId);
+        const docSnap = await getDoc(docRef);
 
-        let staffArray = customer.staff || [];
+        const customers = docSnap.data().customers;
+        const target = customers.find(c => c.id === customerId);
 
-        if (checked) {
-          // チェック → 配列に追加（重複なし）
-          if (!staffArray.includes(staffName)) {
-            staffArray.push(staffName);
-          }
+        // ===== フィールドごとの更新ロジック =====
+        if (field === "staff") {
+          const staffList = new Set(target.staff ?? []);
+          checked === true ? staffList.add(value) : staffList.delete(value);
+          target.staff = [...staffList];
         } else {
-          // チェック外す → 配列から削除
-          staffArray = staffArray.filter(s => s !== staffName);
+          target[field] = value;
         }
-
-        await updateDoc(docRef, { staff: staffArray });
-
-        // 画面上の customer も即座に更新して反映
-        const target = this.customers.find(c => c.id === customerId);
-        if (target) target.staff = staffArray;
-
-        console.log(`顧客ID:${customerId} の staff 更新成功`, staffArray);
+        await updateDoc(docRef, { customers });
       } catch (error) {
-        console.error("スタッフ更新失敗:", error);
-        alert("スタッフ更新に失敗しました。");
-        this.loadReservationSchedule();
+        handleError(`${field}の更新`, error);
       }
     },
 
-    async updateStatus(customer) {
-      const currentStatus = customer.status || '受付完了';
-      const nextStatus = this.nextStatusMap[currentStatus];
-      if (!nextStatus) return; // 最終ステータスなら何もしない
-      const docRef = doc(db, COLLECTION_NAME, customer.id);
-      // 更新するデータを準備
-      const updatePayload = {
-        status: nextStatus
-      };
-
-      // タイムスタンプを記録するキーを取得し、更新データに追加
-      const timestampKey = this.statusToTimestampKey[currentStatus];
-      if (timestampKey) {
-        // Firestoreのネストされたオブジェクトのフィールドを更新する記法
-        updatePayload[`statusTimestamps.${timestampKey}`] = serverTimestamp();
-      }
-
+    async updateStatus(group, customerId) {
       try {
-        await updateDoc(docRef, updatePayload);
-        // 画面上の表示を即時反映
+        const docRef = doc(db, COLLECTION_NAME, group.groupId);
+        const customer = group.customers.find(c => c.id === customerId);
+
+        const currentStatus = customer.status ?? '受付完了';
+        const nextStatus = this.nextStatusMap[currentStatus];
+        if (!nextStatus) return;
+
         customer.status = nextStatus;
-        // タイムスタンプも仮の値を設定しておく（正確な値はリロード時に反映）
-        if (timestampKey) {
-          if (!customer.statusTimestamps) customer.statusTimestamps = {};
-          customer.statusTimestamps[timestampKey] = new Date();
-        }
-        console.log(`ステータスを "${nextStatus}" に更新しました。`);
+        const timestampKey = this.statusToTimestampKey[currentStatus];
+        (customer.statusTimestamps ??= {})[timestampKey] = new Date();
+
+        await updateDoc(docRef, { customers: group.customers });
       } catch (error) {
-        console.error("ステータスの更新に失敗しました:", error);
-        alert("ステータス更新に失敗しました。");
+        handleError('ステータスの更新', error);
         this.loadReservationSchedule();
       }
     },
 
     getStatusClass(status) {
+      const currentStatus = status ?? '受付完了';
       const classMap = {
         '受付完了': 'status-received',
         '案内完了': 'status-guided',
@@ -150,7 +115,7 @@ document.addEventListener('alpine:init', () => {
         '見送り完了': 'status-sent-off',
         '済': 'status-completed',
       };
-      return classMap[status || '受付完了'];
+      return classMap[currentStatus] ?? 'status-received';
     },
 
   }));

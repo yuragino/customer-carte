@@ -103,5 +103,6 @@ document.addEventListener('alpine:init', () => {
       };
       return classMap[currentStatus] ?? 'status-received';
     },
+    
   }));
 });
