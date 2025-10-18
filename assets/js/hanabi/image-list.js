@@ -1,6 +1,7 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
+import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { handleError } from "../common/utils/ui-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
@@ -8,37 +9,27 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings(),
     customersWithImage: [],
 
-    async init() {
+    init() {
       this.initYearSelector();
-      await this.loadData();
+      this.load();
     },
 
-    async loadData() {
+    async load() {
       try {
-        const colRef = collection(db, COLLECTION_NAME);
-        const snapshot = await getDocs(colRef);
-        const customersList = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          if (!data.customers) return;
-
-          data.customers.forEach((customer, customerIndex) => {
-            // imageUrlsがない場合でも空の配列を設定することで、カードが作成される
-            customersList.push({
-              groupId: doc.id,
-              id: `${doc.id}_${customer.firstName}_${customerIndex}`,
-              name: `${customer.lastName}${customer.firstName}`,
-              imageUrls: customer.imageUrls || [],
-              currentIndex: 0,
-            });
-          });
-        });
-
-        this.customersWithImage = customersList;
+        const snapshot = await getDocsByYear(COLLECTION_NAME, this.selectedYear);
+        this.customersWithImage = snapshot.flatMap(doc =>
+          doc.customers.map(customer => ({
+            id: doc.id,
+            name: customer.name,
+            imageUrls: customer.imageUrls || [],
+            currentIndex: 0,
+          }))
+        )
       } catch (error) {
         handleError('データの取得', error);
       }
     },
+    
     nextImage(cardIndex) {
       const customer = this.customersWithImage[cardIndex];
       customer.currentIndex = (customer.currentIndex + 1) % customer.imageUrls.length;

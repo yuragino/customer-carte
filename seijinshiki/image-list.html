@@ -9,8 +9,8 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    crossorigin="anonymous" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
   <link rel="stylesheet" href="../assets/css/seijinshiki/image-list.css">
@@ -43,11 +43,15 @@
     <!-- 顧客アコーディオン -->
     <template x-for="customer in filteredCustomers" :key="customer.id">
       <div class="accordion">
-        <button @click="toggleAccordion(customer.id)">
-          <div class="accordion-text">
-            <span x-text="customer.basicInfo.name"></span>
+        <button class="w-full flex justify-between p-4 bg-white border-b" @click="toggleAccordion(customer.id)" >
+          <div class="flex w-[90%] justify-between">
+            <div x-text="customer.basicInfo.name"></div>
+            <div class="flex gap-1 items-center">
+              <span class="text-xs text-gray-400" x-text="customer.imageUrls?.length > 0 ? '画像あり' : ''"></span>
+              <span class="text-xs text-gray-400" x-text="customer.videoUrls?.length > 0 ? '動画あり' : ''"></span>
+            </div>
           </div>
-          <i class="fa-solid chevron" :class="isOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          <i class="fa-solid " :class="isOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         </button>
 
         <div x-show="isOpen(customer.id)" class="accordion-content">

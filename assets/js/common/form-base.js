@@ -61,14 +61,14 @@ export function createFormBase({ collectionName, extraMethods = {} }) {
       this.docId = params.get('docId');
       if (this.docId) {
         // 編集モード: docId がある場合はデータをロードする
-        await this.loadData();
+        await this.load();
       } else {
         // 新規登録モード: docId がない場合は初期リストを作成する
         this.updateCustomerList();
       }
     },
 
-    async loadData() {
+    async load() {
       try {
         const docSnap = await getDoc(this.docRef);
         if (docSnap.exists()) {

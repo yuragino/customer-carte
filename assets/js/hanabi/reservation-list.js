@@ -59,7 +59,7 @@ document.addEventListener('alpine:init', () => {
 
     async updateStatus(group, customerId) {
       try {
-        const docRef = doc(db, COLLECTION_NAME, group.groupId);
+        const docRef = doc(db, COLLECTION_NAME, group.id);
         const customer = group.customers.find(c => c.id === customerId);
 
         const currentStatus = customer.status ?? '受付完了';

@@ -41,10 +41,10 @@ document.addEventListener('alpine:init', () => {
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
       this.docId = params.get('docId');
-      if (this.docId) await this.loadData();
+      if (this.docId) await this.load();
     },
 
-    async loadData() {
+    async load() {
       try {
         const docSnap = await getDoc(this.docRef);
         if (docSnap.exists()) {

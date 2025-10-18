@@ -53,9 +53,7 @@
       <tbody>
         <template x-if="customers.length === 0">
           <tr>
-            <td colspan="7" style="text-align: center; padding: 2rem;">
-              該当するデータがありません。
-            </td>
+            <td colspan="8" class="text-center p-4">該当するデータがありません</td>
           </tr>
         </template>
 
@@ -76,18 +74,18 @@
               </select>
             </td>
             <td>
-              <select x-model="customer.sendoffStaff" @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)" :disabled="customer.isCanceled">
+              <select x-model="customer.undergarmentStaff" @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)" :disabled="customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="staff in staffOptions" :key="`u-${staff}`">
-                  <option :value="staff" x-text="staff" :selected="booth === customer.undergarmentStaff"></option>
+                  <option :value="staff" x-text="staff" :selected="staff === customer.undergarmentStaff"></option>
                 </template>
               </select>
             </td>
             <td>
-              <select x-model="customer.undergarmentStaff" @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)" :disabled="customer.isCanceled">
+              <select x-model="customer.sendoffStaff" @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)" :disabled="customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="staff in staffOptions" :key="`s-${staff}`">
-                  <option :value="staff" x-text="staff" :selected="booth === customer.sendoffStaff"></option>
+                  <option :value="staff" x-text="staff" :selected="staff === customer.sendoffStaff"></option>
                 </template>
               </select>
             </td>

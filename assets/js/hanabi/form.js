@@ -51,11 +51,11 @@ document.addEventListener('alpine:init', () => {
     async init() {
       const params = new URLSearchParams(window.location.search);
       this.docId = params.get('docId');
-      if (this.docId) await this.loadData();
+      if (this.docId) await this.load();
       else this.updateCustomerList();
     },
 
-    async loadData() {
+    async load() {
       try {
         const docSnap = await getDoc(this.docRef);
         if (docSnap.exists()) {

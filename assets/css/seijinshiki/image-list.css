@@ -1,47 +1,4 @@
-/* === アコーディオン === */
-.accordion {
-  border-bottom: 1px solid #e5e5e5;
-}
 
-.accordion button {
-  width: 100%;
-  background: #fff;
-  border: none;
-  padding: 1rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  display: flex;
-  justify-content: space-between;
-  /* 名称＋アイコン左、矢印右 */
-  align-items: center;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  text-align: left;
-}
-
-.accordion button:hover {
-  background: #f9f9f9;
-}
-
-/* 左側テキストと「写真なし」アイコン */
-.accordion-text {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.no-media-icon,
-.accordion button i.fa-image-slash {
-  color: #bbb;
-  font-size: 0.9rem;
-}
-
-/* ▼ / ▲ チェブロン */
-.accordion button .chevron {
-  font-size: 0.9rem;
-  margin-left: auto;
-  color: #666;
-}
 
 /* === アコーディオン内容 === */
 .accordion-content {

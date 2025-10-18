@@ -1,8 +1,9 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
+import { getDocsByYear } from "../common/utils/firestore-utils.js";
+const COLLECTION_NAME = 'seijinshiki';
 
-// 文字正規化（スペース無視）
 function normalizeForSearch(str) {
   if (!str) return "";
   return str
@@ -19,11 +20,7 @@ document.addEventListener('alpine:init', () => {
 
     async init() {
       this.initYearSelector();
-      const snapshot = await getDocs(collection(db, `${this.selectedYear}_seijinshiki`));
-      this.customers = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      this.customers = await getDocsByYear(COLLECTION_NAME, this.selectedYear);
     },
 
     isOpen(id) {
@@ -45,8 +42,8 @@ document.addEventListener('alpine:init', () => {
       const query = normalizeForSearch(this.searchQuery);
 
       return this.customers.filter(c => {
-        const kana = normalizeForSearch(c.basicInfo?.kana || "");
-        const name = normalizeForSearch(c.basicInfo?.name || "");
+        const kana = normalizeForSearch(c.basicInfo.kana || "");
+        const name = normalizeForSearch(c.basicInfo.name || "");
         return kana.includes(query) || name.includes(query);
       });
     },

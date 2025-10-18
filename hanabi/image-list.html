@@ -36,12 +36,8 @@
 
   <main>
     <div class="list">
-      <template x-if="customersWithImage.length === 0">
-        <p style="text-align: center; width: 100%; padding: 2rem;">
-          該当するデータがありません。
-        </p>
-      </template>
-      <template x-for="(customer, index) in customersWithImage" :key="customer.id">
+      <div x-show="customersWithImage.length === 0" class="text-center p-4">該当するデータがありません</div>
+      <template x-for="(customer, index) in customersWithImage">
         <div class="card">
           <div class="image-container">
             <template x-if="customer.imageUrls.length > 0">
@@ -63,8 +59,7 @@
                 <i class="fa-solid fa-angles-right"></i>
               </button>
             </div>
-            <button class="action-btn edit-btn"
-              @click="window.location.href = `./form.html?docId=${customer.groupId}&year=${selectedYear}`">
+            <button class="action-btn edit-btn" @click="window.location.href = `./form.html?docId=${customer.id}&year=${selectedYear}`">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
           </div>

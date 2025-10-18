@@ -208,6 +208,7 @@
               <label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label>
               <label x-show="customer.gender === 'female'"><input type="checkbox" x-model="customer.options.obiBag"> バッグ</label>
             </div>
+            <!-- 追加レンタル -->
             <div class="form-cell">
               <ul class="rental-list">
                 <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
@@ -219,15 +220,12 @@
               </ul>
               <button type="button" class="add-btn" @click="openRentalModal(customerIndex)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
-            <div class="form-cell">
-              <label class="file-upload-label">
-                <i class="fa-solid fa-camera"></i>
-                <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, customerIndex)">
-              </label>
+            <!-- 画像アップロード -->
+            <div class="form-cell flex justify-around">
               <div class="preview-container">
                 <!-- 保存済み -->
                 <template x-for="(url, index) in customer.imageUrls" :key="url">
-                  <div class="preview-item">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <img :src="url" class="preview-image">
                     <button type="button" class="btn-del" @click="removeMedia(customerIndex,'saved-image',index)">
                       <i class="fa-solid fa-trash"></i>
@@ -236,7 +234,7 @@
                 </template>
                 <!-- 新規追加プレビュー -->
                 <template x-for="(src, index) in customer.newImagePreviews" :key="src">
-                  <div class="preview-item">
+                  <div class="flex">
                     <img :src="src" class="preview-image">
                     <button type="button" class="btn-del" @click="removeMedia(customerIndex,'new-image',index)">
                       <i class="fa-solid fa-trash"></i>
@@ -244,6 +242,10 @@
                   </div>
                 </template>
               </div>
+              <label class="file-upload-label">
+                <i class="fa-solid fa-camera"></i>
+                <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, customerIndex)">
+              </label>
             </div>
             <div class="form-cell">
               <div x-show="formData.representative.reservationMethod">
