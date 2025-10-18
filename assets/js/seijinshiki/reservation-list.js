@@ -1,7 +1,8 @@
-import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
+const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -12,14 +13,14 @@ document.addEventListener('alpine:init', () => {
     boothOptionsMale: ['C1', 'C2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
 
-    statusCycle: {
+    nextStatusMap: {
       '受付完了': '案内完了',
       '案内完了': '着付完了',
       '着付完了': '見送り完了',
       '見送り完了': '済',
     },
 
-    statusTimestampKeys: {
+    statusToTimestampKey: {
       '受付完了': 'receptionCompletedAt',
       '案内完了': 'guidanceCompletedAt',
       '着付完了': 'dressingCompletedAt',
@@ -28,16 +29,16 @@ document.addEventListener('alpine:init', () => {
 
     init() {
       this.initYearSelector();
-      this.fetchSchedule();
+      this.loadReservationSchedule();
     },
 
-    async fetchSchedule() {
+    async loadReservationSchedule() {
       this.isLoading = true;
       this.customers = [];
-      const collectionName = `${this.selectedYear}_seijinshiki`;
       try {
-        const querySnapshot = await getDocs(collection(db, collectionName));
-        const fetchedCustomers = querySnapshot.docs.map(doc => ({
+        const yearQuery = query(collection(db, COLLECTION_NAME), where('eventYear', '==', this.selectedYear));
+        const snapshot = await getDocs(yearQuery);
+        const fetchedCustomers = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
@@ -54,7 +55,7 @@ document.addEventListener('alpine:init', () => {
 
         this.customers = fetchedCustomers;
       } catch (error) {
-        console.error("スケジュールデータの取得に失敗しました: ", error);
+        console.error("データの取得に失敗しました: ", error);
         alert("データの取得に失敗しました。");
       } finally {
         this.isLoading = false;
@@ -62,8 +63,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     async updateCustomerField(customerId, field, value,) {
-      const collectionName = `${this.selectedYear}_seijinshiki`;
-      const docRef = doc(db, collectionName, customerId);
+      const docRef = doc(db, COLLECTION_NAME, customerId);
       try {
         await updateDoc(docRef, { [field]: value });
         console.log(`顧客ID:${customerId} の ${field} を更新しました。`);
@@ -71,12 +71,11 @@ document.addEventListener('alpine:init', () => {
         console.error(`${field} の更新に失敗しました:`, error);
         alert(`${field} の更新に失敗しました。`);
         // エラー発生時はデータを再取得して画面を元に戻す
-        this.fetchSchedule();
+        this.loadReservationSchedule();
       }
     },
     async updateCustomerStaff(customerId, staffName, checked) {
-      const collectionName = `${this.selectedYear}_seijinshiki`;
-      const docRef = doc(db, collectionName, customerId);
+      const docRef = doc(db, COLLECTION_NAME, customerId);
       try {
         // 一度現在のデータを取得
         const snap = await getDoc(docRef);
@@ -105,25 +104,22 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         console.error("スタッフ更新失敗:", error);
         alert("スタッフ更新に失敗しました。");
-        this.fetchSchedule();
+        this.loadReservationSchedule();
       }
     },
 
     async updateStatus(customer) {
       const currentStatus = customer.status || '受付完了';
-      const nextStatus = this.statusCycle[currentStatus];
+      const nextStatus = this.nextStatusMap[currentStatus];
       if (!nextStatus) return; // 最終ステータスなら何もしない
-
-      const collectionName = `${this.selectedYear}_seijinshiki`;
-      const docRef = doc(db, collectionName, customer.id);
-
+      const docRef = doc(db, COLLECTION_NAME, customer.id);
       // 更新するデータを準備
       const updatePayload = {
         status: nextStatus
       };
 
       // タイムスタンプを記録するキーを取得し、更新データに追加
-      const timestampKey = this.statusTimestampKeys[currentStatus];
+      const timestampKey = this.statusToTimestampKey[currentStatus];
       if (timestampKey) {
         // Firestoreのネストされたオブジェクトのフィールドを更新する記法
         updatePayload[`statusTimestamps.${timestampKey}`] = serverTimestamp();
@@ -142,7 +138,7 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         console.error("ステータスの更新に失敗しました:", error);
         alert("ステータス更新に失敗しました。");
-        this.fetchSchedule();
+        this.loadReservationSchedule();
       }
     },
 

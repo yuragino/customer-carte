@@ -6,7 +6,6 @@ import { toggleRadioUtil } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 const COLLECTION_NAME = 'fireworks';
-
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),

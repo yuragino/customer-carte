@@ -1,7 +1,8 @@
-import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { collection, getDocs, doc, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
+const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -11,14 +12,14 @@ document.addEventListener('alpine:init', () => {
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
 
-    statusCycle: {
+    nextStatusMap: {
       '受付完了': '案内完了',
       '案内完了': '着付完了',
       '着付完了': '見送り完了',
       '見送り完了': '済',
     },
 
-    statusTimestampKeys: {
+    statusToTimestampKey: {
       '受付完了': 'receptionCompletedAt',
       '案内完了': 'guidanceCompletedAt',
       '着付完了': 'dressingCompletedAt',
@@ -27,76 +28,51 @@ document.addEventListener('alpine:init', () => {
 
     init() {
       this.initYearSelector();
-      this.fetchSchedule();
+      this.loadReservationSchedule();
     },
 
-    async fetchSchedule() {
+    async loadReservationSchedule() {
       this.groups = [];
-      const collectionName = `${this.selectedYear}_fireworks`;
       try {
-        const colRef = collection(db, collectionName);
-        const querySnapshot = await getDocs(colRef);
-        const fetchedGroups = [];
-        querySnapshot.forEach((doc) => {
-          fetchedGroups.push({
-            groupId: doc.id,
-            ...doc.data()
+        const yearQuery = query(collection(db, COLLECTION_NAME), where('eventYear', '==', this.selectedYear));
+        const snapshot = await getDocs(yearQuery);
+        this.groups = snapshot.docs
+          .map(doc => ({ groupId: doc.id, ...doc.data() }))
+          .sort((a, b) => {
+            // キャンセルの有無 → 時間の順
+            const cancelOrder = Number(a.representative.isCanceled) - Number(b.representative.isCanceled);
+            if (cancelOrder !== 0) return cancelOrder;
+            return a.representative.visitTime.localeCompare(b.representative.visitTime);
           });
-        });
-        fetchedGroups.sort((a, b) => {
-          // キャンセル済みかどうかでソート
-          if (a.representative.isCanceled && !b.representative.isCanceled) {
-            return 1; // aがキャンセル済みで、bが未キャンセルなら、aを後ろに
-          }
-          if (!a.representative.isCanceled && b.representative.isCanceled) {
-            return -1; // aが未キャンセルで、bがキャンセル済みなら、aを前に
-          }
-          // キャンセル状態が同じ場合は、来店予定時間でソート
-          if (a.representative.visitTime < b.representative.visitTime) return -1;
-          if (a.representative.visitTime > b.representative.visitTime) return 1;
-          return 0;
-        });
-        this.groups = fetchedGroups;
       } catch (error) {
         console.error("Error fetching schedule: ", error);
         alert("データの取得に失敗しました。");
       }
     },
 
-    // updateCustomerField 関数のシグネチャを変更
-    async updateCustomerField(groupId, customerId, field, value, checked) {
+    async updateCustomerField(groupId, customerId, field, value, checked = null) {
       try {
-        const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, groupId);
+        const docRef = doc(db, COLLECTION_NAME, groupId);
         const docSnap = await getDoc(docRef);
         if (!docSnap.exists()) throw new Error("Document not found");
 
         const customers = docSnap.data().customers;
-        const customerIndex = customers.findIndex(customerData => customerData.id === customerId);
-        if (customerIndex === -1) throw new Error("Customer not found");
+        const target = customers.find(c => c.id === customerId);
+        if (!target) throw new Error("Customer not found");
 
-        if (field === 'staff') {
-          let currentStaff = customers[customerIndex].staff || [];
-          // checked引数を使って、追加するか削除するかを判断
-          if (checked) {
-            // チェックが入った場合、配列に追加（重複は避ける）
-            if (!currentStaff.includes(value)) {
-              currentStaff.push(value);
-            }
+        // ===== フィールドごとの更新ロジック =====
+        if (field === "staff") {
+          const staffList = new Set(target.staff ?? []);
+          if (checked === true) {
+            staffList.add(value);
           } else {
-            // チェックが外れた場合、配列から削除
-            const valueIndex = currentStaff.indexOf(value);
-            if (valueIndex > -1) {
-              currentStaff.splice(valueIndex, 1);
-            }
+            staffList.delete(value);
           }
-          customers[customerIndex].staff = currentStaff;
+          target.staff = Array.from(staffList);
         } else {
-          customers[customerIndex][field] = value;
+          target[field] = value;
         }
-
-        await updateDoc(docRef, { customers: customers });
-        console.log("Updated successfully!");
+        await updateDoc(docRef, { customers });
       } catch (error) {
         console.error(`Error updating ${field}:`, error);
         alert(`${field}の更新に失敗しました。`);
@@ -105,34 +81,23 @@ document.addEventListener('alpine:init', () => {
 
     async updateStatus(group, customerId) {
       try {
-        // ドキュメントへの参照を作成
-        const collectionName = `${this.selectedYear}_fireworks`;
-        const docRef = doc(db, collectionName, group.groupId);
+        const docRef = doc(db, COLLECTION_NAME, group.groupId);
+        const customer = group.customers.find(c => c.id === customerId);
+        if (!customer) throw new Error("Customer not found");
 
-        // データの取得と更新対象の特定
-        const customers = group.customers;
-        const customerIndex = customers.findIndex(c => c.id === customerId);
-        const customer = customers[customerIndex];
+        const currentStatus = customer.status ?? '受付完了';
+        const nextStatus = this.nextStatusMap[currentStatus];
+        if (!nextStatus) return;
 
-        // ステータスの判定と次のステータスの決定
-        const currentStatus = customer.status || '受付完了';
-        const nextStatus = this.statusCycle[currentStatus];
-
-        if (nextStatus === currentStatus) {
-          // 最終ステータスに達した場合は何もしない
-          return;
-        }
-        // ステータスとタイムスタンプを更新
         customer.status = nextStatus;
-        const timestampKey = this.statusTimestampKeys[currentStatus];
-        customer.statusTimestamps[timestampKey] = new Date();
-        // Firestoreにデータを更新
-        await updateDoc(docRef, { customers: customers });
-        console.log("Status and timestamp updated successfully!");
+        const timestampKey = this.statusToTimestampKey[currentStatus];
+        (customer.statusTimestamps ??= {})[timestampKey] = new Date();
+
+        await updateDoc(docRef, { customers: group.customers });
       } catch (error) {
-        console.error("Error updating status:", error);
+        console.error("ステータス更新エラー:", error);
         alert("ステータス更新に失敗しました。");
-        this.fetchSchedule();
+        this.loadReservationSchedule();
       }
     },
 

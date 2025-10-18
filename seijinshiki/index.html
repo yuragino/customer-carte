@@ -71,14 +71,11 @@
         <template x-for="customer in customers" :key="customer.id">
           <tr :class="{'is-canceled': customer.isCanceled}">
             <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
-
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
-
             <td>
               <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'"
                 x-text="customer.basicInfo?.name || '名前なし'"></span>
             </td>
-
             <td>
               <div class="booth-radios">
                 <template x-for="booth in customer.basicInfo?.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale"
@@ -92,7 +89,6 @@
                 </template>
               </div>
             </td>
-
             <td>
               <div class="staff-checkboxes">
                 <template x-for="staff in staffOptions" :key="staff">
@@ -106,7 +102,6 @@
                 </template>
               </div>
             </td>
-
             <td>
               <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)"
                 x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'">
@@ -114,7 +109,6 @@
               <span x-show="customer.status === '済'">済</span>
               <span x-show="customer.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
             </td>
-
             <td>
               <a :href="`form.html?docId=${customer.id}&year=${selectedYear}`" class="detail-link" title="詳細を開く">
                 <i class="fa-solid fa-square-up-right"></i>

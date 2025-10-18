@@ -177,7 +177,6 @@ document.addEventListener('alpine:init', () => {
 
 function createInitialFormData() {
   return {
-    year: selectedYear,
     basicInfo: {
       reservationDate: '',
       name: '', kana: '', introducer: '', phone: '', address: '',

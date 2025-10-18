@@ -8,10 +8,10 @@ document.addEventListener('alpine:init', () => {
     searchQuery: '',
 
     init() {
-      this.fetchSchedule();
+      this.loadReservationSchedule();
     },
 
-    async fetchSchedule() {
+    async loadReservationSchedule() {
       this.groups = [];
       try {
         const colRef = collection(db, COLLECTION_NAME);
