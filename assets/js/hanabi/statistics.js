@@ -1,6 +1,6 @@
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { formatDuration, formatTimestamp, avg, minBy, maxBy } from '../common/utils.js';
+import { formatDuration, formatTimestamp, avg, minBy, maxBy } from '../common/format-utils.js';
 import { getYearSettings } from "../common/year-selector.js";
 
 document.addEventListener('alpine:init', () => {
