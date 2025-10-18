@@ -2,9 +2,9 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
-import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils.js';
+import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils/format-utils.js';
 document.addEventListener('alpine:init', () => {
-  Alpine.data('App', () => ({
+  Alpine.data('app', () => ({
     ...getYearSettings(),
     formatFullDateTime,
     formatDateOnly,

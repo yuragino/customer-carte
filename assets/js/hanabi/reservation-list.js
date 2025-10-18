@@ -1,9 +1,9 @@
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
-import { formatTimestamp } from '../common/format-utils.js';
+import { formatTimestamp } from '../common/utils/format-utils.js';
 document.addEventListener('alpine:init', () => {
-  Alpine.data('App', () => ({
+  Alpine.data('app', () => ({
     ...getYearSettings(),
     formatTimestamp,
     groups: [],

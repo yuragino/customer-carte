@@ -1,6 +1,6 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { formatFullDateTime, formatTime, formatYen } from '../common/utils.js';
+import { formatFullDateTime, formatTime, formatYen } from '../common/utils/format-utils.js';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('printView', () => ({

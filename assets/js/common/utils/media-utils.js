@@ -1,4 +1,4 @@
-import { CLOUDINARY_CONFIG } from './constants.js';
+import { CLOUDINARY_CONFIG } from "../constants.js";
 
 export async function uploadMediaToCloudinary(file, folderName) {
   const formData = new FormData();

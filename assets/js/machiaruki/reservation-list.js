@@ -3,7 +3,7 @@ import { db } from '../common/firebase-config.js';
 const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
-  Alpine.data('App', () => ({
+  Alpine.data('app', () => ({
     groups: [],
     searchQuery: '',
 
