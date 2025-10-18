@@ -1,6 +1,7 @@
 import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
+import { getDocsByYear, STATUS_MAP } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
@@ -12,33 +13,17 @@ document.addEventListener('alpine:init', () => {
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
     boothOptionsMale: ['C1', 'C2'],
     staffOptions: ['小林', '谷口', '大矢'],
-
-    nextStatusMap: {
-      '受付完了': '案内完了',
-      '案内完了': '着付完了',
-      '着付完了': '見送り完了',
-      '見送り完了': '済',
-    },
-
-    statusToTimestampKey: {
-      '受付完了': 'receptionCompletedAt',
-      '案内完了': 'guidanceCompletedAt',
-      '着付完了': 'dressingCompletedAt',
-      '見送り完了': 'sendOffCompletedAt',
-    },
+    ...STATUS_MAP,
 
     init() {
       this.initYearSelector();
-      this.loadReservationSchedule();
+      this.load();
     },
 
-    async loadReservationSchedule() {
+    async load() {
       this.customers = [];
       try {
-        const yearQuery = query(collection(db, COLLECTION_NAME), where('eventYear', '==', this.selectedYear));
-        const snapshot = await getDocs(yearQuery);
-        this.customers = snapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
+        this.customers = (await getDocsByYear(COLLECTION_NAME, this.selectedYear))
           .sort((a, b) => {
             // キャンセルの有無 → 時間の順
             const cancelOrder = Number(a.isCanceled) - Number(b.isCanceled);
@@ -73,20 +58,8 @@ document.addEventListener('alpine:init', () => {
         await updateDoc(docRef, { ...customer });
       } catch (error) {
         handleError('ステータスの更新', error);
-        this.loadReservationSchedule();
+        this.load();
       }
-    },
-
-    getStatusClass(status) {
-      const currentStatus = status ?? '受付完了';
-      const classMap = {
-        '受付完了': 'status-received',
-        '案内完了': 'status-guided',
-        '着付完了': 'status-dressing-done',
-        '見送り完了': 'status-sent-off',
-        '済': 'status-completed',
-      };
-      return classMap[currentStatus] ?? 'status-received';
     },
 
   }));

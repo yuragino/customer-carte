@@ -10,6 +10,7 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
@@ -175,21 +176,15 @@
           </tr>
           <tr>
             <th>ヘア時間</th>
-            <td
-              x-text="formData.maedoriInfo.hairStart && formData.maedoriInfo.hairEnd ? `${formatTime(formData.maedoriInfo.hairStart)} 〜 ${formatTime(formData.maedoriInfo.hairEnd)}` : 'ー'">
-            </td>
+            <td x-text="formData.maedoriInfo.hairStart && formData.maedoriInfo.hairEnd ? `${formatTime(formData.maedoriInfo.hairStart)} 〜 ${formatTime(formData.maedoriInfo.hairEnd)}` : 'ー'"></td>
           </tr>
           <tr>
             <th>着付時間</th>
-            <td
-              x-text="formData.maedoriInfo.kitsukeStart && formData.maedoriInfo.kitsukeEnd ? `${formatTime(formData.maedoriInfo.kitsukeStart)} 〜 ${formatTime(formData.maedoriInfo.kitsukeEnd)}` : 'ー'">
-            </td>
+            <td x-text="formData.maedoriInfo.kitsukeStart && formData.maedoriInfo.kitsukeEnd ? `${formatTime(formData.maedoriInfo.kitsukeStart)} 〜 ${formatTime(formData.maedoriInfo.kitsukeEnd)}` : 'ー'"></td>
           </tr>
           <tr>
             <th>撮影時間</th>
-            <td
-              x-text="formData.maedoriInfo.shootStart && formData.maedoriInfo.shootEnd ? `${formData.maedoriInfo.shootStart} 〜 ${formData.maedoriInfo.shootEnd}` : 'ー'">
-            </td>
+            <td x-text="formData.maedoriInfo.shootStart && formData.maedoriInfo.shootEnd ? `${formData.maedoriInfo.shootStart} 〜 ${formData.maedoriInfo.shootEnd}` : 'ー'"></td>
           </tr>
           <tr>
             <th>着付場所</th>

@@ -54,8 +54,7 @@ document.addEventListener('alpine:init', () => {
           this.docId = null;
         }
       } catch (error) {
-        console.error('データ取得エラー:', error);
-        alert('データの読み込みに失敗しました。');
+        handleError('データの取得', error);
       }
     },
 
@@ -146,7 +145,8 @@ document.addEventListener('alpine:init', () => {
     calcPrice(item) {
       const outfitKey = OUTFIT_KEY_MAP[this.formData.basicInfo.outfit];
       const priceTable = SEIJINSHIKI_PRICES[outfitKey];
-      const { hasToujitsu, hasMaedori } = item;
+      const { hasToujitsu, hasMaedori, isMiyuki } = item;
+      if (isMiyuki === true) return 0;
       const both = hasToujitsu && hasMaedori;
       if (item.name === '着付') {
         if (both) return priceTable.KITSUKE.BOTH;
@@ -203,7 +203,7 @@ function createInitialFormData() {
       place: '', note: ''
     },
     estimateInfo: {
-      kitsuke: { name: '着付', fixed: true, hasToujitsu: true, hasMaedori: false },
+      kitsuke: { name: '着付', fixed: true, hasToujitsu: true, hasMaedori: false, isMiyuki: false },
       hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: true, hasMaedori: false, type: 'ヘア＆メイク' },
       options: [],
       receiptDate: ''

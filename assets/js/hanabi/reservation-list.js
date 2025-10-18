@@ -1,6 +1,7 @@
 import { collection, getDocs, doc, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
+import { getDocsByYear, STATUS_MAP } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
 const COLLECTION_NAME = 'fireworks';
@@ -12,38 +13,22 @@ document.addEventListener('alpine:init', () => {
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
-
-    nextStatusMap: {
-      '受付完了': '案内完了',
-      '案内完了': '着付完了',
-      '着付完了': '見送り完了',
-      '見送り完了': '済',
-    },
-
-    statusToTimestampKey: {
-      '受付完了': 'receptionCompletedAt',
-      '案内完了': 'guidanceCompletedAt',
-      '着付完了': 'dressingCompletedAt',
-      '見送り完了': 'sendOffCompletedAt',
-    },
+    ...STATUS_MAP,
 
     init() {
       this.initYearSelector();
-      this.loadReservationSchedule();
+      this.load();
     },
 
-    async loadReservationSchedule() {
+    async load() {
       this.groups = [];
       try {
-        const yearQuery = query(collection(db, COLLECTION_NAME), where('eventYear', '==', this.selectedYear));
-        const snapshot = await getDocs(yearQuery);
-        this.groups = snapshot.docs
-          .map(doc => ({ groupId: doc.id, ...doc.data() }))
+        this.groups = (await getDocsByYear(COLLECTION_NAME, this.selectedYear))
           .sort((a, b) => {
             // キャンセルの有無 → 時間の順
             const cancelOrder = Number(a.representative.isCanceled) - Number(b.representative.isCanceled);
             if (cancelOrder !== 0) return cancelOrder;
-            return a.representative.visitTime.localeCompare(b.representative.visitTime);
+            return a.representative?.visitTime.localeCompare(b.representative?.visitTime);
           });
       } catch (error) {
         handleError('データの取得', error);
@@ -88,20 +73,8 @@ document.addEventListener('alpine:init', () => {
         await updateDoc(docRef, { customers: group.customers });
       } catch (error) {
         handleError('ステータスの更新', error);
-        this.loadReservationSchedule();
+        this.load();
       }
-    },
-
-    getStatusClass(status) {
-      const currentStatus = status ?? '受付完了';
-      const classMap = {
-        '受付完了': 'status-received',
-        '案内完了': 'status-guided',
-        '着付完了': 'status-dressing-done',
-        '見送り完了': 'status-sent-off',
-        '済': 'status-completed',
-      };
-      return classMap[currentStatus] ?? 'status-received';
     },
 
   }));

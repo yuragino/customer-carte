@@ -10,6 +10,7 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
@@ -21,7 +22,7 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
-        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear">
+        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
         <span>成人式</span>
       </div>
       <nav class="header-nav">
@@ -42,9 +43,9 @@
     <form @submit.prevent="submitForm">
       <div class="card">
         <h2>
-          <span x-text="`${selectedYear}年成人式`" style="color: blue;"></span>
+          <span x-text="`${selectedYear}年成人式`" class="font-bold text-2xl text-blue-700"></span>
           <div class="title-actions" x-show="docId">
-            <a :href="`print.html?year=${selectedYear}&docId=${docId}`" target="_blank">印刷用ページ</a>
+            <a :href="`print.html?year=${selectedYear}&docId=${docId}`" target="_blank" class="text-blue-500 underline underline-offset-3">印刷用ページ</a>
           </div>
         </h2>
         <table>
@@ -244,13 +245,10 @@
           <i class="fa-solid fa-camera-retro"></i>
           <span>前撮り</span>
           <div class="title-actions">
-            <button type="button" class="toggle-btn"
-              :class="formData.maedoriInfo.status === 'あり' ? 'active-yes' : 'inactive'"
-              @click="formData.maedoriInfo.status = 'あり'">
+            <button type="button" class="toggle-btn" :class="formData.maedoriInfo.status === 'あり' ? 'active-yes' : 'inactive'" @click="formData.maedoriInfo.status = 'あり'">
               <i class="fa-solid fa-circle-check"></i> あり
             </button>
-            <button type="button" class="toggle-btn" :class="formData.maedoriInfo.status === 'なし' ? 'active-no' : 'inactive'"
-              @click="formData.maedoriInfo.status = 'なし'">
+            <button type="button" class="toggle-btn" :class="formData.maedoriInfo.status === 'なし' ? 'active-no' : 'inactive'" @click="formData.maedoriInfo.status = 'なし'">
               <i class="fa-solid fa-circle-xmark"></i> なし
             </button>
           </div>
@@ -277,18 +275,15 @@
           </tr>
           <tr>
             <th>ヘア時間</th>
-            <td><input type="time" x-model="formData.maedoriInfo.hairStart"> 〜 <input type="time"
-                x-model="formData.maedoriInfo.hairEnd"></td>
+            <td><input type="time" x-model="formData.maedoriInfo.hairStart"> 〜 <input type="time" x-model="formData.maedoriInfo.hairEnd"></td>
           </tr>
           <tr>
             <th>着付時間</th>
-            <td><input type="time" x-model="formData.maedoriInfo.kitsukeStart"> 〜 <input type="time"
-                x-model="formData.maedoriInfo.kitsukeEnd"></td>
+            <td><input type="time" x-model="formData.maedoriInfo.kitsukeStart"> 〜 <input type="time" x-model="formData.maedoriInfo.kitsukeEnd"></td>
           </tr>
           <tr>
             <th>撮影時間</th>
-            <td><input type="time" x-model="formData.maedoriInfo.shootStart"> 〜 <input type="time"
-                x-model="formData.maedoriInfo.shootEnd"></td>
+            <td><input type="time" x-model="formData.maedoriInfo.shootStart"> 〜 <input type="time" x-model="formData.maedoriInfo.shootEnd"></td>
           </tr>
           <tr>
             <th>着付場所</th>
@@ -397,7 +392,14 @@
             <td>
               <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
             </td>
-            <td></td>
+            <td>
+              <div class="flex items-center gap-2">
+                <label class="flex items-center text-sm text-gray-600 cursor-pointer">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.isMiyuki" class="mr-1">
+                  美ゆき
+                </label>
+              </div>
+            </td>
           </tr>
 
           <tr x-show="formData.basicInfo.outfit === '振袖'">
@@ -414,9 +416,7 @@
               </template>
               <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
                 <label class="toggle-check">
-                  <input
-                    type="checkbox"
-                    x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
@@ -428,9 +428,7 @@
               </template>
               <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
                 <label class="toggle-check">
-                  <input
-                    type="checkbox"
-                    x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>

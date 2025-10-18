@@ -10,6 +10,7 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
@@ -22,7 +23,7 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
-        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear">
+        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
         <span>成人式</span>
       </div>
       <nav class="header-nav">
@@ -35,7 +36,7 @@
   </header>
 
   <main>
-    <p class="manual-link"><a href="../common/manual-index.html">📖 操作マニュアル</a></p>
+    <p class="manual-link"><a href="../common/manual-schedule.html">📖 操作マニュアル</a></p>
     <table>
       <thead>
         <tr>
@@ -62,40 +63,36 @@
           <tr :class="{'is-canceled': customer.isCanceled}">
             <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
-            <td>
+            <td class="flex flex-col">
+              <span x-text="customer.basicInfo.kana" class="text-xs text-gray-400"></span>
               <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'" x-text="customer.basicInfo.name"></span>
             </td>
             <td>
-              <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)":disabled="customer.isCanceled">
+              <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)" :disabled="customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="booth in customer.basicInfo.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale" :key="booth">
-                  <option :value="booth" x-text="booth"></option>
+                  <option :value="booth" x-text="booth" :selected="booth === customer.booth"></option>
                 </template>
               </select>
             </td>
             <td>
-              <select x-model="customer.undergarmentStaff"
-                @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)"
-                :disabled="customer.isCanceled">
+              <select x-model="customer.sendoffStaff" @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)" :disabled="customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="staff in staffOptions" :key="`u-${staff}`">
-                  <option :value="staff" x-text="staff"></option>
+                  <option :value="staff" x-text="staff" :selected="booth === customer.undergarmentStaff"></option>
                 </template>
               </select>
             </td>
             <td>
-              <select x-model="customer.sendoffStaff"
-                @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)"
-                :disabled="customer.isCanceled">
+              <select x-model="customer.undergarmentStaff" @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)" :disabled="customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="staff in staffOptions" :key="`s-${staff}`">
-                  <option :value="staff" x-text="staff"></option>
+                  <option :value="staff" x-text="staff" :selected="booth === customer.sendoffStaff"></option>
                 </template>
               </select>
             </td>
             <td>
-              <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)"
-                x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'">
+              <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)" x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'">
               </button>
               <span x-show="customer.status === '済'">済</span>
               <span x-show="customer.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
