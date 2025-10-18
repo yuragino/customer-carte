@@ -213,17 +213,13 @@
         <div class="modal-box">
           <i class="fa-solid fa-xmark close-btn" @click="closeMeetingModal()"></i>
           <div>
-            <label>種別</label>
-            <div>
-              <button type="button" class="toggle-btn" :class="meetingForm.type === '打ち合わせ' ? 'active-yes':'inactive'"
-                @click="meetingForm.type = '着物打ち合わせ'">
-                <i class="fa-solid fa-handshake"></i> 着物打ち合わせ
-              </button>
-              <button type="button" class="toggle-btn" :class="meetingForm.type === 'お預かり' ? 'active-yes':'inactive'"
-                @click="meetingForm.type = 'お預かり'">
-                <i class="fa-solid fa-box"></i> お預かり
-              </button>
-            </div>
+            <label for="meetingType">種別</label>
+            <select id="meetingType" x-model="meetingForm.type" class="meeting-select">
+              <option value="着物打ち合わせ">着物打ち合わせ</option>
+              <option value="ヘア打ち合わせ">ヘア打ち合わせ</option>
+              <option value="お預かり">お預かり</option>
+              <option value="ヘア打ち合わせ＆お預かり">ヘア打ち合わせ＆お預かり</option>
+            </select>
           </div>
           <div style="margin-top:1rem;">
             <label>日時</label>

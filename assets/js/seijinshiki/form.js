@@ -222,5 +222,5 @@ function createInitialFormData() {
 
 // 打ち合わせモーダル
 function createInitialMeetingForm() {
-  return { id: null, type: '打ち合わせ', date: '', place: '', note: '' };
+  return { id: null, type: '着物打ち合わせ', date: '', place: '', note: '' };
 }
