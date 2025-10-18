@@ -2,7 +2,7 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp,
 import { db } from '../common/firebase-config.js';
 import { CASUAL_PRICES } from '../common/constants.js';
 import { getYearSettings } from "../common/year-selector.js";
-import { formatYen } from "../common/utils.js";
+import { formatYen } from "../common/format-utils.js";
 import { uploadMediaToCloudinary } from "../common/form-utils.js";
 
 document.addEventListener('alpine:init', () => {

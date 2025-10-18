@@ -1,7 +1,8 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { CASUAL_PRICES } from '../common/constants.js';
-import { formatYen, toggleRadioUtil } from "../common/utils.js";
+import { formatYen } from "../common/format-utils.js";
+import { toggleRadioUtil } from "../common/ui-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/media-utils.js";
 const COLLECTION_NAME = 'machiaruki';
 
@@ -28,11 +29,10 @@ document.addEventListener('alpine:init', () => {
     },
     // 各顧客の前払い金額を合計
     get totalPrepayment() {
-      const { representative, customers } = this.formData;
-      if (representative.reservationMethod === null) return 0;
-      return customers.reduce((total, customer) => {
-        return total + this.calculateCustomerPrepayment(customer);
-      }, 0);
+      if (this.formData.representative.reservationMethod === null) return 0;
+      return this.formData.customers.reduce(
+        (total, customer) => total + this.calculateCustomerPrepayment(customer), 0
+      );
     },
     // 値引きを考慮しない元の（合計）現地支払い金額
     get totalOnSitePayment() {
@@ -52,8 +52,6 @@ document.addEventListener('alpine:init', () => {
       this.docId = params.get('docId');
       if (this.docId) await this.loadData();
       else this.updateCustomerList();
-      this.$watch('formData.femaleCount', () => this.updateCustomerList());
-      this.$watch('formData.maleCount', () => this.updateCustomerList());
     },
 
     async loadData() {

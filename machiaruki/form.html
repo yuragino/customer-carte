@@ -85,8 +85,8 @@
             <tr>
               <th>人数</th>
               <td class="person-count">
-                女 <input type="number" min="0" x-model.number="formData.femaleCount">
-                男 <input type="number" min="0" x-model.number="formData.maleCount">
+                女 <input type="number" min="0" x-model.number="formData.femaleCount" @change="updateCustomerList">
+                男 <input type="number" min="0" x-model.number="formData.maleCount" @change="updateCustomerList">
               </td>
             </tr>
             <tr>
