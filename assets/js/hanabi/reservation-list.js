@@ -2,6 +2,7 @@ import { collection, getDocs, doc, getDoc, updateDoc, query, where } from "https
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
+import { handleError } from "../common/utils/ui-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -45,8 +46,7 @@ document.addEventListener('alpine:init', () => {
             return a.representative.visitTime.localeCompare(b.representative.visitTime);
           });
       } catch (error) {
-        console.error("Error fetching schedule: ", error);
-        alert("データの取得に失敗しました。");
+        handleError('データの取得', error);
       }
     },
 
@@ -54,28 +54,21 @@ document.addEventListener('alpine:init', () => {
       try {
         const docRef = doc(db, COLLECTION_NAME, groupId);
         const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) throw new Error("Document not found");
 
         const customers = docSnap.data().customers;
         const target = customers.find(c => c.id === customerId);
-        if (!target) throw new Error("Customer not found");
 
         // ===== フィールドごとの更新ロジック =====
         if (field === "staff") {
           const staffList = new Set(target.staff ?? []);
-          if (checked === true) {
-            staffList.add(value);
-          } else {
-            staffList.delete(value);
-          }
-          target.staff = Array.from(staffList);
+          checked === true ? staffList.add(value) : staffList.delete(value);
+          target.staff = [...staffList];
         } else {
           target[field] = value;
         }
         await updateDoc(docRef, { customers });
       } catch (error) {
-        console.error(`Error updating ${field}:`, error);
-        alert(`${field}の更新に失敗しました。`);
+        handleError(`${field}の更新`, error);
       }
     },
 
@@ -83,7 +76,6 @@ document.addEventListener('alpine:init', () => {
       try {
         const docRef = doc(db, COLLECTION_NAME, group.groupId);
         const customer = group.customers.find(c => c.id === customerId);
-        if (!customer) throw new Error("Customer not found");
 
         const currentStatus = customer.status ?? '受付完了';
         const nextStatus = this.nextStatusMap[currentStatus];
@@ -95,14 +87,13 @@ document.addEventListener('alpine:init', () => {
 
         await updateDoc(docRef, { customers: group.customers });
       } catch (error) {
-        console.error("ステータス更新エラー:", error);
-        alert("ステータス更新に失敗しました。");
+        handleError('ステータスの更新', error);
         this.loadReservationSchedule();
       }
     },
 
     getStatusClass(status) {
-      const currentStatus = status || '受付完了';
+      const currentStatus = status ?? '受付完了';
       const classMap = {
         '受付完了': 'status-received',
         '案内完了': 'status-guided',
@@ -110,7 +101,7 @@ document.addEventListener('alpine:init', () => {
         '見送り完了': 'status-sent-off',
         '済': 'status-completed',
       };
-      return classMap[currentStatus] || 'status-received';
+      return classMap[currentStatus] ?? 'status-received';
     },
   }));
 });
