@@ -2,6 +2,7 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp 
 import { db } from '../common/firebase-config.js';
 import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { getYearSettings } from '../common/year-selector.js';
+import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from '../common/utils/media-utils.js';
 import { formatFullDateTime, formatYen } from '../common/utils/format-utils.js';
 const COLLECTION_NAME = 'seijinshiki';
@@ -56,6 +57,10 @@ document.addEventListener('alpine:init', () => {
         console.error('データ取得エラー:', error);
         alert('データの読み込みに失敗しました。');
       }
+    },
+
+    toggleRadio(event, modelName) {
+      toggleRadioUtil(event, modelName, this.formData.basicInfo);
     },
 
     async uploadAllMedia() {
@@ -181,7 +186,7 @@ function createInitialFormData() {
     basicInfo: {
       reservationDate: '',
       name: '', kana: '', introducer: '', phone: '', address: '',
-      lineType: '教室LINE', height: null, footSize: null, outfit: '振袖',
+      lineType: '', height: null, footSize: null, outfit: '振袖',
       rentalType: '自前', outfitMemo: '', hairMakeStaff: ''
     },
     toujitsuInfo: {

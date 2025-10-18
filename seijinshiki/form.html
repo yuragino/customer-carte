@@ -71,9 +71,18 @@
           <tr>
             <th>LINE</th>
             <td class="radio-group">
-              <label><input type="radio" value="教室LINE" x-model="formData.basicInfo.lineType"> 教室LINE</label>
-              <label><input type="radio" value="椿LINE" x-model="formData.basicInfo.lineType"> 椿LINE</label>
-              <label><input type="radio" value="お客様LINE" x-model="formData.basicInfo.lineType"> お客様LINE</label>
+              <label>
+                <input type="radio" name="lineType" value="教室LINE" @click="toggleRadio($event, 'lineType')"
+                  :checked="formData.basicInfo.lineType === '教室LINE'"> 教室LINE
+              </label>
+              <label>
+                <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
+                  :checked="formData.basicInfo.lineType === '椿LINE'"> 椿LINE
+              </label>
+              <label>
+                <input type="radio" name="lineType" value="お客様LINE" @click="toggleRadio($event, 'lineType')"
+                  :checked="formData.basicInfo.lineType === 'お客様LINE'"> お客様LINE
+              </label>
             </td>
           </tr>
           <tr>
