@@ -139,13 +139,13 @@ document.addEventListener('alpine:init', () => {
       this.isSubmitting = true;
       try {
         const customersToSave = await this.uploadCustomerImages();
-        const formDataToSave = { ...this.formData, customers: customersToSave, updatedAt: serverTimestamp() };
+        const formDataToSave = { ...this.formData, customers: customersToSave, eventYear: this.selectedYear, updatedAt: serverTimestamp() };
         const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
           await updateDoc(this.docRef, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(collectionRef, { ...formDataToSave, eventYear: this.selectedYear, createdAt: serverTimestamp() });
+          await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
           alert('登録が完了しました。');
           location.href = './index.html';
         }

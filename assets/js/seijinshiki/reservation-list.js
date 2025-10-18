@@ -6,7 +6,7 @@ import { handleError } from "../common/utils/ui-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("seijinshiki"),
     formatTimestamp,
     customers: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],

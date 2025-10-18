@@ -21,7 +21,7 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
-        <input type="number" min="2010" max="2100" step="1" x-model.number="selectedYear" @change="changeYear">
+        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear">
         <span>成人式</span>
       </div>
       <nav class="header-nav">
@@ -207,8 +207,8 @@
             <label>種別</label>
             <div>
               <button type="button" class="toggle-btn" :class="meetingForm.type === '打ち合わせ' ? 'active-yes':'inactive'"
-                @click="meetingForm.type = '打ち合わせ'">
-                <i class="fa-solid fa-handshake"></i> 打ち合わせ
+                @click="meetingForm.type = '着物打ち合わせ'">
+                <i class="fa-solid fa-handshake"></i> 着物打ち合わせ
               </button>
               <button type="button" class="toggle-btn" :class="meetingForm.type === 'お預かり' ? 'active-yes':'inactive'"
                 @click="meetingForm.type = 'お預かり'">

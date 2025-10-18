@@ -12,7 +12,7 @@ function normalizeForSearch(str) {
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("seijinshiki"),
     customers: [],
     openAccordions: JSON.parse(localStorage.getItem('openAccordions') || '[]'),
     searchQuery: '',

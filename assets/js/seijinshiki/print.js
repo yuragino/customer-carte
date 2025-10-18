@@ -6,7 +6,6 @@ import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../co
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
     formatFullDateTime,
     formatDateOnly,
     formatTime,
@@ -30,7 +29,6 @@ document.addEventListener('alpine:init', () => {
 
     async init() {
       const params = new URLSearchParams(window.location.search);
-      this.initYearSelector();
       this.docId = params.get('docId');
       if (this.docId) await this.loadData();
     },
@@ -47,7 +45,7 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         console.error("データ取得エラー: ", error);
         alert('データの読み込みに失敗しました。');
-      } 
+      }
     },
 
     getTimingLabel(item) {

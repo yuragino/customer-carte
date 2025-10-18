@@ -22,7 +22,7 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
-        <input type="number" min="2010" max="2100" step="1" x-model.number="selectedYear" @change="changeYear">
+        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear">
         <span>花火大会</span>
       </div>
       <nav class="header-nav">
@@ -40,7 +40,6 @@
       <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
         <i class="fa-regular fa-trash-can"></i> カルテを削除
       </button>
-      <!-- 印刷 -->
       <a :href="`./print.html?docId=${docId}`" target="_blank" class="print-btn" x-show="docId">
         印刷用ページ
       </a>

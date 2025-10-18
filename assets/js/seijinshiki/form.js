@@ -8,7 +8,7 @@ const COLLECTION_NAME = 'seijinshiki';
 
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("seijinshiki"),
     formatFullDateTime,
     formatYen,
     // ===== 状態管理 =====
@@ -76,6 +76,7 @@ document.addEventListener('alpine:init', () => {
             imageUrls: [...mediaToSave.imageUrls, ...newImageUrls],
             videoUrls: [...mediaToSave.videoUrls, ...newVideoUrls],
           },
+          eventYear: this.selectedYear,
           updatedAt: serverTimestamp(),
         };
         const collectionRef = collection(db, COLLECTION_NAME);
@@ -83,7 +84,7 @@ document.addEventListener('alpine:init', () => {
           await updateDoc(this.docRef, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(collectionRef, { ...formDataToSave, eventYear: this.selectedYear, createdAt: serverTimestamp() });
+          await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
           alert('登録が完了しました。');
           window.location.href = `./index.html?year=${this.selectedYear}`;
         }
