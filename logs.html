@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Firestore Activity Logs</title>
+  <!-- Custom Script -->
+  <script type="module" src="./assets/js/logs.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="./assets/css/common/layout.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body x-data="app">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="./index.html">着付予約管理システム</a href="./index.html"></h1>
+  </header>
+  <h1>Firestore Activity Logs</h1>
+  <template x-for="log in logs" :key="log.timestamp">
+    <div>
+      <strong x-text="log.collection"></strong>:
+      <span x-text="log.type"></span> →
+      <small x-text="log.documentId"></small>
+    </div>
+  </template>
+  <template x-for="doc in docs">
+    <div class="flex gap-1">
+      <div x-text="doc.collection"></div>
+      <div x-text="doc.id"></div>
+    </div>
+  </template>
+</body>
+
+</html>

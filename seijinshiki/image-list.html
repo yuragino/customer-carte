@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../assets/css/seijinshiki/image-list.css">
 </head>
 
-<body x-data="app" x-init="init">
+<body x-data="app">
   <header class="header">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
@@ -39,49 +39,29 @@
       <input type="text" placeholder="名前を入力してください" x-model="searchQuery" />
       <i class="fa fa-search"></i>
     </div>
-
     <!-- 顧客アコーディオン -->
-    <template x-for="customer in filteredCustomers" :key="customer.id">
-      <div class="accordion">
-        <button class="w-full flex justify-between p-4 bg-white border-b" @click="toggleAccordion(customer.id)" >
-          <div class="flex w-[90%] justify-between">
-            <div x-text="customer.basicInfo.name"></div>
-            <div class="flex gap-1 items-center">
-              <span class="text-xs text-gray-400" x-text="customer.imageUrls?.length > 0 ? '画像あり' : ''"></span>
-              <span class="text-xs text-gray-400" x-text="customer.videoUrls?.length > 0 ? '動画あり' : ''"></span>
-            </div>
-          </div>
-          <i class="fa-solid " :class="isOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+    <template x-for="customer in searchedCustomers" :key="customer.id">
+      <div>
+        <button class="w-full flex justify-between p-4 bg-white border-b" @click="toggleAccordion(customer.id)">
+          <span x-text="customer.basicInfo.name"></span>
+          <i class="fa-solid " :class="isAccordionOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
         </button>
 
-        <div x-show="isOpen(customer.id)" class="accordion-content">
-
-          <!-- 画像表示 -->
-          <div class="images">
-            <template x-if="customer.imageUrls?.length > 0">
-              <template x-for="img in customer.imageUrls" :key="img">
-                <img :src="img" class="preview-img" loading="lazy" />
-              </template>
-            </template>
-            <template x-if="!customer.imageUrls?.length">
-              <p>画像が登録されていません</p>
+        <div x-show="isAccordionOpen(customer.id)" class="accordion-content">
+          <!-- 画像 -->
+          <div class="images" x-show="customer.media.imageUrls.length > 0">
+            <template x-for="url in customer.media.imageUrls" :key="img">
+              <img :src="url" class="preview-img" loading="lazy" />
             </template>
           </div>
-
-          <!-- 動画表示 -->
-          <div class="videos">
-            <template x-if="customer.videoUrls?.length > 0">
-              <template x-for="vid in customer.videoUrls" :key="vid">
-                <video controls class="preview-video">
-                  <source :src="vid" type="video/mp4">
-                </video>
-              </template>
-            </template>
-            <template x-if="!customer.videoUrls?.length">
-              <p>動画が登録されていません</p>
+          <p x-show="!customer.media.imageUrls.length">画像が登録されていません</p>
+          <!-- 動画 -->
+          <div class="videos hidden" x-show="customer.media.videoUrls?.length > 0">
+            <template x-for="url in customer.media.videoUrls" :key="vid">
+              <video :src="url" class="preview-video" controls></video>
             </template>
           </div>
-
+          <p x-show="!customer.media.videoUrls.length">動画が登録されていません</p>
         </div>
       </div>
     </template>

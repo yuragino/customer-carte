@@ -1,9 +1,10 @@
-import { collection, getDocs, doc, updateDoc, serverTimestamp, getDoc, query, where } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
-import { getDocsByYear, STATUS_MAP } from "../common/utils/firestore-utils.js";
+import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
+import { STATUS_MAP } from "../common/constants.js";
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -48,6 +49,8 @@ document.addEventListener('alpine:init', () => {
       try {
         const docRef = doc(db, COLLECTION_NAME, customer.id);
         const currentStatus = customer.status ?? '受付完了';
+        if (!confirm(`${currentStatus}で間違いないですか？`)) return;
+
         const nextStatus = this.nextStatusMap[currentStatus];
         if (!nextStatus) return;
 

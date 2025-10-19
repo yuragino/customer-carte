@@ -47,38 +47,31 @@
         </tr>
       </thead>
       <tbody>
-        <template x-if="groups.length === 0">
-          <tr>
-            <td colspan="4" style="text-align: center; padding: 2rem;">
-              該当するデータがありません。
-            </td>
-          </tr>
-        </template>
-
-        <template x-for="group in filteredGroups.toReversed()" :key="group.groupId">
-          <template x-for="(customer, index) in group.customers" :key="customer.id">
+        <tr x-show="groups.length === 0">
+          <td colspan="4" style="text-align: center; padding: 2rem;">
+            該当するデータがありません。
+          </td>
+        </tr>
+        <template x-for="group in searchedGroups.toReversed()">
+          <template x-for="(customer, index) in group.customers">
             <tr :class="{'is-canceled': group.representative.isCanceled}">
               <template x-if="index === 0">
-                <td :rowspan="group.customers.length" x-text="formatDate(group.representative.visitDateTime)"></td>
+                <td :rowspan="group.customers.length" x-text="formatFullDateTime(group.representative.visitDateTime)"></td>
               </template>
-
+              <!-- 代表者名 -->
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length" x-text="group.representative.name"></td>
               </template>
-
-              <td>
-                <span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'"
-                  x-text="customer.name"></span>
-              </td>
-
+              <!-- 個人名 -->
+              <td><span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span></td>
+              <!-- 備考 -->
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length" x-text="`${group.representative.notes}`"></td>
               </template>
-
+              <!-- 詳細リンク -->
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
-                  <a :href="`form.html?docId=${group.groupId}`" class="detail-link"
-                    :class="{'notes-exist-link': group.representative.notes}">
+                  <a :href="`form.html?docId=${group.id}`" class="detail-link" :class="{'notes-exist-link': group.representative.notes}">
                     <i class="fa-solid fa-square-up-right"></i>
                   </a>
                 </td>

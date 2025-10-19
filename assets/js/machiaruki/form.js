@@ -197,13 +197,13 @@ function createInitialFormData() {
       paymentType: 'group', groupPaymentMethod: '',
       isCanceled: false,
     },
-    femaleCount: 1, maleCount: 1,
+    femaleCount: 1, maleCount: 0,
     customers: []
   }
 }
 function createInitialCustomerData(gender, id) {
   return {
-    id, gender, name: '',
+    id, gender, name: '', kana: '',
     bodyShape: null, weight: null, height: null, footSize: null,
     dressingType: 'レンタル&着付',
     options: { footwear: false, obiBag: false },
@@ -217,3 +217,4 @@ function createInitialCustomerData(gender, id) {
     onSitePaymentAdjusted: 0,
   };
 }
+

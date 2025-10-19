@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>成人式新規登録</title>
+  <title>成人式登録フォーム</title>
   <!-- Custom Script -->
   <script type="module" src="../assets/js/seijinshiki/form.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
@@ -108,7 +108,7 @@
                 @click="formData.basicInfo.outfit = '袴'">袴</button>
             </td>
           </tr>
-          <tr x-show="formData.basicInfo.outfit">
+          <tr>
             <th>利用形態</th>
             <td class="radio-group">
               <label><input type="radio" value="自前" x-model="formData.basicInfo.rentalType"> 自前</label>
@@ -120,9 +120,13 @@
             <th>ヘアメイク担当</th>
             <td><input type="text" x-model="formData.basicInfo.hairMakeStaff"></td>
           </tr>
-          <tr x-show="formData.basicInfo.outfit">
+          <tr>
             <th>備考</th>
             <td><textarea rows="2" x-model="formData.basicInfo.outfitMemo"></textarea></td>
+          </tr>
+          <tr>
+            <th>会計</th>
+            <td><label><input type="checkbox" x-model.boolean="formData.basicInfo.isMiyuki"> 美ゆきさん扱い</label></td>
           </tr>
         </table>
       </div>
@@ -356,133 +360,128 @@
         </table>
       </div>
 
-      <div class="card estimate-card">
-        <h2>
-          <i class="fa-solid fa-yen-sign"></i> 見積もり
-          <button type="button" class="btn title-actions" @click="addOption()">
-            <i class="fa-regular fa-plus"></i>
-            <span>オプション追加</span>
-          </button>
-        </h2>
-        <table>
-          <tr>
-            <th>項目</th>
-            <th>当日</th>
-            <th>前撮り</th>
-            <th>金額</th>
-            <th></th>
-          </tr>
-
-          <tr>
-            <td>着付</td>
-            <td class="clickable-cell">
-              <label class="toggle-check">
-                <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasToujitsu">
-                <i class="fa-regular fa-circle-xmark"></i>
-                <i class="fa-regular fa-circle-check"></i>
-              </label>
-            </td>
-            <td class="clickable-cell">
-              <label class="toggle-check">
-                <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasMaedori">
-                <i class="fa-regular fa-circle-xmark"></i>
-                <i class="fa-regular fa-circle-check"></i>
-              </label>
-            </td>
-            <td>
-              <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
-            </td>
-            <td>
-              <div class="flex items-center gap-2">
-                <label class="flex items-center text-sm text-gray-600 cursor-pointer">
-                  <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.isMiyuki" class="mr-1">
-                  美ゆき
-                </label>
-              </div>
-            </td>
-          </tr>
-
-          <tr x-show="formData.basicInfo.outfit === '振袖'">
-            <td>
-              <select x-model="formData.estimateInfo.hairMake.type">
-                <option value="ヘア＆メイク">ヘア＆メイク</option>
-                <option value="ヘアのみ">ヘアのみ</option>
-                <option value="ヘアメイクなし">ヘアメイクなし</option>
-              </select>
-            </td>
-            <td class="clickable-cell">
-              <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
-                <span class="disabled-label">対象外</span>
-              </template>
-              <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
-                <label class="toggle-check">
-                  <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
-                  <i class="fa-regular fa-circle-xmark"></i>
-                  <i class="fa-regular fa-circle-check"></i>
-                </label>
-              </template>
-            </td>
-            <td class="clickable-cell">
-              <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
-                <span class="disabled-label">対象外</span>
-              </template>
-              <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
-                <label class="toggle-check">
-                  <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
-                  <i class="fa-regular fa-circle-xmark"></i>
-                  <i class="fa-regular fa-circle-check"></i>
-                </label>
-              </template>
-            </td>
-            <td>
-              <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></div>
-            </td>
-            <td></td>
-          </tr>
-
-          <template x-for="(item,index) in formData.estimateInfo.options" :key="index">
+      <div x-show="!formData.basicInfo.isMiyuki">
+        <div class="card estimate-card">
+          <h2>
+            <i class="fa-solid fa-yen-sign"></i> 見積もり
+            <button type="button" class="btn title-actions" @click="addOption()">
+              <i class="fa-regular fa-plus"></i>
+              <span>オプション追加</span>
+            </button>
+          </h2>
+          <table>
             <tr>
-              <td><input type="text" x-model="item.name"></td>
-              <td class="clickable-cell">
-                <label class="toggle-check">
-                  <input type="checkbox" x-model="item.hasToujitsu">
-                  <i class="fa-regular fa-circle-xmark"></i>
-                  <i class="fa-regular fa-circle-check"></i>
-                </label>
-              </td>
-              <td class="clickable-cell">
-                <label class="toggle-check">
-                  <input type="checkbox" x-model="item.hasMaedori">
-                  <i class="fa-regular fa-circle-xmark"></i>
-                  <i class="fa-regular fa-circle-check"></i>
-                </label>
-              </td>
-              <td><input type="number" x-model.number="item.price" style="width:80px; text-align:right;">円</td>
-              <td>
-                <button type="button" class="btn-del" @click="deleteOption(index)">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </td>
+              <th>項目</th>
+              <th>当日</th>
+              <th>前撮り</th>
+              <th>金額</th>
+              <th></th>
             </tr>
-          </template>
 
-          <tr>
-            <td colspan="3" style="text-align: center;">合計</td>
-            <td class="total" x-text="formatYen(totalAmount)"></td>
-            <td></td>
-          </tr>
-        </table>
-      </div>
+            <tr>
+              <td>着付</td>
+              <td class="clickable-cell">
+                <label class="toggle-check">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasToujitsu">
+                  <i class="fa-regular fa-circle-xmark"></i>
+                  <i class="fa-regular fa-circle-check"></i>
+                </label>
+              </td>
+              <td class="clickable-cell">
+                <label class="toggle-check">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasMaedori">
+                  <i class="fa-regular fa-circle-xmark"></i>
+                  <i class="fa-regular fa-circle-check"></i>
+                </label>
+              </td>
+              <td>
+                <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
+              </td>
+              <td></td>
+            </tr>
 
-      <div class="card receipt-card">
-        <h2><i class="fa-solid fa-receipt"></i> 領収情報</h2>
-        <table>
-          <tr>
-            <th>領収日</th>
-            <td><input type="date" x-model="formData.estimateInfo.receiptDate"></td>
-          </tr>
-        </table>
-      </div>
+            <tr x-show="formData.basicInfo.outfit === '振袖'">
+              <td>
+                <select x-model="formData.estimateInfo.hairMake.type">
+                  <option value="ヘア＆メイク">ヘア＆メイク</option>
+                  <option value="ヘアのみ">ヘアのみ</option>
+                  <option value="ヘアメイクなし">ヘアメイクなし</option>
+                </select>
+              </td>
+              <td class="clickable-cell">
+                <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
+                  <span class="disabled-label">対象外</span>
+                </template>
+                <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
+                  <label class="toggle-check">
+                    <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                    <i class="fa-regular fa-circle-check"></i>
+                  </label>
+                </template>
+              </td>
+              <td class="clickable-cell">
+                <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
+                  <span class="disabled-label">対象外</span>
+                </template>
+                <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
+                  <label class="toggle-check">
+                    <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                    <i class="fa-regular fa-circle-check"></i>
+                  </label>
+                </template>
+              </td>
+              <td>
+                <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></div>
+              </td>
+              <td></td>
+            </tr>
+
+            <template x-for="(item,index) in formData.estimateInfo.options" :key="index">
+              <tr>
+                <td><input type="text" x-model="item.name"></td>
+                <td class="clickable-cell">
+                  <label class="toggle-check">
+                    <input type="checkbox" x-model="item.hasToujitsu">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                    <i class="fa-regular fa-circle-check"></i>
+                  </label>
+                </td>
+                <td class="clickable-cell">
+                  <label class="toggle-check">
+                    <input type="checkbox" x-model="item.hasMaedori">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                    <i class="fa-regular fa-circle-check"></i>
+                  </label>
+                </td>
+                <td><input type="number" x-model.number="item.price" style="width:80px; text-align:right;">円</td>
+                <td>
+                  <button type="button" class="btn-del" @click="deleteOption(index)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </template>
+
+            <tr>
+              <td colspan="3" style="text-align: center;">合計</td>
+              <td class="total" x-text="formatYen(totalAmount)"></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card receipt-card">
+          <h2><i class="fa-solid fa-receipt"></i> 領収情報</h2>
+          <table>
+            <tr>
+              <th>領収日</th>
+              <td><input type="date" x-model="formData.estimateInfo.receiptDate"></td>
+            </tr>
+          </table>
+        </div>
+      </div x-show="">
 
       <div class="actions">
         <button type="submit" class="btn register-btn" :disabled="isSubmitting"

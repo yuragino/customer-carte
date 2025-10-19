@@ -36,26 +36,24 @@
 
   <main>
     <div class="list">
-      <div x-show="customersWithImage.length === 0" class="text-center p-4">該当するデータがありません</div>
-      <template x-for="(customer, index) in customersWithImage">
+      <div x-show="customers.length === 0" class="text-center p-4">該当するデータがありません</div>
+      <template x-for="(customer, customerIndex) in customers">
         <div class="card">
           <div class="image-container">
-            <template x-if="customer.imageUrls.length > 0">
+            <div x-show="customer.imageUrls.length > 0">
               <template x-for="(imageUrl, imageIndex) in customer.imageUrls" :key="imageIndex">
-                <img :src="imageUrl" alt="写真" x-show="customer.currentIndex === imageIndex">
+                <img :src="imageUrl" x-show="customer.currentIndex === imageIndex">
               </template>
-            </template>
-            <template x-if="customer.imageUrls.length === 0">
-              <div class="no-image-placeholder">
-                <i class="fa-solid fa-image"></i>
-              </div>
-            </template>
+            </div>
+            <div x-show="customer.imageUrls.length === 0" class="no-image-placeholder">
+              <i class="fa-solid fa-image"></i>
+            </div>
 
             <div x-show="customer.imageUrls.length > 1" class="preview-btn">
-              <button class="prev" @click="prevImage(index)">
+              <button class="prev" @click="prevImage(customerIndex)">
                 <i class="fa-solid fa-angles-left"></i>
               </button>
-              <button class="next" @click="nextImage(index)">
+              <button class="next" @click="nextImage(customerIndex)">
                 <i class="fa-solid fa-angles-right"></i>
               </button>
             </div>

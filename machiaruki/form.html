@@ -69,7 +69,7 @@
             </tr>
             <tr>
               <th>ふりがな</th>
-              <td><input type="text" x-model="formData.representative.kana" id="furigana" class="middle-width"></td>
+              <td><input type="text" x-model="formData.representative.kana" id="kana" class="middle-width"></td>
             </tr>
             <tr>
               <th>来店日時</th>
@@ -97,7 +97,7 @@
             <tr>
               <th>電話番号</th>
               <td>
-                <input type="tel" x-model="formData.representative.phone" placeholder="080123456" class="middle-width" inputmode="numeric" pattern="[0-9]*">
+                <input type="tel" x-model="formData.representative.phone" class="middle-width" inputmode="numeric" pattern="[0-9]*">
               </td>
             </tr>
             <tr>
@@ -182,8 +182,9 @@
 
         <template x-for="(customer, customerIndex) in formData.customers" :key="customer.id">
           <div class="customer-column">
-            <div class="form-cell">
-              <input type="text" x-model="customer.name">
+            <div class="form-cell flex flex-col">
+              <input type="text" x-model="customer.kana" class="h-4 text-xs w-[191.8px]" pattern="[\u3041-\u3096]*" placeholder="ふりがな">
+              <input type="text" x-model="customer.name" placeholder="名前">
             </div>
             <div class="form-cell">
               <label><input type="radio" :name="'gender' + customerIndex" value="female" x-model="customer.gender"> 女</label>
@@ -356,8 +357,9 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      AutoKana.bind('#name', '#furigana', { katakana: false });
+      AutoKana.bind('#name', '#kana', { katakana: false });
     });
+
   </script>
 </body>
 

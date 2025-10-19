@@ -12,20 +12,13 @@ export function formatDuration(minutes) {
 }
 
 // Firestore Timestamp → HH:MM
-export function formatTimestamp (timestamp){
-  if (!timestamp) return null;
+export function formatTimestamp(timestamp) {
+  if (!timestamp) return '--';
   const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
 };
-
-// 配列から平均時間を計算
-export const avg = arr => arr.length ? formatTime(arr.reduce((acc, c) => acc + c.guideRaw, 0) / arr.length) : null;
-
-// 最短 & 最長
-export const minBy = arr => arr.reduce((p, c) => p.guideRaw < c.guideRaw ? p : c);
-export const maxBy = arr => arr.reduce((p, c) => p.guideRaw > c.guideRaw ? p : c);
 
 // 曜日リスト
 const WEEK_DAYS = ['日', '月', '火', '水', '木', '金', '土'];
@@ -66,4 +59,11 @@ export function formatTime(timeStr) {
 // 数値を「1,234円」形式に
 export function formatYen(amount) {
   return isFinite(amount) ? Number(amount).toLocaleString('ja-JP') + '円' : '—';
+}
+
+export function normalizeText(str) {
+  if (!str) return '';
+  return str
+    .normalize("NFKC")   // 全角半角を揃える
+    .replace(/\s+/g, "");// スペース削除
 }

@@ -85,6 +85,7 @@ document.addEventListener('alpine:init', () => {
         };
         const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
+          if (!confirm(`${this.formData.basicInfo.name}さんのデータを更新しますか？`)) return;
           await updateDoc(this.docRef, formDataToSave);
           alert('更新が完了しました。');
         } else {
@@ -145,8 +146,7 @@ document.addEventListener('alpine:init', () => {
     calcPrice(item) {
       const outfitKey = OUTFIT_KEY_MAP[this.formData.basicInfo.outfit];
       const priceTable = SEIJINSHIKI_PRICES[outfitKey];
-      const { hasToujitsu, hasMaedori, isMiyuki } = item;
-      if (isMiyuki === true) return 0;
+      const { hasToujitsu, hasMaedori } = item;
       const both = hasToujitsu && hasMaedori;
       if (item.name === '着付') {
         if (both) return priceTable.KITSUKE.BOTH;
@@ -187,7 +187,7 @@ function createInitialFormData() {
       reservationDate: '',
       name: '', kana: '', introducer: '', phone: '', address: '',
       lineType: '', height: null, footSize: null, outfit: '振袖',
-      rentalType: '自前', outfitMemo: '', hairMakeStaff: ''
+      rentalType: '自前', outfitMemo: '', hairMakeStaff: '', isMiyuki: false,
     },
     toujitsuInfo: {
       schedule: [
@@ -203,7 +203,7 @@ function createInitialFormData() {
       place: '', note: ''
     },
     estimateInfo: {
-      kitsuke: { name: '着付', fixed: true, hasToujitsu: true, hasMaedori: false, isMiyuki: false },
+      kitsuke: { name: '着付', fixed: true, hasToujitsu: true, hasMaedori: false },
       hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: true, hasMaedori: false, type: 'ヘア＆メイク' },
       options: [],
       receiptDate: ''

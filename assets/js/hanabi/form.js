@@ -186,10 +186,7 @@ document.addEventListener('alpine:init', () => {
       try {
         const repeaterQuery = query(collection(db, COLLECTION_NAME), where('representative.phone', '==', phone));
         const snapshot = await getDocs(repeaterQuery);
-        if (snapshot.empty) {
-          this.formData.representative.repeaterYears = [0];
-          return;
-        }
+        if (snapshot.empty) return this.formData.representative.repeaterYears = [0];
         const foundYears = snapshot.docs
           .map(doc => doc.data().eventYear)
           .sort((a, b) => a - b);
