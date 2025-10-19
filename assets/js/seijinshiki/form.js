@@ -5,6 +5,7 @@ import { getYearSettings } from '../common/year-selector.js';
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from '../common/utils/media-utils.js';
 import { formatFullDateTime, formatYen } from '../common/utils/format-utils.js';
+import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
 
 document.addEventListener('alpine:init', () => {
@@ -87,9 +88,11 @@ document.addEventListener('alpine:init', () => {
         if (this.docId) {
           if (!confirm(`${this.formData.basicInfo.name}さんのデータを更新しますか？`)) return;
           await updateDoc(this.docRef, formDataToSave);
+          await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
+          const newDocRef = await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
+          await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
           alert('登録が完了しました。');
           window.location.href = `./index.html?year=${this.selectedYear}`;
         }

@@ -9,30 +9,38 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="./assets/css/common/layout.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets/css/common/reservation-list.css">
 </head>
 
 <body x-data="app">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title"><a href="./index.html">着付予約管理システム</a href="./index.html"></h1>
+      <h1 class="header-title"><a href="./index.html">着付予約管理システム</a></h1>
+    </div>
   </header>
-  <h1>Firestore Activity Logs</h1>
-  <template x-for="log in logs" :key="log.timestamp">
-    <div>
-      <strong x-text="log.collection"></strong>:
-      <span x-text="log.type"></span> →
-      <small x-text="log.documentId"></small>
-    </div>
-  </template>
-  <template x-for="doc in docs">
-    <div class="flex gap-1">
-      <div x-text="doc.collection"></div>
-      <div x-text="doc.id"></div>
-    </div>
-  </template>
+  <main class="w-10/12 m-auto text-center">
+    <h1 class="font-bold text-2xl my-4">Firestore Activity Logs</h1>
+    <table class="bg-gray-100">
+      <tr>
+        <th>操作日時</th>
+        <th>コレクション名</th>
+        <th>タイプ</th>
+        <th>id</th>
+      </tr>
+      <template x-for="log in logs">
+        <tr>
+          <td x-text="formatTimestamp(log.timestamp,true)"></td>
+          <td x-text="log.collectionName"></td>
+          <td x-text="log.actionType"></td>
+          <td x-text="log.targetDocId"></td>
+        </tr>
+      </template>
+    </table>
+  </main>
+
 </body>
 
 </html>

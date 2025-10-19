@@ -4,6 +4,7 @@ import { formatYen } from "../common/utils/format-utils.js";
 import { toggleRadioUtil } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
+import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
@@ -139,19 +140,22 @@ document.addEventListener('alpine:init', () => {
       this.isSubmitting = true;
       try {
         const customers = await this.processCustomerData();
-        const data = { ...this.formData, customers, updatedAt: serverTimestamp() };
+        const formDataToSave = { ...this.formData, customers, updatedAt: serverTimestamp() };
         const col = collection(db, COLLECTION_NAME);
         if (this.docId) {
-          await updateDoc(this.docRef, data);
+          if (!confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
+          await updateDoc(this.docRef, formDataToSave);
+          await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(col, { ...data, createdAt: serverTimestamp() });
+          const newDocRef = await addDoc(col, { ...formDataToSave, createdAt: serverTimestamp() });
+          await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
           alert('登録が完了しました。');
           location.href = './index.html';
         }
-      } catch (err) {
-        console.error('登録エラー', err);
-        alert(`登録中にエラーが発生しました。\n${err.message}`);
+      } catch (error) {
+        console.error('登録エラー', error);
+        alert(`登録中にエラーが発生しました。\n${error.message}`);
       } finally {
         this.isSubmitting = false;
       }

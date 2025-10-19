@@ -11,14 +11,26 @@ export function formatDuration(minutes) {
   return `${s}秒`;
 }
 
-// Firestore Timestamp → HH:MM
-export function formatTimestamp(timestamp) {
+// Firestore Timestamp → HH:MMまたは日付＋時刻（例: 2025年05月03日(土) 14:45）
+export function formatTimestamp(timestamp, full = false) {
   if (!timestamp) return '--';
-  const date = timestamp instanceof Date ? timestamp : timestamp.toDate();
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
-};
+
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+
+  const pad = n => String(n).padStart(2, '0');
+  const hh = pad(date.getHours());
+  const mm = pad(date.getMinutes());
+
+  if (!full) return `${hh}:${mm}`;
+
+  const WEEK_DAYS = ['日', '月', '火', '水', '木', '金', '土'];
+  const y = date.getFullYear();
+  const m = pad(date.getMonth() + 1);
+  const d = pad(date.getDate());
+  const w = WEEK_DAYS[date.getDay()];
+
+  return `${y}年${m}月${d}日(${w}) ${hh}:${mm}`;
+}
 
 // 曜日リスト
 const WEEK_DAYS = ['日', '月', '火', '水', '木', '金', '土'];

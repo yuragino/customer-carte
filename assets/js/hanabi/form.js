@@ -5,6 +5,7 @@ import { formatYen } from "../common/utils/format-utils.js";
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
+import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -142,14 +143,17 @@ document.addEventListener('alpine:init', () => {
         const formDataToSave = { ...this.formData, customers: customersToSave, eventYear: this.selectedYear, updatedAt: serverTimestamp() };
         const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
+          if (!confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
           await updateDoc(this.docRef, formDataToSave);
+          await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');
         } else {
-          await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
+          const newDocRef = await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
+          await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
           alert('登録が完了しました。');
           location.href = './index.html';
         }
-      } catch (err) {
+      } catch (error) {
         handleError('データの登録', error);
       } finally {
         this.isSubmitting = false;
@@ -191,7 +195,7 @@ document.addEventListener('alpine:init', () => {
           .map(doc => doc.data().eventYear)
           .sort((a, b) => a - b);
         this.formData.representative.repeaterYears = foundYears;
-      } catch (err) {
+      } catch (error) {
         handleError('リピーターチェック', error);
       }
     }

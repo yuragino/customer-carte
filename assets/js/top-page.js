@@ -1,4 +1,4 @@
-import { getYearSettings } from "../common/year-selector.js";
+import { getYearSettings } from "./common/year-selector.js";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
