@@ -90,6 +90,7 @@ document.addEventListener('alpine:init', () => {
           await updateDoc(this.docRef, formDataToSave);
           await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');
+          window.location.href = `./index.html?year=${this.selectedYear}`;
         } else {
           const newDocRef = await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
           await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
@@ -190,7 +191,7 @@ function createInitialFormData() {
       reservationDate: '',
       name: '', kana: '', introducer: '', phone: '', address: '',
       lineType: '', height: null, footSize: null, outfit: '振袖',
-      rentalType: '自前', outfitMemo: '', hairMakeStaff: '', isMiyuki: false,
+      rentalType: '', outfitMemo: '', hairMakeStaff: '', isMiyuki: false,
     },
     toujitsuInfo: {
       schedule: [

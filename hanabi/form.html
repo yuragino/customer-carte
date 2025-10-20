@@ -117,12 +117,12 @@
               <th>LINE</th>
               <td>
                 <label>
-                  <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
-                    :checked="formData.representative.lineType === '椿LINE'"> 椿LINE
-                </label>
-                <label>
                   <input type="radio" name="lineType" value="教室LINE" @click="toggleRadio($event, 'lineType')"
                     :checked="formData.representative.lineType === '教室LINE'"> 教室LINE
+                </label>
+                <label>
+                  <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
+                    :checked="formData.representative.lineType === '椿LINE'"> 椿LINE
                 </label>
                 <label>
                   <input type="radio" name="lineType" value="お客様LINE" @click="toggleRadio($event, 'lineType')"

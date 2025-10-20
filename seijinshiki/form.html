@@ -111,9 +111,12 @@
           <tr>
             <th>利用形態</th>
             <td class="radio-group">
-              <label><input type="radio" value="自前" x-model="formData.basicInfo.rentalType"> 自前</label>
-              <label><input type="radio" value="レンタル" x-model="formData.basicInfo.rentalType"> レンタル</label>
-              <label><input type="radio" value="一部レンタル" x-model="formData.basicInfo.rentalType"> 一部レンタル</label>
+              <label><input type="radio" value="自前" x-model="formData.basicInfo.rentalType" @click="toggleRadio($event, 'rentalType')"
+                  :checked="formData.basicInfo.rentalType === '自前'"> 自前</label>
+              <label><input type="radio" value="レンタル" x-model="formData.basicInfo.rentalType" @click="toggleRadio($event, 'rentalType')"
+                  :checked="formData.basicInfo.rentalType === 'レンタル'"> レンタル</label>
+              <label><input type="radio" value="一部レンタル" x-model="formData.basicInfo.rentalType" @click="toggleRadio($event, 'rentalType')"
+                  :checked="formData.basicInfo.rentalType === '一部レンタル'"> 一部レンタル</label>
             </td>
           </tr>
           <tr x-show="formData.basicInfo.outfit === '振袖'">

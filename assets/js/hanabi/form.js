@@ -51,6 +51,7 @@ document.addEventListener('alpine:init', () => {
 
     async init() {
       const params = new URLSearchParams(window.location.search);
+      this.initYearSelector();
       this.docId = params.get('docId');
       if (this.docId) await this.load();
       else this.updateCustomerList();
@@ -147,11 +148,12 @@ document.addEventListener('alpine:init', () => {
           await updateDoc(this.docRef, formDataToSave);
           await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');
+          window.location.href = `./index.html?year=${this.selectedYear}`;
         } else {
           const newDocRef = await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
           await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
           alert('登録が完了しました。');
-          location.href = './index.html';
+          window.location.href = `./index.html?year=${this.selectedYear}`;
         }
       } catch (error) {
         handleError('データの登録', error);
@@ -208,7 +210,7 @@ function createInitialFormData() {
       reservationMethod: null, name: '', kana: '',
       visitDateTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
-      transportation: '車', lineType: '椿LINE',
+      transportation: '', lineType: '',
       repeaterYears: [], notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
       paymentType: 'group', groupPaymentMethod: '',
