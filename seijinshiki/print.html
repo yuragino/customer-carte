@@ -197,8 +197,7 @@
         </table>
       </div>
 
-      <div x-show="!formData.basicInfo.isMiyuki">
-        <div class="card">
+        <div class="card" x-show="!formData.estimateInfo.isMiyuki">
           <h2><i class="fa-solid fa-yen-sign"></i> 見積もり</h2>
           <table>
             <thead>
@@ -242,7 +241,7 @@
         </div>
 
         <div class="card">
-          <h2><i class="fa-solid fa-receipt"></i> 領収情報</h2>
+          <h2><i class="fa-solid fa-receipt"></i> 領収情報 <span class="ml-4 text-black" x-show="formData.estimateInfo.isMiyuki">※美ゆきさん扱い</span></h2>
           <table>
             <tr>
               <th>領収日</th>
@@ -250,7 +249,6 @@
             </tr>
           </table>
         </div>
-      </div x-show="formData.basicInfo.isMiyuki">
 
     </div>
   </main>

@@ -127,10 +127,6 @@
             <th>備考</th>
             <td><textarea rows="2" x-model="formData.basicInfo.outfitMemo"></textarea></td>
           </tr>
-          <tr>
-            <th>会計</th>
-            <td><label><input type="checkbox" x-model.boolean="formData.basicInfo.isMiyuki"> 美ゆきさん扱い</label></td>
-          </tr>
         </table>
       </div>
 
@@ -363,8 +359,7 @@
         </table>
       </div>
 
-      <div x-show="!formData.basicInfo.isMiyuki">
-        <div class="card estimate-card">
+        <div class="card estimate-card" x-show="!formData.estimateInfo.isMiyuki">
           <h2>
             <i class="fa-solid fa-yen-sign"></i> 見積もり
             <button type="button" class="btn title-actions" @click="addOption()">
@@ -476,7 +471,10 @@
         </div>
 
         <div class="card receipt-card">
-          <h2><i class="fa-solid fa-receipt"></i> 領収情報</h2>
+          <h2 class="flex justify-between">
+            <span><i class="fa-solid fa-receipt"></i> 領収情報</span>
+            <label><input type="checkbox" x-model.boolean="formData.estimateInfo.isMiyuki"> 美ゆきさん扱い</label>
+          </h2>
           <table>
             <tr>
               <th>領収日</th>
@@ -484,7 +482,6 @@
             </tr>
           </table>
         </div>
-      </div x-show="">
 
       <div class="actions">
         <button type="submit" class="btn register-btn" :disabled="isSubmitting"

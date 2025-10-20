@@ -191,7 +191,7 @@ function createInitialFormData() {
       reservationDate: '',
       name: '', kana: '', introducer: '', phone: '', address: '',
       lineType: '', height: null, footSize: null, outfit: '振袖',
-      rentalType: '', outfitMemo: '', hairMakeStaff: '', isMiyuki: false,
+      rentalType: '', outfitMemo: '', hairMakeStaff: '',
     },
     toujitsuInfo: {
       schedule: [
@@ -210,7 +210,8 @@ function createInitialFormData() {
       kitsuke: { name: '着付', fixed: true, hasToujitsu: true, hasMaedori: false },
       hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: true, hasMaedori: false, type: 'ヘア＆メイク' },
       options: [],
-      receiptDate: ''
+      receiptDate: '',
+      isMiyuki:false,
     },
     media: {
       imageUrls: [],
