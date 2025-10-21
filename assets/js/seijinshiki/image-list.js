@@ -9,6 +9,7 @@ document.addEventListener('alpine:init', () => {
     customers: [],
     searchQuery: '',
     openAccordionIds: [],
+    selectedImageUrl: null,
 
     get storageKey() {
       return `seijinshiki-open-accordion-${this.selectedYear}`;
@@ -27,6 +28,10 @@ document.addEventListener('alpine:init', () => {
       this.initYearSelector();
       this.customers = await getDocsByYear(COLLECTION_NAME, this.selectedYear);
       this.openAccordionIds = storage.load(this.storageKey, []);
+    },
+
+    openImageModal(url) {
+      this.selectedImageUrl = url;
     },
 
     isAccordionOpen(customerId) {

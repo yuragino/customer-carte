@@ -13,6 +13,7 @@ document.addEventListener('alpine:init', () => {
     activeCustomerIndex: null, // 一時的に操作中の顧客を指す共通インデックス
     docId: null,              // パラメータ
     isSubmitting: false,
+    selectedImageUrl: null,
     formData: createInitialFormData(),
     rentalModal: {
       isOpen: false,
@@ -68,6 +69,10 @@ document.addEventListener('alpine:init', () => {
         console.error('データ取得エラー:', error);
         alert('データの読み込みに失敗しました。');
       }
+    },
+
+    openImageModal(url) {
+      this.selectedImageUrl = url;
     },
 
     toggleRadio(event, modelName) {
@@ -137,7 +142,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     async submitForm() {
-       if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
+      if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
       this.isSubmitting = true;
       try {
         const customers = await this.processCustomerData();

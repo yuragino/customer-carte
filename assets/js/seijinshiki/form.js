@@ -3,7 +3,7 @@ import { db } from '../common/firebase-config.js';
 import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { getYearSettings } from '../common/year-selector.js';
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
-import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from '../common/utils/media-utils.js';
+import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil, createMediaModal } from '../common/utils/media-utils.js';
 import { formatFullDateTime, formatYen } from '../common/utils/format-utils.js';
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
@@ -11,6 +11,7 @@ const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings("seijinshiki"),
+    ...createMediaModal(),
     formatFullDateTime,
     formatYen,
     // ===== 状態管理 =====

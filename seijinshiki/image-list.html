@@ -17,7 +17,7 @@
 </head>
 
 <body x-data="app">
-  <header class="header">
+  <header class="header" x-show="!selectedImageUrl">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
@@ -50,14 +50,14 @@
         <div x-show="isAccordionOpen(customer.id)" class="accordion-content">
           <!-- 画像 -->
           <div class="images" x-show="customer.media.imageUrls.length > 0">
-            <template x-for="url in customer.media.imageUrls" :key="img">
-              <img :src="url" class="preview-img" loading="lazy" />
+            <template x-for="url in customer.media.imageUrls" :key="url">
+              <img :src="url" class="preview-img" loading="lazy" @click="openImageModal(url)" />
             </template>
           </div>
           <p x-show="!customer.media.imageUrls.length">画像が登録されていません</p>
           <!-- 動画 -->
-          <div class="videos hidden" x-show="customer.media.videoUrls?.length > 0">
-            <template x-for="url in customer.media.videoUrls" :key="vid">
+          <div class="videos" x-show="customer.media.videoUrls?.length > 0">
+            <template x-for="url in customer.media.videoUrls" :key="url">
               <video :src="url" class="preview-video" controls></video>
             </template>
           </div>
@@ -65,6 +65,9 @@
         </div>
       </div>
     </template>
+    <div x-show="selectedImageUrl" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" @click.self="selectedImageUrl = null">
+      <img :src="selectedImageUrl" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain" />
+    </div>
   </main>
 </body>
 

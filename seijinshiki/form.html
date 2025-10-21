@@ -18,7 +18,7 @@
 </head>
 
 <body x-data="app">
-  <header class="header">
+  <header class="header" x-show="!selectedMediaUrl">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
@@ -315,7 +315,7 @@
               <div class="preview-container">
                 <template x-for="(url, index) in formData.media.imageUrls" :key="url">
                   <div class="flex gap-1 border border-gray-400 p-1">
-                    <img :src="url" class="preview-image">
+                    <img :src="url" class="preview-image" @click="openMediaModal('image',url)">
                     <button type="button" class="btn-del" @click="removeMedia('saved-image', index)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -323,7 +323,7 @@
                 </template>
                 <template x-for="(src, index) in formData.media.newImagePreviews" :key="src">
                   <div class="flex gap-1 border border-gray-400 p-1">
-                    <img :src="src" class="preview-image">
+                    <img :src="src" class="preview-image" @click="openMediaModal('image',url)">
                     <button type="button" class="btn-del" @click="removeMedia('new-image', index)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -339,7 +339,7 @@
               <div class="preview-container">
                 <template x-for="(url, index) in formData.media.videoUrls" :key="url">
                   <div class="flex gap-1 border border-gray-400 p-1">
-                    <video :src="url" class="preview-image" controls></video>
+                    <video :src="url" class="preview-image" @click="openMediaModal('video',url)"></video>
                     <button type="button" class="btn-del" @click="removeMedia('saved-video', index)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -347,7 +347,7 @@
                 </template>
                 <template x-for="(src, index) in formData.media.newVideoPreviews" :key="src">
                   <div class="flex gap-1 border border-gray-400 p-1">
-                    <video :src="src" class="preview-image" controls></video>
+                    <video :src="src" class="preview-image" @click="openMediaModal('video',url)"></video>
                     <button type="button" class="btn-del" @click="removeMedia('new-video', index)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -359,129 +359,129 @@
         </table>
       </div>
 
-        <div class="card estimate-card" x-show="!formData.estimateInfo.isMiyuki">
-          <h2>
-            <i class="fa-solid fa-yen-sign"></i> 見積もり
-            <button type="button" class="btn title-actions" @click="addOption()">
-              <i class="fa-regular fa-plus"></i>
-              <span>オプション追加</span>
-            </button>
-          </h2>
-          <table>
-            <tr>
-              <th>項目</th>
-              <th>当日</th>
-              <th>前撮り</th>
-              <th>金額</th>
-              <th></th>
-            </tr>
+      <div class="card estimate-card" x-show="!formData.estimateInfo.isMiyuki">
+        <h2>
+          <i class="fa-solid fa-yen-sign"></i> 見積もり
+          <button type="button" class="btn title-actions" @click="addOption()">
+            <i class="fa-regular fa-plus"></i>
+            <span>オプション追加</span>
+          </button>
+        </h2>
+        <table>
+          <tr>
+            <th>項目</th>
+            <th>当日</th>
+            <th>前撮り</th>
+            <th>金額</th>
+            <th></th>
+          </tr>
 
+          <tr>
+            <td>着付</td>
+            <td class="clickable-cell">
+              <label class="toggle-check">
+                <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasToujitsu">
+                <i class="fa-regular fa-circle-xmark"></i>
+                <i class="fa-regular fa-circle-check"></i>
+              </label>
+            </td>
+            <td class="clickable-cell">
+              <label class="toggle-check">
+                <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasMaedori">
+                <i class="fa-regular fa-circle-xmark"></i>
+                <i class="fa-regular fa-circle-check"></i>
+              </label>
+            </td>
+            <td>
+              <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
+            </td>
+            <td></td>
+          </tr>
+
+          <tr x-show="formData.basicInfo.outfit === '振袖'">
+            <td>
+              <select x-model="formData.estimateInfo.hairMake.type">
+                <option value="ヘア＆メイク">ヘア＆メイク</option>
+                <option value="ヘアのみ">ヘアのみ</option>
+                <option value="ヘアメイクなし">ヘアメイクなし</option>
+              </select>
+            </td>
+            <td class="clickable-cell">
+              <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
+                <span class="disabled-label">対象外</span>
+              </template>
+              <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
+                <label class="toggle-check">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
+                  <i class="fa-regular fa-circle-xmark"></i>
+                  <i class="fa-regular fa-circle-check"></i>
+                </label>
+              </template>
+            </td>
+            <td class="clickable-cell">
+              <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
+                <span class="disabled-label">対象外</span>
+              </template>
+              <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
+                <label class="toggle-check">
+                  <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
+                  <i class="fa-regular fa-circle-xmark"></i>
+                  <i class="fa-regular fa-circle-check"></i>
+                </label>
+              </template>
+            </td>
+            <td>
+              <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></div>
+            </td>
+            <td></td>
+          </tr>
+
+          <template x-for="(item,index) in formData.estimateInfo.options" :key="index">
             <tr>
-              <td>着付</td>
+              <td><input type="text" x-model="item.name"></td>
               <td class="clickable-cell">
                 <label class="toggle-check">
-                  <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasToujitsu">
+                  <input type="checkbox" x-model="item.hasToujitsu">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
               </td>
               <td class="clickable-cell">
                 <label class="toggle-check">
-                  <input type="checkbox" x-model.boolean="formData.estimateInfo.kitsuke.hasMaedori">
+                  <input type="checkbox" x-model="item.hasMaedori">
                   <i class="fa-regular fa-circle-xmark"></i>
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
               </td>
+              <td><input type="number" x-model.number="item.price" style="width:80px; text-align:right;">円</td>
               <td>
-                <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
+                <button type="button" class="btn-del" @click="deleteOption(index)">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </td>
-              <td></td>
             </tr>
+          </template>
 
-            <tr x-show="formData.basicInfo.outfit === '振袖'">
-              <td>
-                <select x-model="formData.estimateInfo.hairMake.type">
-                  <option value="ヘア＆メイク">ヘア＆メイク</option>
-                  <option value="ヘアのみ">ヘアのみ</option>
-                  <option value="ヘアメイクなし">ヘアメイクなし</option>
-                </select>
-              </td>
-              <td class="clickable-cell">
-                <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
-                  <span class="disabled-label">対象外</span>
-                </template>
-                <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
-                  <label class="toggle-check">
-                    <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasToujitsu">
-                    <i class="fa-regular fa-circle-xmark"></i>
-                    <i class="fa-regular fa-circle-check"></i>
-                  </label>
-                </template>
-              </td>
-              <td class="clickable-cell">
-                <template x-if="formData.estimateInfo.hairMake.type === 'ヘアメイクなし'">
-                  <span class="disabled-label">対象外</span>
-                </template>
-                <template x-if="formData.estimateInfo.hairMake.type !== 'ヘアメイクなし'">
-                  <label class="toggle-check">
-                    <input type="checkbox" x-model.boolean="formData.estimateInfo.hairMake.hasMaedori">
-                    <i class="fa-regular fa-circle-xmark"></i>
-                    <i class="fa-regular fa-circle-check"></i>
-                  </label>
-                </template>
-              </td>
-              <td>
-                <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></div>
-              </td>
-              <td></td>
-            </tr>
+          <tr>
+            <td colspan="3" style="text-align: center;">合計</td>
+            <td class="total" x-text="formatYen(totalAmount)"></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
 
-            <template x-for="(item,index) in formData.estimateInfo.options" :key="index">
-              <tr>
-                <td><input type="text" x-model="item.name"></td>
-                <td class="clickable-cell">
-                  <label class="toggle-check">
-                    <input type="checkbox" x-model="item.hasToujitsu">
-                    <i class="fa-regular fa-circle-xmark"></i>
-                    <i class="fa-regular fa-circle-check"></i>
-                  </label>
-                </td>
-                <td class="clickable-cell">
-                  <label class="toggle-check">
-                    <input type="checkbox" x-model="item.hasMaedori">
-                    <i class="fa-regular fa-circle-xmark"></i>
-                    <i class="fa-regular fa-circle-check"></i>
-                  </label>
-                </td>
-                <td><input type="number" x-model.number="item.price" style="width:80px; text-align:right;">円</td>
-                <td>
-                  <button type="button" class="btn-del" @click="deleteOption(index)">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </template>
-
-            <tr>
-              <td colspan="3" style="text-align: center;">合計</td>
-              <td class="total" x-text="formatYen(totalAmount)"></td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-
-        <div class="card receipt-card">
-          <h2 class="flex justify-between">
-            <span><i class="fa-solid fa-receipt"></i> 領収情報</span>
-            <label><input type="checkbox" x-model.boolean="formData.estimateInfo.isMiyuki"> 美ゆきさん扱い</label>
-          </h2>
-          <table>
-            <tr>
-              <th>領収日</th>
-              <td><input type="date" x-model="formData.estimateInfo.receiptDate"></td>
-            </tr>
-          </table>
-        </div>
+      <div class="card receipt-card">
+        <h2 class="flex justify-between">
+          <span><i class="fa-solid fa-receipt"></i> 領収情報</span>
+          <label><input type="checkbox" x-model.boolean="formData.estimateInfo.isMiyuki"> 美ゆきさん扱い</label>
+        </h2>
+        <table>
+          <tr>
+            <th>領収日</th>
+            <td><input type="date" x-model="formData.estimateInfo.receiptDate"></td>
+          </tr>
+        </table>
+      </div>
 
       <div class="actions">
         <button type="submit" class="btn register-btn" :disabled="isSubmitting"
@@ -495,6 +495,11 @@
         </label>
       </div>
     </form>
+
+    <div x-show="selectedMediaUrl" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50" @click.self="closeMediaModal">
+      <img x-show="selectedMediaType === 'image'" :src="selectedMediaUrl" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain" />
+      <video x-show="selectedMediaType === 'video'" :src="selectedMediaUrl" controls autoplay class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain"></video>
+    </div>
   </main>
 
   <script>

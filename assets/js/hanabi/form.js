@@ -14,6 +14,7 @@ document.addEventListener('alpine:init', () => {
     activeCustomerIndex: null, // 一時的に操作中の顧客を指す共通インデックス
     docId: null,              // パラメータ
     isSubmitting: false,
+    selectedImageUrl: null,
     formData: createInitialFormData(),
     rentalModal: {
       isOpen: false,
@@ -69,6 +70,10 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         handleError('データの取得', error);
       }
+    },
+
+    openImageModal(url) {
+      this.selectedImageUrl = url;
     },
 
     toggleRadio(event, modelName) {

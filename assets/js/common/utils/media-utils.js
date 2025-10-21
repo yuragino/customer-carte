@@ -64,3 +64,18 @@ export function removeMediaUtil(mediaType, index, targetObj) {
       break;
   }
 }
+
+export const createMediaModal = () => ({
+  selectedMediaUrl: null,
+  selectedMediaType: null,
+
+  openMediaModal(type, url) {
+    this.selectedMediaType = type;
+    this.selectedMediaUrl = url;
+  },
+
+  closeMediaModal() {
+    this.selectedMediaType = null;
+    this.selectedMediaUrl = null;
+  }
+});

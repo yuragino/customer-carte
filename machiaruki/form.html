@@ -19,7 +19,7 @@
 </head>
 
 <body x-data="app">
-  <header class="header">
+  <header class="header" x-show="!selectedImageUrl">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <nav class="header-nav">
@@ -227,7 +227,7 @@
                 <!-- 保存済み -->
                 <template x-for="(url, imageIndex) in customer.imageUrls" :key="url">
                   <div class="flex gap-1 border border-gray-400 p-1">
-                    <img :src="url" class="preview-image">
+                    <img :src="url" class="preview-image" @click="openImageModal(url)">
                     <button type="button" class="btn-del" @click="removeMedia(customerIndex,'saved-image',imageIndex)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -236,7 +236,7 @@
                 <!-- 新規追加プレビュー -->
                 <template x-for="(src, imageIndex) in customer.newImagePreviews" :key="src">
                   <div class="flex gap-1 border border-gray-400 p-1">
-                    <img :src="src" class="preview-image">
+                    <img :src="src" class="preview-image" @click="openImageModal(src)">
                     <button type="button" class="btn-del" @click="removeMedia(customerIndex,'new-image',imageIndex)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
@@ -353,6 +353,10 @@
       </div>
       <button class="submit-btn" @click="applyDiscount()">確定</button>
     </div>
+  </div>
+
+  <div x-show="selectedImageUrl" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" @click.self="selectedImageUrl = null">
+    <img :src="selectedImageUrl" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain" />
   </div>
 
   <script>
