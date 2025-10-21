@@ -28,7 +28,7 @@
       </div>
       <nav class="header-nav">
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
-        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./customerIndex.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
         <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
       </nav>
@@ -183,20 +183,20 @@
           <div class="header-item" x-show="formData.representative.paymentType === 'individual'">支払い方法</div>
         </div>
 
-        <template x-for="(customer, index) in formData.customers" :key="customer.id">
+        <template x-for="(customer, customerIndex) in formData.customers" :key="customer.id">
           <div class="customer-column">
             <div class="form-cell flex flex-col">
               <input type="text" x-model="customer.kana" class="h-4 text-xs w-[191.8px]" pattern="[\u3041-\u3096]*" placeholder="ふりがな">
               <input type="text" x-model="customer.name" placeholder="名前">
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'gender' + index" value="female" x-model="customer.gender"> 女</label>
-              <label><input type="radio" :name="'gender' + index" value="male" x-model="customer.gender"> 男</label>
+              <label><input type="radio" :name="'gender' + customerIndex" value="female" x-model="customer.gender"> 女</label>
+              <label><input type="radio" :name="'gender' + customerIndex" value="male" x-model="customer.gender"> 男</label>
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'bodyShape' + index" value="S" x-model="customer.bodyShape"> S</label>
-              <label><input type="radio" :name="'bodyShape' + index" value="M" x-model="customer.bodyShape"> M</label>
-              <label><input type="radio" :name="'bodyShape' + index" value="L" x-model="customer.bodyShape"> L</label>
+              <label><input type="radio" :name="'bodyShape' + customerIndex" value="S" x-model="customer.bodyShape"> S</label>
+              <label><input type="radio" :name="'bodyShape' + customerIndex" value="M" x-model="customer.bodyShape"> M</label>
+              <label><input type="radio" :name="'bodyShape' + customerIndex" value="L" x-model="customer.bodyShape"> L</label>
               <input type="number" class="small-input" x-model.number="customer.weight" min="0">
               <span x-text="customer.gender === 'female' ? '号' : 'kg'"></span>
             </div>
@@ -205,49 +205,50 @@
               足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0"> cm
             </div>
             <div class="form-cell">
-              <label><input type="radio" :name="'dressingType' + index" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
-              <label><input type="radio" :name="'dressingType' + index" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
+              <label><input type="radio" :name="'dressingType' + customerIndex" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
+              <label><input type="radio" :name="'dressingType' + customerIndex" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
             </div>
             <div class="form-cell">
               <label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label>
               <label x-show="customer.gender === 'female'"><input type="checkbox" x-model="customer.options.obiBag"> かごバッグ</label>
             </div>
+            <!-- 追加レンタル -->
             <div class="form-cell">
               <ul class="rental-list">
                 <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
                   <li>
                     <span x-text="`${item.name} ${formatYen(item.price)}`"></span>
-                    <button type="button" class="delete-btn" @click="removeRentalItem(index, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
+                    <button type="button" class="delete-btn" @click="removeRentalItem(customerIndex, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
                   </li>
                 </template>
               </ul>
-              <button type="button" class="add-btn" @click="openRentalModal(index)"><i class="fa-solid fa-circle-plus"></i></button>
+              <button type="button" class="add-btn" @click="openRentalModal(customerIndex)"><i class="fa-solid fa-circle-plus"></i></button>
             </div>
-            <div class="form-cell">
-              <label class="file-upload-label">
-                <i class="fa-solid fa-camera"></i>
-                <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, customerIndex)">
-              </label>
+            <div class="form-cell flex justify-around">
               <div class="preview-container">
                 <!-- 保存済み -->
-                <template x-for="(url, index) in customer.imageUrls" :key="url">
-                  <div class="preview-item">
+                <template x-for="(url, imageIndex) in customer.imageUrls" :key="url">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <img :src="url" class="preview-image">
-                    <button type="button" class="btn-del" @click="removeMedia(customerIndex,'saved-image',index)">
+                    <button type="button" class="btn-del" @click="removeMedia(customerIndex,'saved-image',imageIndex)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
                 </template>
                 <!-- 新規追加プレビュー -->
-                <template x-for="(src, index) in customer.newImagePreviews" :key="src">
-                  <div class="preview-item">
+                <template x-for="(src, imageIndex) in customer.newImagePreviews" :key="src">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <img :src="src" class="preview-image">
-                    <button type="button" class="btn-del" @click="removeMedia(customerIndex,'new-image',index)">
+                    <button type="button" class="btn-del" @click="removeMedia(customerIndex,'new-image',imageIndex)">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
                 </template>
               </div>
+              <label class="file-upload-label">
+                <i class="fa-solid fa-camera"></i>
+                <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, customerIndex)">
+              </label>
             </div>
             <div class="form-cell">
               <div x-show="formData.representative.reservationMethod">
@@ -261,7 +262,7 @@
                   <span class="new-price" x-text="formatYen(calculateCustomerOnSitePaymentAdjusted(customer))"></span>
                 </span>
                 <span x-text="formatYen(calculateCustomerOnSitePayment(customer))" x-show="!customer.discountAmount || customer.discountAmount === 0"></span>
-                <button type="button" class="edit-btn" @click="openDiscountModal(index)">
+                <button type="button" class="edit-btn" @click="openDiscountModal(customerIndex)">
                   <i class="fa-solid fa-pen"></i>
                 </button>
               </div>

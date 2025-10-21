@@ -64,13 +64,14 @@ document.addEventListener('alpine:init', () => {
     },
 
     async uploadAllMedia() {
-      const newImageUrls = await uploadMediaArrayToCloudinary(this.newImageFiles, COLLECTION_NAME);
-      const newVideoUrls = await uploadMediaArrayToCloudinary(this.newVideoFiles, COLLECTION_NAME);
+      const newImageUrls = await uploadMediaArrayToCloudinary(this.formData.media.newImageFiles, COLLECTION_NAME);
+      const newVideoUrls = await uploadMediaArrayToCloudinary(this.formData.media.newVideoFiles, COLLECTION_NAME);
       return { newImageUrls, newVideoUrls };
     },
 
     async submitForm() {
       this.isSubmitting = true;
+      if (this.docId && !confirm(`${this.formData.basicInfo.name}さんのデータを更新しますか？`)) return;
       try {
         const { newImageUrls, newVideoUrls } = await this.uploadAllMedia();
         const { newImageFiles, newVideoFiles, newImagePreviews, newVideoPreviews, ...mediaToSave } = this.formData.media;
@@ -86,7 +87,6 @@ document.addEventListener('alpine:init', () => {
         };
         const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
-          if (!confirm(`${this.formData.basicInfo.name}さんのデータを更新しますか？`)) return;
           await updateDoc(this.docRef, formDataToSave);
           await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');
@@ -211,7 +211,7 @@ function createInitialFormData() {
       hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: true, hasMaedori: false, type: 'ヘア＆メイク' },
       options: [],
       receiptDate: '',
-      isMiyuki:false,
+      isMiyuki: false,
     },
     media: {
       imageUrls: [],

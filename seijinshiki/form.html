@@ -314,7 +314,7 @@
               <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, 'image')">
               <div class="preview-container">
                 <template x-for="(url, index) in formData.media.imageUrls" :key="url">
-                  <div class="preview-item">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <img :src="url" class="preview-image">
                     <button type="button" class="btn-del" @click="removeMedia('saved-image', index)">
                       <i class="fa-solid fa-trash"></i>
@@ -322,7 +322,7 @@
                   </div>
                 </template>
                 <template x-for="(src, index) in formData.media.newImagePreviews" :key="src">
-                  <div class="preview-item">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <img :src="src" class="preview-image">
                     <button type="button" class="btn-del" @click="removeMedia('new-image', index)">
                       <i class="fa-solid fa-trash"></i>
@@ -338,7 +338,7 @@
               <input type="file" multiple accept="video/*" @change="prepareMediaPreview($event, 'video')">
               <div class="preview-container">
                 <template x-for="(url, index) in formData.media.videoUrls" :key="url">
-                  <div class="preview-item">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <video :src="url" class="preview-image" controls></video>
                     <button type="button" class="btn-del" @click="removeMedia('saved-video', index)">
                       <i class="fa-solid fa-trash"></i>
@@ -346,7 +346,7 @@
                   </div>
                 </template>
                 <template x-for="(src, index) in formData.media.newVideoPreviews" :key="src">
-                  <div class="preview-item">
+                  <div class="flex gap-1 border border-gray-400 p-1">
                     <video :src="src" class="preview-image" controls></video>
                     <button type="button" class="btn-del" @click="removeMedia('new-video', index)">
                       <i class="fa-solid fa-trash"></i>

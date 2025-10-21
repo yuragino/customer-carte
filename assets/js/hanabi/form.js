@@ -138,13 +138,13 @@ document.addEventListener('alpine:init', () => {
     },
 
     async submitForm() {
+      if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
       this.isSubmitting = true;
       try {
         const customersToSave = await this.uploadCustomerImages();
         const formDataToSave = { ...this.formData, customers: customersToSave, eventYear: this.selectedYear, updatedAt: serverTimestamp() };
         const collectionRef = collection(db, COLLECTION_NAME);
         if (this.docId) {
-          if (!confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
           await updateDoc(this.docRef, formDataToSave);
           await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
           alert('更新が完了しました。');

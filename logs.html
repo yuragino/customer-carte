@@ -28,13 +28,15 @@
         <th>操作日時</th>
         <th>コレクション名</th>
         <th>タイプ</th>
-        <th>id</th>
+        <th>docId</th>
+        <th>targetId</th>
       </tr>
       <template x-for="log in logs">
         <tr>
           <td x-text="formatTimestamp(log.timestamp,true)"></td>
           <td x-text="log.collectionName"></td>
           <td x-text="log.actionType"></td>
+          <td x-text="log.id"></td>
           <td x-text="log.targetDocId"></td>
         </tr>
       </template>
