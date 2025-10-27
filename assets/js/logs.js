@@ -7,7 +7,8 @@ document.addEventListener('alpine:init', () => {
     logs: [],
 
     async init() {
-      this.logs = await getAllDocs(COLLECTION_NAME);
+      this.logs = (await getAllDocs(COLLECTION_NAME))
+        .sort((a, b) => b.timestamp.toMillis?.() - a.timestamp.toMillis?.());
     },
 
   }));
