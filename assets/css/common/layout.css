@@ -82,8 +82,8 @@ input[type=number]::-webkit-inner-spin-button {
 .search-box {
   display: flex;
   align-items: center;
-  margin: 1.5rem auto;
   max-width: 400px;
+  margin: 0 auto 1rem;
   border: 1px solid #ccc;
   border-radius: 25px;
   padding: 0.3rem 0.6rem;

@@ -30,13 +30,17 @@
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+        <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
+        <a href="#" x-show="!user" @click="login">ログイン</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <p class="manual-link"><a href="../common/manual-schedule.html">📖 操作マニュアル</a></p>
+    <div class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'">
+      <span x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
+      <span x-show="!isLoggedIn">閲覧モード</span>
+    </div>
     <table>
       <thead>
         <tr>
@@ -66,7 +70,7 @@
               <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'" x-text="customer.basicInfo.name"></span>
             </td>
             <td>
-              <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)" :disabled="customer.isCanceled">
+              <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn ||customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="booth in customer.basicInfo.outfit === '振袖' ? boothOptionsFemale : boothOptionsMale" :key="booth">
                   <option :value="booth" x-text="booth" :selected="booth === customer.booth"></option>
@@ -74,7 +78,7 @@
               </select>
             </td>
             <td>
-              <select x-model="customer.undergarmentStaff" @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)" :disabled="customer.isCanceled">
+              <select x-model="customer.undergarmentStaff" @change="updateCustomerField(customer.id, 'undergarmentStaff', customer.undergarmentStaff)" :disabled="!isLoggedIn ||customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="staff in staffOptions" :key="`u-${staff}`">
                   <option :value="staff" x-text="staff" :selected="staff === customer.undergarmentStaff"></option>
@@ -82,7 +86,7 @@
               </select>
             </td>
             <td>
-              <select x-model="customer.sendoffStaff" @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)" :disabled="customer.isCanceled">
+              <select x-model="customer.sendoffStaff" @change="updateCustomerField(customer.id, 'sendoffStaff', customer.sendoffStaff)" :disabled="!isLoggedIn ||customer.isCanceled">
                 <option value="">--</option>
                 <template x-for="staff in staffOptions" :key="`s-${staff}`">
                   <option :value="staff" x-text="staff" :selected="staff === customer.sendoffStaff"></option>
@@ -90,7 +94,8 @@
               </select>
             </td>
             <td>
-              <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)" x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'">
+              <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)"
+                x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'" :disabled="!isLoggedIn">
               </button>
               <span x-show="customer.status === '済'">済</span>
               <span x-show="customer.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
@@ -105,6 +110,9 @@
       </tbody>
     </table>
   </main>
+  <footer class="text-center">
+    <a href="../common/manual-index.html">📖 操作マニュアル</a>
+  </footer>
 </body>
 
 </html>

@@ -1,4 +1,6 @@
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { setupAuth } from "../common/utils/auth-utils.js";
+import { signInWithGoogle } from "../common/firebase-auth.js";
 import { db } from '../common/firebase-config.js';
 import { getYearSettings } from "../common/year-selector.js";
 import { getDocsByYear } from "../common/utils/firestore-utils.js";
@@ -17,8 +19,13 @@ document.addEventListener('alpine:init', () => {
     ...STATUS_MAP,
 
     init() {
+      setupAuth(this);
       this.initYearSelector();
       this.load();
+    },
+
+    login() {
+      signInWithGoogle();
     },
 
     async load() {

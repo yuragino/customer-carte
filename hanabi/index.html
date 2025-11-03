@@ -30,13 +30,17 @@
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+        <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
+        <a href="#" x-show="!user" @click="login">ログイン</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <p class="manual-link"><a href="../common/manual-index.html">📖 操作マニュアル</a></p>
+    <div class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'">
+      <span x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
+      <span x-show="!isLoggedIn">閲覧モード</span>
+    </div>
     <table>
       <thead>
         <tr>
@@ -66,7 +70,7 @@
               </template>
               <td><span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span></td>
               <td>
-                <select x-model="customer.booth" @change="updateCustomerField(group.id, customer.id, 'booth', customer.booth)" :disabled="group.representative.isCanceled">
+                <select x-model="customer.booth" @change="updateCustomerField(group.id, customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn || group.representative.isCanceled">
                   <option value="">--</option>
                   <template x-for="booth in customer.gender === 'female'  ? boothOptionsFemale : boothOptionsMale" :key="booth">
                     <option :value="booth" x-text="booth" :selected="booth === customer.booth"></option>
@@ -80,14 +84,15 @@
                     <label :class="{'disabled': group.representative.isCanceled}">
                       <input type="checkbox" :checked="customer.staff && customer.staff.includes(staff)"
                         @change="updateCustomerField(group.id, customer.id, 'staff', staff, $event.target.checked)"
-                        :disabled="group.representative.isCanceled">
+                        :disabled="!isLoggedIn || group.representative.isCanceled">
                       <span x-text="staff"></span>
                     </label>
                   </template>
                 </div>
               </td>
               <td>
-                <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)" x-show="customer.status !== '済' && !group.representative.isCanceled">
+                <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)"
+                  x-show="customer.status !== '済' && !group.representative.isCanceled" :disabled="!isLoggedIn">
                   <span x-text="customer.status || '受付完了'"></span>
                 </button>
                 <span x-show="customer.status === '済'">済</span>
@@ -106,6 +111,9 @@
       </tbody>
     </table>
   </main>
+  <footer class="text-center">
+    <a href="../common/manual-index.html">📖 操作マニュアル</a>
+  </footer>
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 import { getAllDocs } from "../common/utils/firestore-utils.js";
+import { setupAuth } from "../common/utils/auth-utils.js";
 import { handleError } from "../common/utils/ui-utils.js";
 import { formatFullDateTime } from "../common/utils/format-utils.js";
 import { normalizeText } from "../common/utils/format-utils.js";
@@ -6,7 +7,7 @@ const COLLECTION_NAME = 'machiaruki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     formatFullDateTime,
-    groups: [],
+    isLoggedIn: false,
     searchQuery: '',
 
     get searchedGroups() {
@@ -25,6 +26,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     init() {
+      setupAuth(this);
       this.load();
     },
 
