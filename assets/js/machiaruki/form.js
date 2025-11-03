@@ -5,6 +5,7 @@ import { toggleRadioUtil } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'machiaruki';
 
 document.addEventListener('alpine:init', () => {
@@ -50,6 +51,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     async init() {
+      setupAuth(this);
       const params = new URLSearchParams(window.location.search);
       this.docId = params.get('docId');
       if (this.docId) await this.load();

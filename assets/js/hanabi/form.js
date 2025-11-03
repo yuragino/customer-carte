@@ -6,6 +6,7 @@ import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -51,6 +52,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     async init() {
+      setupAuth(this);
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
       this.docId = params.get('docId');

@@ -6,6 +6,7 @@ import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil, createMediaModal } from '../common/utils/media-utils.js';
 import { formatFullDateTime, formatYen } from '../common/utils/format-utils.js';
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
+import { setupAuth } from '../common/utils/auth-utils.js';
 const COLLECTION_NAME = 'seijinshiki';
 
 document.addEventListener('alpine:init', () => {
@@ -40,6 +41,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     async init() {
+      setupAuth(this);
       const params = new URLSearchParams(window.location.search);
       this.initYearSelector();
       this.docId = params.get('docId');
