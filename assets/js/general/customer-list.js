@@ -84,16 +84,16 @@ document.addEventListener("alpine:init", () => {
 
     // 新規予約作成
     openReservationForm(customer) {
-      window.location.href = `../../../general/reservation-form.html?id=${customer.id}`;
+      window.location.href = `./reservation-form.html?id=${customer.id}`;
     },
 
     openCustomerEdit(customer) {
-      window.location.href = `../../../general/customer-form.html?id=${customer.id}`;
+      window.location.href = `./customer-form.html?id=${customer.id}`;
     },
 
     // 予約フォーム遷移（編集）
     openReservationEdit(reservation) {
-      window.location.href = `../../../general/reservation-form.html?docId=${reservation.id}`;
+      window.location.href = `./reservation-form.html?docId=${reservation.id}`;
     },
 
   }));
