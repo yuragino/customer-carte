@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>予約登録フォーム</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/general/reservation-form.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/general/form.css">
+</head>
+
+<body x-data="app" x-init="init">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
+      <nav class="header-nav">
+        <a href="./index.html">顧客リスト</a>
+        <a href="./customer-form.html">顧客登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="font-bold text-2xl">予約登録フォーム</h1>
+      <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md" @click="deleteForm">
+        <i class="fa-regular fa-trash-can"></i> 削除する
+      </button>
+    </div>
+    <form @submit.prevent="submitForm">
+      <div>
+        <label>顧客名</label>
+        <input type="text" x-model="form.name" @blur="findCustomerByName">
+      </div>
+      <div>
+        <label>受付</label>
+        <div class="flex gap-8">
+          <label>
+            <input type="radio" name="lineType" value="教室LINE" @click="toggleRadio($event, 'lineType')"
+              :checked="form.lineType === '教室LINE'"> 教室LINE
+          </label>
+          <label>
+            <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
+              :checked="form.lineType === '椿LINE'"> 椿LINE
+          </label>
+          <label>
+            <input type="radio" name="lineType" value="お客様LINE" @click="toggleRadio($event, 'lineType')"
+              :checked="form.lineType === 'お客様LINE'"> お客様LINE
+          </label>
+          <label>
+            <input type="radio" name="lineType" value="くらしのマーケット" @click="toggleRadio($event, 'lineType')"
+              :checked="form.lineType === 'くらしのマーケット'"> くらしのマーケット
+          </label>
+        </div>
+      </div>
+      <div>
+        <label>電話番号</label>
+        <input type="tel" x-model="form.phone">
+      </div>
+      <div>
+        <label>着付け日</label>
+        <input type="date" x-model="form.date">
+      </div>
+      <div>
+        <div class="flex gap-3">
+          <label>着付場所</label>
+          <label class="flex items-center gap-1 text-sm">
+            <input type="checkbox" x-model="useHomeAddress" @change="applyHomeAddress"> 登録されている住所を使用
+          </label>
+        </div>
+        <input type="text" x-model="form.location">
+      </div>
+      <div class="field time-field">
+        <label>所要時間</label>
+        <div class="flex items-center gap-2">
+          <input type="time" x-model="form.startTime" class="flex-1">
+          <span>～</span>
+          <input type="time" x-model="form.endTime" class="flex-1">
+        </div>
+      </div>
+      <div>
+        <label>着物・その他料金</label>
+        <template x-for="(item, index) in form.feeItems" :key="index">
+          <div class="flex items-center gap-2 mb-2">
+            <input type="text" x-model="item.name" placeholder="種類">
+            <input type="number" x-model.number="item.fee" placeholder="料金">
+            <button type="button" @click="removeFeeItem(index)" x-show="form.feeItems.length > 1"
+              class="text-red-500 text-sm hover:text-red-700">
+              ✕
+            </button>
+          </div>
+        </template>
+        <button type="button" @click="addFeeItem"
+          class="px-3 py-1 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200 mt-2">
+          ＋ 行を追加
+        </button>
+      </div>
+      <div x-text="`合計: ${totalFee.toLocaleString()} 円`" class="text-right font-bold text-base px-2"></div>
+
+      <div>
+        <label>備考</label>
+        <textarea x-model="form.notes"></textarea>
+      </div>
+
+      <div class="buttons">
+        <button type="submit" :disabled="isSaving">
+          <span x-show="!isSaving">保存</span>
+          <span x-show="isSaving">保存中...</span>
+        </button>
+      </div>
+    </form>
+  </main>
+</body>
+
+</html>

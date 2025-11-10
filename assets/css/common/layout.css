@@ -55,21 +55,27 @@ body {
 
 .header-nav {
   display: flex;
-  gap: 20px;
-  align-items: stretch;
   height: 100%;
 }
 
 .header-nav a,
 .header-title a {
-  display: block;
-  line-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  padding: 0 1rem;
   text-decoration: none;
   color: #ffffff;
 }
 
 .header-nav a:hover {
-  color: #4397e1;
+  opacity: 0.8;
+}
+
+/* アクティブ表示 */
+.header-nav a.active {
+  background-color: #4397e1;
 }
 
 input[type=number]::-webkit-outer-spin-button,

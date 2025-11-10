@@ -6,7 +6,6 @@
   <title>成人式登録フォーム</title>
   <!-- Custom Script -->
   <script type="module" src="../assets/js/seijinshiki/form.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
@@ -29,7 +28,7 @@
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-        <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
+        <a :href="`./form.html?year=${selectedYear}`" x-show="user" class="active">新規登録</a>
         <a href="#" x-show="!user" @click="login">ログイン</a>
       </nav>
     </div>
@@ -57,11 +56,11 @@
             </tr>
             <tr>
               <th>名前</th>
-              <td><input type="text" x-model="formData.basicInfo.name" id="name" required></td>
+              <td><input type="text" x-model="formData.basicInfo.name" required></td>
             </tr>
             <tr>
               <th>ふりがな</th>
-              <td><input type="text" x-model="formData.basicInfo.kana" id="furigana"></td>
+              <td><input type="text" x-model="formData.basicInfo.kana"></td>
             </tr>
             <tr>
               <th>紹介者</th>
@@ -504,12 +503,6 @@
       <video x-show="selectedMediaType === 'video'" :src="selectedMediaUrl" controls autoplay class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain"></video>
     </div>
   </main>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      AutoKana.bind('#name', '#furigana', { katakana: false });
-    });
-  </script>
 </body>
 
 </html>

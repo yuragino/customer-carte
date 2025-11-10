@@ -7,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Custom Script -->
   <script type="module" src="../assets/js/hanabi/form.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
@@ -30,7 +29,7 @@
         <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-        <a :href="`./form.html?year=${selectedYear}`">新規登録</a>
+        <a :href="`./form.html?year=${selectedYear}`" class="active">新規登録</a>
       </nav>
     </div>
   </header>
@@ -68,11 +67,11 @@
               </tr>
               <tr>
                 <th>代表者名</th>
-                <td><input type="text" x-model="formData.representative.name" id="name" required class="middle-width"></td>
+                <td><input type="text" x-model="formData.representative.name" required class="middle-width"></td>
               </tr>
               <tr>
                 <th>ふりがな</th>
-                <td><input type="text" x-model="formData.representative.kana" id="furigana" class="middle-width"></td>
+                <td><input type="text" x-model="formData.representative.kana" class="middle-width"></td>
               </tr>
               <tr>
                 <th>来店時間</th>
@@ -353,12 +352,6 @@
   <div x-show="selectedImageUrl" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" @click.self="selectedImageUrl = null">
     <img :src="selectedImageUrl" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain" />
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      AutoKana.bind('#name', '#furigana', { katakana: false });
-    });
-  </script>
 </body>
 
 </html>

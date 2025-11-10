@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>一般着付け顧客登録</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/general/customer-form.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/general/form.css">
+</head>
+
+<body x-data="app" x-init="init">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
+      <nav class="header-nav">
+        <a href="./index.html">顧客リスト</a>
+        <a href="./customer-form.html" class="active">顧客登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="font-bold text-2xl">顧客登録フォーム</h1>
+      <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md" @click="deleteForm">
+        <i class="fa-regular fa-trash-can"></i> 削除する
+      </button>
+    </div>
+    <form @submit.prevent="submitForm">
+      <div>
+        <label>お名前</label>
+        <input type="text" x-model="form.name" required />
+      </div>
+      <div>
+        <label>ふりがな</label>
+        <input type="text" x-model="form.kana" />
+      </div>
+      <div>
+        <label>電話番号</label>
+        <input type="tel" x-model="form.phone" />
+      </div>
+      <div>
+        <label>住所</label>
+        <input type="text" x-model="form.address" />
+      </div>
+      <div>
+        <label>備考</label>
+        <textarea x-model="form.notes"></textarea>
+      </div>
+      <button type="submit" :disabled="isSaving">
+        <span x-show="!isSaving">保存</span>
+        <span x-show="isSaving">保存中...</span>
+      </button>
+    </form>
+  </main>
+</body>
+
+</html>
