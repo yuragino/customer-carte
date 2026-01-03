@@ -13,7 +13,7 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings(),
     formatTimestamp,
     groups: [],
-    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
+    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2','C1', 'C2'],
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
     ...STATUS_MAP,

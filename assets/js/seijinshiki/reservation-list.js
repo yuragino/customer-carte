@@ -13,7 +13,7 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings("seijinshiki"),
     formatTimestamp,
     customers: [],
-    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2'],
+    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2','C1', 'C2'],
     boothOptionsMale: ['C1', 'C2'],
     staffOptions: ['小林', '谷口', '大矢'],
     ...STATUS_MAP,
