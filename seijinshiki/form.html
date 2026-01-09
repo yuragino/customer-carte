@@ -226,15 +226,15 @@
                 <option value="ヘア打ち合わせ＆お預かり">ヘア打ち合わせ＆お預かり</option>
               </select>
             </div>
-            <div style="margin-top:1rem;">
+            <div class="mt-4">
               <label>日時</label>
               <input type="datetime-local" x-model="meetingForm.date">
             </div>
-            <div style="margin-top:1rem;">
+            <div class="mt-4">
               <label>場所</label>
               <input type="text" x-model="meetingForm.place">
             </div>
-            <div style="margin-top:1rem;">
+            <div class="mt-4">
               <label>備考</label>
               <textarea x-model="meetingForm.note"></textarea>
             </div>
@@ -393,9 +393,7 @@
                   <i class="fa-regular fa-circle-check"></i>
                 </label>
               </td>
-              <td>
-                <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></div>
-              </td>
+              <td><input type="number" x-model.number="formData.estimateInfo.kitsuke.price" class="!w-20 text-right">円</td>
               <td></td>
             </tr>
 
@@ -431,9 +429,7 @@
                   </label>
                 </template>
               </td>
-              <td>
-                <div class="total" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></div>
-              </td>
+              <td><input type="number" x-model.number="formData.estimateInfo.hairMake.price" class="!w-20 text-right">円</td>
               <td></td>
             </tr>
 
@@ -454,7 +450,7 @@
                     <i class="fa-regular fa-circle-check"></i>
                   </label>
                 </td>
-                <td><input type="number" x-model.number="item.price" style="width:80px; text-align:right;">円</td>
+                <td><input type="number" x-model.number="item.price" class="!w-20 text-right">円</td>
                 <td>
                   <button type="button" class="btn-del" @click="deleteOption(index)">
                     <i class="fa-solid fa-trash"></i>
@@ -464,7 +460,7 @@
             </template>
 
             <tr>
-              <td colspan="3" style="text-align: center;">合計</td>
+              <td colspan="3" class="text-center">合計</td>
               <td class="total" x-text="formatYen(totalAmount)"></td>
               <td></td>
             </tr>

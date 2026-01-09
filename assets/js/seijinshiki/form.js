@@ -36,6 +36,11 @@ document.addEventListener('alpine:init', () => {
       const optionsTotal = options.reduce((sum, option) => sum + option.price, 0);
       return baseTotal + optionsTotal;
     },
+    get totalAmount() {
+      const { kitsuke, hairMake, options } = this.formData.estimateInfo;
+      const optionsTotal = options.reduce((sum, o) => sum + (o.price || 0), 0);
+      return (kitsuke.price || 0) + (hairMake.price || 0) + optionsTotal;
+    },
     get sortedMeetings() {
       return [...this.formData.meetings].sort((a, b) => new Date(a.date) - new Date(b.date));
     },
@@ -210,8 +215,8 @@ function createInitialFormData() {
       place: '', note: ''
     },
     estimateInfo: {
-      kitsuke: { name: '着付', hasToujitsu: false, hasMaedori: false },
-      hairMake: { name: 'ヘアメイク', hasToujitsu: false, hasMaedori: false, type: 'ヘア＆メイク' },
+      kitsuke: { name: '着付', hasToujitsu: false, hasMaedori: false, price: 0 },
+      hairMake: { name: 'ヘアメイク', hasToujitsu: false, hasMaedori: false, type: 'ヘア＆メイク', price: 0 },
       options: [],
       receiptDate: '',
       isMiyuki: false,
