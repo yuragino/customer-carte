@@ -1,58 +1,79 @@
-
-
-/* === アコーディオン内容 === */
-.accordion-content {
-  background: #fafafa;
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* === 画像 === */
-.images {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
-}
-
-.preview-img {
-  width: 100%;
-  border-radius: 6px;
-  object-fit: cover;
-  border: 1px solid #ddd;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.preview-img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* === 動画 === */
-.videos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-}
-
-.preview-video {
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  max-height: 220px;
-}
-
-/* === 空データ表示 === */
-.accordion-content p {
-  color: #888;
-  font-style: italic;
-  margin: 0;
-}
-
-/* === レイアウト調整（iPad対応） === */
 main {
   max-width: 900px;
   margin: 0 auto;
   padding-bottom: 1rem;
+  text-align: center;
+}
+
+/* 顧客コンテナ */
+.customer-container {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+/* 画像・動画縦配置 */
+.media-item {
+  margin-bottom: 1.5rem;
+}
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* 前後ボタン */
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.nav-buttons button {
+  background: #f4f4f4;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.nav-buttons button:hover:enabled {
+  background: #e5e5e5;
+}
+
+.nav-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* モーダル拡大表示 */
+.image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  object-fit: contain;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* iPad・PC対応 */
+@media (min-width: 768px) {
+  .media-item img,
+  .media-item video {
+    max-height: 600px;
+  }
 }

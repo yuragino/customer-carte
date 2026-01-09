@@ -17,7 +17,7 @@
 </head>
 
 <body x-data="app">
-  <header class="header" x-show="!selectedImageUrl">
+  <header class="header">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
@@ -35,39 +35,60 @@
   </header>
 
   <main>
-    <!-- 検索ボックス -->
-    <div class="search-box">
-      <input type="text" placeholder="名前を入力してください" x-model="searchQuery" />
-      <i class="fa fa-search"></i>
-    </div>
-    <!-- 顧客アコーディオン -->
-    <template x-for="customer in searchedCustomers" :key="customer.id">
-      <div>
-        <button class="w-full flex justify-between p-4 bg-white border-b" @click="toggleAccordion(customer.id)">
-          <span x-text="customer.basicInfo.name"></span>
-          <i class="fa-solid " :class="isAccordionOpen(customer.id) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-        </button>
-
-        <div x-show="isAccordionOpen(customer.id)" class="accordion-content">
-          <!-- 画像 -->
-          <div class="images" x-show="customer.media.imageUrls.length > 0">
-            <template x-for="url in customer.media.imageUrls" :key="url">
-              <img :src="url" class="preview-img" loading="lazy" @click="openImageModal(url)" />
-            </template>
-          </div>
-          <p x-show="!customer.media.imageUrls.length">画像が登録されていません</p>
-          <!-- 動画 -->
-          <div class="videos" x-show="customer.media.videoUrls?.length > 0">
-            <template x-for="url in customer.media.videoUrls" :key="url">
-              <video :src="url" class="preview-video" controls></video>
-            </template>
-          </div>
-          <p x-show="!customer.media.videoUrls.length">動画が登録されていません</p>
+    <template x-if="customers.length > 0">
+      <div class="customer-container">
+        <!-- 上ナビゲーション -->
+        <div class="nav-buttons top-nav mb-4">
+          <button @click="prevCustomer">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span x-text="currentIndex === 0 ? '最後へ' : '前へ'"></span>
+          </button>
+          <h2 class="text-lg font-semibold" x-text="currentCustomer.basicInfo.name"></h2>
+          <button @click="nextCustomer">
+            <span x-text="currentIndex === customers.length - 1 ? '先頭へ' : '次へ'"></span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
         </div>
-      </div>
+
+        <!-- 画像 -->
+        <template x-if="currentCustomer.media.imageUrls.length > 0">
+          <template x-for="url in currentCustomer.media.imageUrls" :key="url">
+            <div class="media-item">
+              <img :src="url" @click="openImageModal(url)" loading="lazy">
+            </div>
+          </template>
+        </template>
+        <p x-show="!currentCustomer.media.imageUrls.length">画像が登録されていません</p>
+
+        <!-- 動画 -->
+        <template x-if="currentCustomer.media.videoUrls?.length > 0">
+          <template x-for="url in currentCustomer.media.videoUrls" :key="url">
+            <div class="media-item">
+              <video :src="url" controls></video>
+            </div>
+          </template>
+        </template>
+        <p x-show="!currentCustomer.media.videoUrls.length">動画が登録されていません</p>
+
+        <!-- ナビゲーション -->
+        <div class="nav-buttons top-nav">
+          <button @click="prevCustomer">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span x-text="currentIndex === 0 ? '最後へ' : '前へ'"></span>
+          </button>
+          <h2 class="text-lg font-semibold" x-text="currentCustomer.basicInfo.name"></h2>
+          <button @click="nextCustomer">
+            <span x-text="currentIndex === customers.length - 1 ? '先頭へ' : '次へ'"></span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
     </template>
-    <div x-show="selectedImageUrl" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" @click.self="selectedImageUrl = null">
-      <img :src="selectedImageUrl" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain" />
+
+    <p x-show="customers.length === 0" class="text-gray-500 text-center mt-8">データがありません。</p>
+
+    <!-- 拡大画像モーダル -->
+    <div x-show="selectedImageUrl" class="image-modal" @click.self="selectedImageUrl = null">
+      <img :src="selectedImageUrl" class="modal-img" />
     </div>
   </main>
 </body>
