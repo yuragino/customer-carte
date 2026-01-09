@@ -191,58 +191,58 @@
         </table>
       </div>
 
-        <div class="card" x-show="!formData.estimateInfo.isMiyuki">
-          <h2><i class="fa-solid fa-yen-sign"></i> 見積もり</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>項目</th>
-                <th>利用内容</th>
-                <th class="price-col">金額</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- kitsuke -->
-              <tr>
-                <td x-text="formData.estimateInfo.kitsuke.name"></td>
-                <td x-text="getTimingLabel(formData.estimateInfo.kitsuke)"></td>
-                <td class="price-col" x-text="formatYen(calcPrice(formData.estimateInfo.kitsuke))"></td>
-              </tr>
-              <!-- hairMake -->
-              <tr>
-                <td x-text="formData.estimateInfo.hairMake.type"></td>
-                <td x-text="getTimingLabel(formData.estimateInfo.hairMake)"></td>
-                <td class="price-col" x-text="formatYen(calcPrice(formData.estimateInfo.hairMake))"></td>
-              </tr>
-              <!-- options が存在する場合のみ -->
-              <template x-if="formData.estimateInfo.options.length > 0">
-                <template x-for="(option, index) in formData.estimateInfo.options" :key="index">
-                  <tr>
-                    <td x-text="option.name"></td>
-                    <td x-text="getTimingLabel(option)"></td>
-                    <td class="price-col" x-text="formatYen(option.price)"></td>
-                  </tr>
-                </template>
-              </template>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="2">合計</th>
-                <td class="total-amount" x-text="formatYen(totalAmount)"></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div class="card">
-          <h2><i class="fa-solid fa-receipt"></i> 領収情報 <span class="ml-4 text-black" x-show="formData.estimateInfo.isMiyuki">※美ゆきさん扱い</span></h2>
-          <table>
+      <div class="card" x-show="!formData.estimateInfo.isMiyuki">
+        <h2><i class="fa-solid fa-yen-sign"></i> 見積もり</h2>
+        <table>
+          <thead>
             <tr>
-              <th>領収日</th>
-              <td x-text="formatDateOnly(formData.estimateInfo.receiptDate)"></td>
+              <th>項目</th>
+              <th>利用内容</th>
+              <th class="price-col">金額</th>
             </tr>
-          </table>
-        </div>
+          </thead>
+          <tbody>
+            <!-- kitsuke -->
+            <tr>
+              <td x-text="formData.estimateInfo.kitsuke.name"></td>
+              <td x-text="getTimingLabel(formData.estimateInfo.kitsuke)"></td>
+              <td class="price-col" x-text="formatYen(formData.estimateInfo.kitsuke.price || 0)"></td>
+            </tr>
+            <!-- hairMake -->
+            <tr>
+              <td x-text="formData.estimateInfo.hairMake.type"></td>
+              <td x-text="getTimingLabel(formData.estimateInfo.hairMake)"></td>
+              <td class="price-col" x-text="formatYen(formData.estimateInfo.hairMake.price || 0)"></td>
+            </tr>
+            <!-- options が存在する場合のみ -->
+            <template x-if="formData.estimateInfo.options.length > 0">
+              <template x-for="(option, index) in formData.estimateInfo.options" :key="index">
+                <tr>
+                  <td x-text="option.name"></td>
+                  <td x-text="getTimingLabel(option)"></td>
+                  <td class="price-col" x-text="formatYen(option.price)"></td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2">合計</th>
+              <td class="total-amount" x-text="formatYen(totalAmount)"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-receipt"></i> 領収情報 <span class="ml-4 text-black" x-show="formData.estimateInfo.isMiyuki">※美ゆきさん扱い</span></h2>
+        <table>
+          <tr>
+            <th>領収日</th>
+            <td x-text="formatDateOnly(formData.estimateInfo.receiptDate)"></td>
+          </tr>
+        </table>
+      </div>
 
     </div>
   </main>

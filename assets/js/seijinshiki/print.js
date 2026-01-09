@@ -1,6 +1,5 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
-import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils/format-utils.js';
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
@@ -18,9 +17,8 @@ document.addEventListener('alpine:init', () => {
     },
     get totalAmount() {
       const { kitsuke, hairMake, options } = this.formData.estimateInfo;
-      const baseTotal = this.calcPrice(kitsuke) + this.calcPrice(hairMake);
-      const optionsTotal = options.reduce((sum, option) => sum + option.price, 0);
-      return baseTotal + optionsTotal;
+      const optionsTotal = options.reduce((sum, o) => sum + (o.price || 0), 0);
+      return (kitsuke.price || 0) + (hairMake.price || 0) + optionsTotal;
     },
     get sortedMeetings() {
       return [...this.formData.meetings].sort((a, b) => new Date(a.date) - new Date(b.date));
