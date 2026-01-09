@@ -10,7 +10,14 @@ document.addEventListener('alpine:init', () => {
     formatYen,
     // ===== 状態管理 =====
     docId: null,
-    formData: {},
+    selectedYear: '',
+    formData: {
+      basicInfo: {},
+      toujitsuInfo: { schedule: [], note: '' },
+      meetings: [],
+      maedoriInfo: {},
+      estimateInfo: { kitsuke: {}, hairMake: {}, options: [], receiptDate: '', isMiyuki: false },
+    },
 
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
@@ -26,6 +33,7 @@ document.addEventListener('alpine:init', () => {
 
     async init() {
       const params = new URLSearchParams(window.location.search);
+      this.selectedYear = params.get('year') || '';
       this.docId = params.get('docId');
       if (this.docId) await this.load();
     },
@@ -53,26 +61,6 @@ document.addEventListener('alpine:init', () => {
       if (hasToujitsu) return '当日のみ';
       if (hasMaedori) return '前撮りのみ';
       return 'なし';
-    },
-
-    calcPrice(item) {
-      const outfitKey = OUTFIT_KEY_MAP[this.formData.basicInfo.outfit];
-      const priceTable = SEIJINSHIKI_PRICES[outfitKey];
-      const { hasToujitsu, hasMaedori } = item;
-      const both = hasToujitsu && hasMaedori;
-      if (item.name === '着付') {
-        if (both) return priceTable.KITSUKE.BOTH;
-        if (hasToujitsu) return priceTable.KITSUKE.TOUJITSU;
-        if (hasMaedori) return priceTable.KITSUKE.MAEDORI;
-      }
-      if (item.name === 'ヘアメイク') {
-        if (outfitKey !== 'FURISODE') return 0;
-        let unitPrice = 0;
-        if (item.type === 'ヘア＆メイク') unitPrice = priceTable.HAIR_MAKE;
-        else if (item.type === 'ヘアのみ') unitPrice = priceTable.HAIR_ONLY;
-        return (hasToujitsu + hasMaedori) * unitPrice;
-      }
-      return 0;
     },
 
   }));
