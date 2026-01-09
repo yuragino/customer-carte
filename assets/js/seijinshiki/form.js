@@ -1,6 +1,5 @@
 import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js';
 import { db } from '../common/firebase-config.js';
-import { SEIJINSHIKI_PRICES, OUTFIT_KEY_MAP } from '../common/constants.js';
 import { getYearSettings } from '../common/year-selector.js';
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil, createMediaModal } from '../common/utils/media-utils.js';
@@ -29,12 +28,6 @@ document.addEventListener('alpine:init', () => {
 
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
-    },
-    get totalAmount() {
-      const { kitsuke, hairMake, options } = this.formData.estimateInfo;
-      const baseTotal = this.calcPrice(kitsuke) + this.calcPrice(hairMake);
-      const optionsTotal = options.reduce((sum, option) => sum + option.price, 0);
-      return baseTotal + optionsTotal;
     },
     get totalAmount() {
       const { kitsuke, hairMake, options } = this.formData.estimateInfo;
@@ -154,25 +147,6 @@ document.addEventListener('alpine:init', () => {
     deleteOption(index) {
       if (!confirm('このオプションを削除しますか？')) return;
       this.formData.estimateInfo.options.splice(index, 1);
-    },
-    calcPrice(item) {
-      const outfitKey = OUTFIT_KEY_MAP[this.formData.basicInfo.outfit];
-      const priceTable = SEIJINSHIKI_PRICES[outfitKey];
-      const { hasToujitsu, hasMaedori } = item;
-      const both = hasToujitsu && hasMaedori;
-      if (item.name === '着付') {
-        if (both) return priceTable.KITSUKE.BOTH;
-        if (hasToujitsu) return priceTable.KITSUKE.TOUJITSU;
-        if (hasMaedori) return priceTable.KITSUKE.MAEDORI;
-      }
-      if (item.name === 'ヘアメイク') {
-        if (outfitKey !== 'FURISODE') return 0;
-        let unitPrice = 0;
-        if (item.type === 'ヘア＆メイク') unitPrice = priceTable.HAIR_MAKE;
-        else if (item.type === 'ヘアのみ') unitPrice = priceTable.HAIR_ONLY;
-        return (hasToujitsu + hasMaedori) * unitPrice;
-      }
-      return 0;
     },
     // ===== メディア処理 =====
     prepareMediaPreview(event, type) {

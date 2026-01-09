@@ -3,21 +3,21 @@ export const CLOUDINARY_CONFIG = {
   UPLOAD_PRESET: 'unsigned_preset',
 };
 
-export const SEIJINSHIKI_PRICES = {
-  FURISODE: {
-    KITSUKE: { MAEDORI: 13200, TOUJITSU: 16500, BOTH: 25300 },
-    HAIR_MAKE: 10000,
-    HAIR_ONLY: 6000,
-  },
-  HAKAMA: {
-    KITSUKE: { MAEDORI: 8500, TOUJITSU: 8500, BOTH: 17000 }
-  }
-};
+// export const SEIJINSHIKI_PRICES = {
+//   FURISODE: {
+//     KITSUKE: { MAEDORI: 13200, TOUJITSU: 16500, BOTH: 25300 },
+//     HAIR_MAKE: 10000,
+//     HAIR_ONLY: 6000,
+//   },
+//   HAKAMA: {
+//     KITSUKE: { MAEDORI: 8500, TOUJITSU: 8500, BOTH: 17000 }
+//   }
+// };
 
-export const OUTFIT_KEY_MAP = {
-  "振袖": "FURISODE",
-  "袴": "HAKAMA"
-}
+// export const OUTFIT_KEY_MAP = {
+//   "振袖": "FURISODE",
+//   "袴": "HAKAMA"
+// }
 
 export const CASUAL_PRICES = {
   RENTAL_DRESSING: 6800,
