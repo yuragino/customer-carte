@@ -210,8 +210,8 @@ function createInitialFormData() {
       place: '', note: ''
     },
     estimateInfo: {
-      kitsuke: { name: '着付', fixed: true, hasToujitsu: true, hasMaedori: false },
-      hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: true, hasMaedori: false, type: 'ヘア＆メイク' },
+      kitsuke: { name: '着付', fixed: true, hasToujitsu: false, hasMaedori: false },
+      hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: false, hasMaedori: false, type: 'ヘア＆メイク' },
       options: [],
       receiptDate: '',
       isMiyuki: false,
