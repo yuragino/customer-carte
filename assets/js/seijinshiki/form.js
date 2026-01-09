@@ -144,7 +144,7 @@ document.addEventListener('alpine:init', () => {
 
     // ===== 見積もり =====
     addOption() {
-      this.formData.estimateInfo.options.push({ name: '', fixed: false, hasToujitsu: false, hasMaedori: false, price: 0 });
+      this.formData.estimateInfo.options.push({ name: '', hasToujitsu: false, hasMaedori: false, price: 0 });
     },
     deleteOption(index) {
       if (!confirm('このオプションを削除しますか？')) return;
@@ -210,8 +210,8 @@ function createInitialFormData() {
       place: '', note: ''
     },
     estimateInfo: {
-      kitsuke: { name: '着付', fixed: true, hasToujitsu: false, hasMaedori: false },
-      hairMake: { name: 'ヘアメイク', fixed: true, hasToujitsu: false, hasMaedori: false, type: 'ヘア＆メイク' },
+      kitsuke: { name: '着付', hasToujitsu: false, hasMaedori: false },
+      hairMake: { name: 'ヘアメイク', hasToujitsu: false, hasMaedori: false, type: 'ヘア＆メイク' },
       options: [],
       receiptDate: '',
       isMiyuki: false,

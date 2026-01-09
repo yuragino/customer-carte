@@ -18,7 +18,7 @@ document.addEventListener('alpine:init', () => {
       startTime: '',
       endTime: '',
       feeItems: [
-        { name: '出張料', fee: 0, fixed: true },
+        { name: '出張料', fee: 0, isCore: true },
         { name: '', fee: 0 },
       ],
       notes: '',
@@ -122,7 +122,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     removeFeeItem(index) {
-      if (this.form.feeItems[index].fixed) return alert('出張料は削除できません。');
+      if (this.form.feeItems[index].isCore) return alert('出張料は削除できません。');
       if (confirm('この行を削除しますか？')) {
         this.form.feeItems.splice(index, 1);
       }
