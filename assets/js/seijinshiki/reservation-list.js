@@ -15,7 +15,7 @@ document.addEventListener('alpine:init', () => {
     customers: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2','C1', 'C2'],
     boothOptionsMale: ['C1', 'C2'],
-    staffOptions: ['小林', '谷口', '大矢'],
+    staffOptions: ['小林', '矢口', '大矢'],
     ...STATUS_MAP,
 
     init() {
