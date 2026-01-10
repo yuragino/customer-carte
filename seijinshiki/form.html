@@ -88,8 +88,7 @@
             </tr>
             <tr>
               <th>電話番号</th>
-              <td><input type="tel" x-model="formData.basicInfo.phone" inputmode="numeric"
-                  pattern="[0-9]*"></td>
+              <td><input type="tel" x-model="formData.basicInfo.phone" inputmode="numeric" pattern="[0-9]*"></td>
             </tr>
             <tr>
               <th>身長</th>
@@ -134,8 +133,7 @@
           <h2>
             <i class="fa-regular fa-calendar-check"></i>
             <span>当日スケジュール</span>
-            <button type="button" @click="swapSchedule()" class="btn title-actions"
-              x-show="formData.basicInfo.outfit === '振袖'">
+            <button type="button" @click="swapSchedule()" class="btn title-actions" x-show="formData.basicInfo.outfit === '振袖'">
               <i class="fa-solid fa-arrows-up-down"></i>
               <span>入れ替え</span>
             </button>
