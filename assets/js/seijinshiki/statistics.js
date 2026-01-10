@@ -21,16 +21,16 @@ document.addEventListener('alpine:init', () => {
       this.customers = snapshot
         .filter(customer => customer.isCanceled !== true)
         .map(customer => {
-          const { receptionCompletedAt, guidanceCompletedAt, dressingCompletedAt, sendOffCompletedAt } = customer.statusTimestamps || {};
-          const dressingMinutes = calcMinutesBetween(guidanceCompletedAt, dressingCompletedAt);
-          const totalTime = calcMinutesBetween(receptionCompletedAt, sendOffCompletedAt, true);
+          const { receptionStartedAt, dressingStartedAt, dressingCompletedAt, sendOffCompletedAt } = customer.statusTimestamps || {};
+          const dressingMinutes = calcMinutesBetween(dressingStartedAt, dressingCompletedAt);
+          const totalTime = calcMinutesBetween(receptionStartedAt, sendOffCompletedAt, true);
           return {
             name: customer.basicInfo.name,
             gender: customer.gender,
             underGarmentStaff: customer.underGarmentStaff,
             sendoffStaff: customer.sendoffStaff,
-            receptionCompletedAt,
-            guidanceCompletedAt,
+            receptionStartedAt,
+            dressingStartedAt,
             dressingCompletedAt,
             sendOffCompletedAt,
             dressingMinutes,

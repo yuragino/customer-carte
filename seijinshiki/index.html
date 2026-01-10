@@ -102,8 +102,10 @@
 
         <template x-for="customer in customers" :key="customer.id">
           <tr :class="{'is-canceled': customer.isCanceled}">
-            <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
-            <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+            <td
+              x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"
+              :class="customer.status === '着付開始' ? 'font-semibold text-green-600' : ''"></td>
+            <td x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
             <td>
               <a :href="`form.html?docId=${customer.id}&year=${selectedYear}`" target="_blank" class="flex flex-col group">
                 <span x-text="customer.basicInfo.kana" class="text-xs text-gray-400"></span>
@@ -138,7 +140,7 @@
             </td>
             <td>
               <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(customer)"
-                x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付完了'" :disabled="!isLoggedIn">
+                x-show="customer.status !== '済' && !customer.isCanceled" x-text="customer.status || '受付開始'" :disabled="!isLoggedIn">
               </button>
               <span x-show="customer.status === '済'">済</span>
               <span x-show="customer.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>

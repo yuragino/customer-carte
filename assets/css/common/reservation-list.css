@@ -52,24 +52,24 @@ select {
   text-align: center;
 }
 
-/* 受付完了 (グレー) */
-.status-received {
+/* 受付開始 (グレー) */
+.status-reception-started {
   background-color: #6c757d;
 }
 
-/* 案内完了 (青) */
-.status-guided {
+/* 着付開始 (青) */
+.status-dressing-started {
   background-color: #007bff;
 }
 
 
 /* 着付完了 (緑) */
-.status-dressing-done {
+.status-dressing-completed {
   background-color: #28a745;
 }
 
 /* 見送り完了 (オレンジ) */
-.status-sent-off {
+.status-sendoff-completed {
   background-color: #fd7e14;
 }
 
@@ -166,7 +166,7 @@ table .is-canceled {
 
 .manual-link {
   text-align: right;
-  padding: 0 1.2rem 1.2rem 1.2rem ;
+  padding: 0 1.2rem 1.2rem 1.2rem;
   color: #555;
 }
 

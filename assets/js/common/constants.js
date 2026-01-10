@@ -12,25 +12,25 @@ export const CASUAL_PRICES = {
 
 export const STATUS_MAP = {
   nextStatusMap: {
-    '受付完了': '案内完了',
-    '案内完了': '着付完了',
+    '受付開始': '着付開始',
+    '着付開始': '着付完了',
     '着付完了': '見送り完了',
     '見送り完了': '済',
   },
   statusToTimestampKey: {
-    '受付完了': 'receptionCompletedAt',
-    '案内完了': 'guidanceCompletedAt',
+    '受付開始': 'receptionStartedAt',
+    '着付開始': 'dressingStartedAt',
     '着付完了': 'dressingCompletedAt',
     '見送り完了': 'sendOffCompletedAt',
   },
   getStatusClass(status) {
-    const current = status ?? '受付完了';
+    const current = status ?? '受付開始';
     return {
-      '受付完了': 'status-received',
-      '案内完了': 'status-guided',
-      '着付完了': 'status-dressing-done',
-      '見送り完了': 'status-sent-off',
-      '済': 'status-completed',
-    }[current] ?? 'status-received';
+      '受付開始': 'status-reception-started',
+      '着付開始': 'status-dressing-started',
+      '着付完了': 'status-dressing-completed',
+      '見送り完了': 'status-sendoff-completed',
+      '済': 'status-finished',
+    }[current] ?? 'status-reception-started';
   }
 };

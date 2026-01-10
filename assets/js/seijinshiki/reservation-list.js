@@ -104,7 +104,7 @@ document.addEventListener('alpine:init', () => {
     async updateStatus(customer) {
       try {
         const docRef = doc(db, COLLECTION_NAME, customer.id);
-        const currentStatus = customer.status ?? '受付完了';
+        const currentStatus = customer.status ?? '受付開始';
         if (!confirm(`${currentStatus}で間違いないですか？`)) return;
 
         const nextStatus = this.nextStatusMap[currentStatus];

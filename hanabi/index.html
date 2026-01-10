@@ -64,7 +64,7 @@
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length" x-text="group.representative.visitTime"></td>
               </template>
-              <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
+              <td x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length" x-text="`${group.representative.name}`"></td>
               </template>
@@ -93,7 +93,7 @@
               <td>
                 <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)"
                   x-show="customer.status !== '済' && !group.representative.isCanceled" :disabled="!isLoggedIn">
-                  <span x-text="customer.status || '受付完了'"></span>
+                  <span x-text="customer.status || '受付開始'"></span>
                 </button>
                 <span x-show="customer.status === '済'">済</span>
                 <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>

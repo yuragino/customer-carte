@@ -13,7 +13,7 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings(),
     formatTimestamp,
     groups: [],
-    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2','C1', 'C2'],
+    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
     staffOptions: ['佐藤', '鈴木', '松本'],
     ...STATUS_MAP,
@@ -69,7 +69,7 @@ document.addEventListener('alpine:init', () => {
       try {
         const docRef = doc(db, COLLECTION_NAME, group.id);
         const customer = group.customers.find(c => c.id === customerId);
-        const currentStatus = customer.status ?? '受付完了';
+        const currentStatus = customer.status ?? '受付開始';
         if (!confirm(`${currentStatus}で間違いないですか？`)) return;
 
         const nextStatus = this.nextStatusMap[currentStatus];

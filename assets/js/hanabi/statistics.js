@@ -20,16 +20,16 @@ document.addEventListener('alpine:init', () => {
       const snapshot = await getDocsByYear(COLLECTION_NAME, this.selectedYear);
       this.customers = snapshot.flatMap(doc =>
         doc.customers.map(customer => {
-          const { receptionCompletedAt, guidanceCompletedAt, dressingCompletedAt, sendOffCompletedAt } = customer.statusTimestamps || {};
-          const dressingMinutes = calcMinutesBetween(guidanceCompletedAt, dressingCompletedAt);
-          const totalTime = calcMinutesBetween(receptionCompletedAt, sendOffCompletedAt, true);
+          const { receptionStartedAt, dressingStartedAt, dressingCompletedAt, sendOffCompletedAt } = customer.statusTimestamps || {};
+          const dressingMinutes = calcMinutesBetween(dressingStartedAt, dressingCompletedAt);
+          const totalTime = calcMinutesBetween(receptionStartedAt, sendOffCompletedAt, true);
           return {
-            representative:doc.representative.name,
-            name:customer.name,
-            gender:customer.gender,
-            staff:customer.staff,
-            receptionCompletedAt,
-            guidanceCompletedAt,
+            representative: doc.representative.name,
+            name: customer.name,
+            gender: customer.gender,
+            staff: customer.staff,
+            receptionStartedAt,
+            dressingStartedAt,
             dressingCompletedAt,
             sendOffCompletedAt,
             dressingMinutes,

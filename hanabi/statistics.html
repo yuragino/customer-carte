@@ -28,7 +28,7 @@
         <a :href="`./statistics.html?year=${selectedYear}`" class="active">統計情報</a>
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-          <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
+        <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
         <a href="#" x-show="!user" @click="login">ログイン</a>
       </nav>
     </div>
@@ -55,7 +55,7 @@
           <th>個人名</th>
           <th>担当スタッフ</th>
           <th>受付時間</th>
-          <th>案内完了</th>
+          <th>着付開始</th>
           <th>着付完了</th>
           <th>見送り完了</th>
           <th>着付所要時間</th>
@@ -71,8 +71,8 @@
             <td x-text="customer.representative"></td>
             <td :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></td>
             <td x-text="(customer.staff || []).join(', ')"></td>
-            <td x-text="formatTimestamp(customer.receptionCompletedAt)"></td>
-            <td x-text="formatTimestamp(customer.guidanceCompletedAt)"></td>
+            <td x-text="formatTimestamp(customer.receptionStartedAt)"></td>
+            <td x-text="formatTimestamp(customer.dressingStartedAt)"></td>
             <td x-text="formatTimestamp(customer.dressingCompletedAt)"></td>
             <td x-text="formatTimestamp(customer.sendOffCompletedAt)"></td>
             <td x-text="customer.dressingTime ?? '--'"></td>
