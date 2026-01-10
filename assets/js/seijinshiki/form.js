@@ -71,9 +71,28 @@ document.addEventListener('alpine:init', () => {
     },
 
     async submitForm() {
-      this.isSubmitting = true;
-      if (this.docId && !confirm(`${this.formData.basicInfo.name}さんのデータを更新しますか？`)) return;
+      const hair = this.formData.toujitsuInfo.schedule.find(t => t.type === "hair");
+      const kitsuke = this.formData.toujitsuInfo.schedule.find(t => t.type === "kitsuke");
+      if (hair?.start && hair?.end && kitsuke?.start && kitsuke?.end) {
+        // 日付オブジェクトとして比較
+        const hairStart = new Date(`2000-01-01T${hair.start}`);
+        const hairEnd = new Date(`2000-01-01T${hair.end}`);
+        const kitsukeStart = new Date(`2000-01-01T${kitsuke.start}`);
+        const kitsukeEnd = new Date(`2000-01-01T${kitsuke.end}`);
+        // 時間が逆転している（終了が開始より前）
+        if (hairEnd < hairStart || kitsukeEnd < kitsukeStart) {
+          alert("エラー：ヘアメイクまたは着付けの終了時刻が開始時刻より早くなっています。");
+          return;
+        }
+        // 完全に同時刻または重なっている
+        if (!(hairEnd <= kitsukeStart || kitsukeEnd <= hairStart)) {
+          alert("エラー：ヘアメイクと着付けの時間が重なっています。");
+          return;
+        }
+      }
       try {
+        this.isSubmitting = true;
+        if (this.docId && !confirm(`${this.formData.basicInfo.name}さんのデータを更新しますか？`)) return;
         const { newImageUrls, newVideoUrls } = await this.uploadAllMedia();
         const { newImageFiles, newVideoFiles, newImagePreviews, newVideoPreviews, ...mediaToSave } = this.formData.media;
         const formDataToSave = {

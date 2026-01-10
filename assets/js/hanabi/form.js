@@ -145,9 +145,9 @@ document.addEventListener('alpine:init', () => {
     },
 
     async submitForm() {
-      if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
-      this.isSubmitting = true;
       try {
+        this.isSubmitting = true;
+        if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
         const customersToSave = await this.uploadCustomerImages();
         const formDataToSave = { ...this.formData, customers: customersToSave, eventYear: this.selectedYear, updatedAt: serverTimestamp() };
         const collectionRef = collection(db, COLLECTION_NAME);
