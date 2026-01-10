@@ -59,7 +59,7 @@
     <!-- スタッフ設定モーダル -->
     <div x-show="openSettings"
       class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
-      @click.self="openSettings = false">
+      @click.self="openSettings = false" x-cloak>
       <div class="bg-white rounded-lg shadow-lg p-6 w-[460px] max-h-[80vh] overflow-y-auto">
         <h2 class="text-lg font-semibold mb-4">
           スタッフ設定（<span x-text="selectedYear"></span>年）
@@ -86,12 +86,11 @@
         <tr>
           <th>来店予定</th>
           <th>来店時刻</th>
-          <th>名前</th>
+          <th>名前（詳細リンク）</th>
           <th>ブース</th>
           <th>肌着</th>
           <th>送り出し</th>
           <th>ステータス</th>
-          <th>詳細</th>
         </tr>
       </thead>
       <tbody>
@@ -105,9 +104,13 @@
           <tr :class="{'is-canceled': customer.isCanceled}">
             <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionCompletedAt)"></td>
-            <td class="flex flex-col">
-              <span x-text="customer.basicInfo.kana" class="text-xs text-gray-400"></span>
-              <span :class="customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male'" x-text="customer.basicInfo.name"></span>
+            <td>
+              <a :href="`form.html?docId=${customer.id}&year=${selectedYear}`" target="_blank" class="flex flex-col group">
+                <span x-text="customer.basicInfo.kana" class="text-xs text-gray-400"></span>
+                <span
+                  :class="[customer.basicInfo?.outfit === '振袖' ? 'gender-female' : 'gender-male', 'font-medium text-gray-800 group-hover:text-blue-600']"
+                  x-text="customer.basicInfo.name"></span>
+              </a>
             </td>
             <td>
               <select x-model="customer.booth" @change="updateCustomerField(customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn ||customer.isCanceled">
@@ -139,11 +142,6 @@
               </button>
               <span x-show="customer.status === '済'">済</span>
               <span x-show="customer.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
-            </td>
-            <td>
-              <a :href="`form.html?docId=${customer.id}&year=${selectedYear}`" class="detail-link" title="詳細を開く">
-                <i class="fa-solid fa-square-up-right"></i>
-              </a>
             </td>
           </tr>
         </template>
