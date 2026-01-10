@@ -142,23 +142,12 @@
             </button>
           </h2>
           <table>
-            <template x-if="formData.basicInfo.outfit === '振袖'">
-              <template x-for="task in formData.toujitsuInfo.schedule" :key="task.type">
-                <tr>
-                  <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
-                  <td>
-                    <input type="time" x-model="task.start"> 〜
-                    <input type="time" x-model="task.end">
-                  </td>
-                </tr>
-              </template>
-            </template>
-            <template x-if="formData.basicInfo.outfit === '袴'">
-              <tr>
-                <th>着付時間</th>
+            <template x-for="task in formData.toujitsuInfo.schedule" :key="task.type">
+              <tr x-show="!(formData.basicInfo.outfit === '袴' && task.type === 'hair')">
+                <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
                 <td>
-                  <input type="time" x-model="formData.toujitsuInfo.schedule.find(t => t.type === 'kitsuke').start"> 〜
-                  <input type="time" x-model="formData.toujitsuInfo.schedule.find(t => t.type === 'kitsuke').end">
+                  <input type="time" x-model="task.start"> 〜
+                  <input type="time" x-model="task.end">
                 </td>
               </tr>
             </template>
