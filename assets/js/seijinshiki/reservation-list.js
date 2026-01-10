@@ -15,7 +15,7 @@ document.addEventListener('alpine:init', () => {
     formatTimestamp,
     customers: [],
     boothOptionsFemale: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
-    boothOptionsMale: ['C1', 'C2'],
+    boothOptionsMale: ['B1', 'B2', 'C1', 'C2'],
     staffOptions: [],
     ...STATUS_MAP,
 
