@@ -37,9 +37,48 @@
   </header>
 
   <main>
-    <div class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'">
-      <span x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
+    <!-- ログイン状態＋設定ボタン -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'">
+        <span x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
+      </div>
+
+      <div x-show="isLoggedIn">
+        <button
+          class="flex items-center gap-2 px-3 py-2 rounded-md text-gray-800 cursor-pointer
+           bg-gradient-to-b from-gray-200 to-gray-400 shadow-sm border border-gray-300"
+          @click="openSettings = true"
+          title="スタッフ設定を開く">
+          <i class="fa-solid fa-user-gear text-gray-700"></i>
+          <span class="font-medium">スタッフ設定</span>
+        </button>
+      </div>
     </div>
+    <!-- スタッフ設定モーダル -->
+    <div x-show="openSettings"
+      class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
+      @click.self="openSettings = false" x-cloak>
+      <div class="bg-white rounded-lg shadow-lg p-6 w-[460px] max-h-[80vh] overflow-y-auto">
+        <h2 class="text-lg font-semibold mb-4">
+          スタッフ設定（<span x-text="selectedYear"></span>年）
+        </h2>
+
+        <div class="mb-6">
+          <label class="block text-sm text-gray-700 mb-1">スタッフ一覧（スペース区切り）</label>
+          <textarea x-model="settings.staff"
+            class="w-full border rounded p-2 text-sm"
+            placeholder="例: 小林 矢口 大矢"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            @click="openSettings = false">閉じる</button>
+          <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            @click="saveStaffConfig">保存</button>
+        </div>
+      </div>
+    </div>
+
     <table>
       <thead>
         <tr>
