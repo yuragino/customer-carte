@@ -43,6 +43,7 @@ body {
 .header-title {
   font-size: 1.4rem;
   font-weight: 600;
+  padding: 0 1rem;
 }
 
 .header-controls input {
@@ -58,8 +59,7 @@ body {
   height: 100%;
 }
 
-.header-nav a,
-.header-title a {
+.header-nav a {
   display: flex;
   align-items: center;
   justify-content: center;

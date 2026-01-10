@@ -32,10 +32,6 @@ document.addEventListener('alpine:init', () => {
       await this.load();        // ← 顧客データ読み込み
     },
 
-    login() {
-      signInWithGoogle();
-    },
-
     async load() {
       this.customers = [];
       try {

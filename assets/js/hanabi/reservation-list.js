@@ -29,11 +29,7 @@ document.addEventListener('alpine:init', () => {
       await this.loadConfig();  // ← 設定読み込み
       await this.load();        // ← 顧客データ読み込み
     },
-
-    login() {
-      signInWithGoogle();
-    },
-
+    
     async load() {
       this.groups = [];
       try {

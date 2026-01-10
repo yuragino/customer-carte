@@ -20,10 +20,6 @@ document.addEventListener("alpine:init", () => {
       this.mapReservationCounts();
     },
 
-    login() {
-      signInWithGoogle();
-    },
-
     async loadCustomers() {
       try {
         const snap = await getDocs(query(collection(db, CUSTOMERS_COLLECTION)));
