@@ -89,7 +89,6 @@
           <th>ブース</th>
           <th>担当者</th>
           <th>ステータス</th>
-          <th>詳細</th>
         </tr>
       </thead>
       <tbody>
@@ -104,7 +103,13 @@
               </template>
               <td x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
               <template x-if="index === 0">
-                <td :rowspan="group.customers.length" x-text="`${group.representative.name}`"></td>
+                <td :rowspan="group.customers.length">
+                  <a
+                    :href="`form.html?docId=${group.id}&year=${selectedYear}`"
+                    class="text-blue-600 underline hover:text-blue-800"
+                    x-text="group.representative.name" target="_blank">
+                  </a>
+                </td>
               </template>
               <td><span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span></td>
               <td>
@@ -136,13 +141,6 @@
                 <span x-show="customer.status === '済'">済</span>
                 <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
               </td>
-              <template x-if="index === 0">
-                <td :rowspan="group.customers.length">
-                  <a :href="`form.html?docId=${group.id}&year=${selectedYear}`" class="detail-link" :class="{'notes-exist-link': group.representative.notes}">
-                    <i class="fa-solid fa-square-up-right"></i>
-                  </a>
-                </td>
-              </template>
             </tr>
           </template>
         </template>
