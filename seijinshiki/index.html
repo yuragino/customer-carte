@@ -101,9 +101,7 @@
 
         <template x-for="customer in customers" :key="customer.id">
           <tr :class="{'is-canceled': customer.isCanceled}">
-            <td
-              x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"
-              :class="customer.status === '着付開始' ? 'font-semibold text-green-600' : ''"></td>
+            <td x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"></td>
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
             <td x-text="getSchedulePattern(customer)" class="text-sm"></td>
             <td>
