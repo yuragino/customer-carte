@@ -177,8 +177,8 @@ function createInitialFormData() {
     },
     toujitsuInfo: {
       schedule: [
-        { id: 1, type: 'kitsuke', start: '', end: '' },
-        { id: 2, type: 'hair', start: '', end: '' }
+        { type: 'kitsuke', start: '', end: '' },
+        { type: 'hair', start: '', end: '' }
       ],
       note: ''
     },

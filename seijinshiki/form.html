@@ -143,7 +143,7 @@
           </h2>
           <table>
             <template x-if="formData.basicInfo.outfit === '振袖'">
-              <template x-for="task in formData.toujitsuInfo.schedule" :key="task.id">
+              <template x-for="task in formData.toujitsuInfo.schedule" :key="task.type">
                 <tr>
                   <th x-text="task.type === 'hair' ? 'ヘアメイク時間' : '着付時間'"></th>
                   <td>
