@@ -153,12 +153,10 @@ document.addEventListener('alpine:init', () => {
         if (this.docId) {
           await updateDoc(this.docRef, formDataToSave);
           await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
-          alert('更新が完了しました。');
           location.href = './index.html';
         } else {
           const newDocRef = await addDoc(col, { ...formDataToSave, createdAt: serverTimestamp() });
           await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
-          alert('登録が完了しました。');
           location.href = './index.html';
         }
       } catch (error) {

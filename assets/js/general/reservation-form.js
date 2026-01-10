@@ -88,11 +88,9 @@ document.addEventListener('alpine:init', () => {
 
         if (id) {
           await updateDoc(this.docRef, data);
-          alert('予約を更新しました。');
         } else {
           data.createdAt = serverTimestamp();
           await addDoc(collection(db, COLLECTION_NAME), data);
-          alert('予約を登録しました。');
         }
 
         window.location.href = './index.html';
