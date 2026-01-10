@@ -17,7 +17,7 @@
 </head>
 
 <body x-data="app">
-  <header class="header">
+  <header class="header" x-show="!selectedImageUrl">
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
       <div class="header-controls">
@@ -29,7 +29,6 @@
         <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
         <a :href="`./image-list.html?year=${selectedYear}`" class="active">画像一覧</a>
         <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
-        <a href="#" x-show="!user" @click="login">ログイン</a>
       </nav>
     </div>
   </header>

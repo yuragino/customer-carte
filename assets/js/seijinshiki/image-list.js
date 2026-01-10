@@ -1,7 +1,6 @@
 import { getYearSettings } from "../common/year-selector.js";
 import { getDocsByYear } from "../common/utils/firestore-utils.js";
-import { storage } from "../common/utils/storage-utils.js";
-
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
 
 document.addEventListener('alpine:init', () => {
@@ -12,6 +11,7 @@ document.addEventListener('alpine:init', () => {
     selectedImageUrl: null,
 
     async init() {
+      setupAuth(this);
       this.initYearSelector();
       this.customers = await getDocsByYear(COLLECTION_NAME, this.selectedYear);
       this.currentIndex = 0;
@@ -37,6 +37,6 @@ document.addEventListener('alpine:init', () => {
       if (this.customers.length === 0) return;
       this.currentIndex = this.currentIndex === this.customers.length - 1 ? 0 : this.currentIndex + 1;
     },
-    
+
   }));
 });

@@ -2,6 +2,7 @@ import { getYearSettings } from "../common/year-selector.js";
 import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatDuration, formatTimestamp } from '../common/utils/format-utils.js';
 import { averageDuration, findMaxBy, findMinBy, calcMinutesBetween } from '../common/utils/statistics-utils.js';
+import { setupAuth } from '../common/utils/auth-utils.js';
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -11,6 +12,7 @@ document.addEventListener('alpine:init', () => {
     customers: [],
 
     init() {
+      setupAuth(this);
       this.initYearSelector();
       this.load();
     },
@@ -27,7 +29,7 @@ document.addEventListener('alpine:init', () => {
           return {
             name: customer.basicInfo.name,
             gender: customer.gender,
-            underGarmentStaff: customer.underGarmentStaff,
+            undergarmentStaff: customer.undergarmentStaff,
             sendoffStaff: customer.sendoffStaff,
             receptionStartedAt,
             dressingStartedAt,
