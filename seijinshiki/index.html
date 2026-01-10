@@ -86,6 +86,7 @@
         <tr>
           <th>来店予定</th>
           <th>来店時刻</th>
+          <th>内容</th>
           <th>名前（詳細リンク）</th>
           <th>ブース</th>
           <th>肌着</th>
@@ -106,6 +107,7 @@
               x-text="customer.toujitsuInfo?.schedule[0]?.start || '--:--'"
               :class="customer.status === '着付開始' ? 'font-semibold text-green-600' : ''"></td>
             <td x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
+            <td x-text="getSchedulePattern(customer)" class="text-sm"></td>
             <td>
               <a :href="`form.html?docId=${customer.id}&year=${selectedYear}`" target="_blank" class="flex flex-col group">
                 <span x-text="customer.basicInfo.kana" class="text-xs text-gray-400"></span>

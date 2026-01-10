@@ -121,6 +121,21 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    getSchedulePattern(customer) {
+      const scheduleList = customer.toujitsuInfo?.schedule;
+      if (!scheduleList) return '';
+
+      const hasHairSchedule = scheduleList.some(schedule => schedule.type === 'hair' && schedule.start);
+      const hasKitsukeSchedule = scheduleList.some(schedule => schedule.type === 'kitsuke' && schedule.start);
+
+      if (hasHairSchedule && hasKitsukeSchedule) {
+        return scheduleList[0].type === 'hair' ? 'ヘア→着付' : '着付→ヘア';
+      } else if (hasKitsukeSchedule && !hasHairSchedule) {
+        return '着付のみ';
+      }
+      return '';
+    },
+
   }));
 });
 
