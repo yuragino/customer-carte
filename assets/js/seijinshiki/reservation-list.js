@@ -7,6 +7,7 @@ import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
 import { STATUS_MAP } from "../common/constants.js";
+import { loadStaffConfig, saveStaffConfig } from "../common/utils/staff-config-utils.js";
 const COLLECTION_NAME = 'seijinshiki';                 // 予約関連
 const CONFIG_COLLECTION_NAME = 'seijinshiki_config';   // 年次設定関連
 document.addEventListener('alpine:init', () => {
@@ -51,45 +52,19 @@ document.addEventListener('alpine:init', () => {
     },
 
     async loadConfig() {
-      try {
-        const configs = await getDocsByYear(CONFIG_COLLECTION_NAME, this.selectedYear);
-        if (configs.length > 0) {
-          const config = configs[0];
-          this.staffOptions = config.staffOptions ?? [];
-          // 表示用テキストに「スペース区切り」で結合
-          this.settings.staff = this.staffOptions.join(' ');
-        } else {
-          this.staffOptions = ['小林', '矢口', '大矢'];
-          this.settings.staff = this.staffOptions.join(' ');
-        }
-      } catch (err) {
-        console.error('スタッフ設定の読み込みエラー:', err);
-      }
+      this.staffOptions = await loadStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
+      this.settings.staff = this.staffOptions.join(' ');
     },
 
     async saveStaffConfig() {
-      try {
-        const year = this.selectedYear;
-        // 入力文字列をスペースで分割
-        const staffOptions = this.settings.staff
-          .split(/\s+/)            // ← スペース区切り（全角・半角対応）
-          .map(s => s.trim())
-          .filter(Boolean);
+      const staffOptions = this.settings.staff
+        .split(/\s+/)
+        .map(s => s.trim())
+        .filter(Boolean);
 
-        const docRef = doc(db, CONFIG_COLLECTION_NAME, String(year));
-        await setDoc(docRef, {
-          eventYear: year,
-          staffOptions,
-          updatedAt: new Date()
-        }, { merge: true });
-
-        this.staffOptions = staffOptions;
-        alert('スタッフ設定を保存しました。');
-        this.openSettings = false;
-      } catch (err) {
-        console.error('スタッフ設定の保存に失敗しました:', err);
-        alert('スタッフ設定を保存できませんでした。');
-      }
+      await saveStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear, staffOptions);
+      this.staffOptions = staffOptions;
+      this.openSettings = false;
     },
 
     async updateCustomerField(customerId, field, value) {
