@@ -16,6 +16,7 @@ document.addEventListener('alpine:init', () => {
     // ===== 状態管理 =====
     docId: null,
     isSubmitting: false,
+    newYoutubeLink: '', // 新規入力用
 
     // --- フォーム全体のデータ ---
     formData: createInitialFormData(),
@@ -199,6 +200,7 @@ function createInitialFormData() {
       newVideoFiles: [],
       newImagePreviews: [],
       newVideoPreviews: [],
+      youtubeLinks: [],
     },
     isCanceled: false,
   };
