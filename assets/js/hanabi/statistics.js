@@ -1,22 +1,22 @@
 import { getYearSettings } from "../common/year-selector.js";
 import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatDuration, formatTimestamp } from '../common/utils/format-utils.js';
-import { averageDuration, findMaxBy, findMinBy, calcMinutesBetween } from '../common/utils/statistics-utils.js';
+import { averageValue, findMaxBy, findMinBy, calcMinutesBetween } from '../common/utils/statistics-utils.js';
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
     formatTimestamp,
-    dressingStats: createDressingStats(),
     customers: [],
 
     init() {
+      setupAuth(this);
       this.initYearSelector();
       this.load();
     },
 
     async load() {
-      this.dressingStats = createDressingStats();
       const snapshot = await getDocsByYear(COLLECTION_NAME, this.selectedYear);
       this.customers = snapshot.flatMap(doc =>
         doc.customers.map(customer => {
@@ -38,35 +38,37 @@ document.addEventListener('alpine:init', () => {
           };
         })
       );
+    },
 
-      this.dressingStats.forEach(stat => {
-        const records = this.customers.filter(
-          customer => customer.gender === stat.gender && customer.dressingMinutes !== null
+
+    get dressingStats() {
+      const genders = [
+        { key: 'female', label: '女性' },
+        { key: 'male', label: '男性' },
+      ];
+
+      return genders.map(({ key, label }) => {
+        const customersForGender = this.customers.filter(
+          customer => customer.gender === key && customer.dressingMinutes > 0
         );
-        if (records.length === 0) return;
-        stat.avg = averageDuration(records, 'dressingMinutes');
-        const shortest = findMinBy(records, 'dressingMinutes');
-        const longest = findMaxBy(records, 'dressingMinutes');
-        stat.min = {
-          time: formatDuration(shortest.dressingMinutes),
-          name: shortest.name,
-          staff: shortest.staff.join(', ')
-        };
-        stat.max = {
-          time: formatDuration(longest.dressingMinutes),
-          name: longest.name,
-          staff: longest.staff.join(', ')
-        };
 
+        if (customersForGender.length === 0) {
+          return { gender: key, label, avg: '該当無し', min: '該当無し', max: '該当無し' };
+        }
+
+        const avgMinutes = averageValue(customersForGender, 'dressingMinutes');
+        const fastest = findMinBy(customersForGender, 'dressingMinutes');
+        const slowest = findMaxBy(customersForGender, 'dressingMinutes');
+
+        return {
+          gender: key,
+          label,
+          avg: formatDuration(avgMinutes),
+          min: `${fastest.name}（${formatDuration(fastest.dressingMinutes)}）`,
+          max: `${slowest.name}（${formatDuration(slowest.dressingMinutes)}）`,
+        };
       });
     }
 
   }));
 });
-
-function createDressingStats() {
-  return [
-    { gender: 'female', label: '女性', avg: null, min: null, max: null },
-    { gender: 'male', label: '男性', avg: null, min: null, max: null },
-  ]
-}

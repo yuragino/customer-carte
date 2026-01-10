@@ -18,32 +18,36 @@
 
 <body x-data="app">
   <header class=" header">
-  <div class="header-inner">
-    <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
-    <div class="header-controls">
-      <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
-      <span>成人式</span>
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理システム</a></h1>
+      <div class="header-controls">
+        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
+        <span>成人式</span>
+      </div>
+      <nav class="header-nav">
+        <a :href="`./statistics.html?year=${selectedYear}`" class="active">統計情報</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
+      </nav>
     </div>
-    <nav class="header-nav">
-      <a :href="`./statistics.html?year=${selectedYear}`" class="active">統計情報</a>
-      <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
-      <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
-      <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
-    </nav>
-  </div>
   </header>
 
   <!-- 男女別統計 -->
   <section class="stats-grid">
-    <template x-for="item in dressingStats">
+    <template x-for="stat in dressingStats" :key="stat.label">
       <div class="stats-box">
-        <h2 x-text="item.label"></h2>
-        <p x-text="`平均：${item.avg}`"></p>
-        <p x-text="`最短：${item.min?.time}（${item.min?.name} / ${item.min?.staff}）`"></p>
-        <p x-text="`最長：${item.max?.time}（${item.max?.name} / ${item.max?.staff}）`"></p>
+        <h3 x-text="stat.label"></h3>
+        <p>平均: <span x-text="stat.avg"></span></p>
+        <p>最短: <span x-text="stat.min"></span></p>
+        <p>最長: <span x-text="stat.max"></span></p>
       </div>
     </template>
   </section>
+
+  <div x-text="JSON.stringify(dressingStats)"></div>
+  <div x-text="JSON.stringify(customers)"></div>
+
 
   <!-- 顧客別一覧 -->
   <main>

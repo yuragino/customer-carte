@@ -1,12 +1,12 @@
 import { formatDuration } from "./format-utils.js";
 
-// 配列内の指定キーの平均値を求め、時間形式に整形して返す
-export function averageDuration(array, key) {
+// 配列内の指定キーの平均値を求めて返す
+export function averageValue(array, key) {
   if (array.length === 0) return '--';
-  let totalMinutes = 0;
-  array.forEach(record => totalMinutes += record[key] ?? 0);
-  const averageMinutes = totalMinutes / array.length;
-  return formatDuration(averageMinutes);
+  let total = 0;
+  array.forEach(record => total += record[key] ?? 0);
+  const average = total / array.length;
+  return average;
 }
 
 // 最短 & 最長
