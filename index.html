@@ -20,18 +20,21 @@
   <header class="header">
     <div class="header-inner">
       <h1 class="header-title">着付予約管理システム</h1>
-      <a href="#" x-show="!user" @click="login">ログイン</a>
-      <div x-show="user">
-        <span>ログイン中</span>
-        <!-- <button @click="logout" class="text-sm text-red-400 ml-2 border px-2 py-1 rounded">
-          ログアウト
-        </button> -->
-      </div>
+      <button x-show="user" @click="logout" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">ログアウト</button>
     </div>
   </header>
 
   <main>
-    <div class="menu">
+    <div x-show="isLoading">
+      <p class="text-center text-gray-500 mt-10">認証確認中...</p>
+    </div>
+
+    <div x-show="!user && !isLoading" class="text-center mt-10">
+      <p class="text-lg text-gray-700 mb-4">このページを操作するにはログインが必要です。</p>
+      <button @click="login" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">ログイン</button>
+    </div>
+
+    <div x-show="user" class="menu">
       <a href="./general/index.html" class="menu-card">
         <i class="fa-solid fa-fan"></i>
         <h2>一般着付け</h2>
@@ -55,7 +58,7 @@
     </div>
   </main>
 
-  <footer>
+  <footer x-show="user">
     <a href="./logs.html">ログ一覧</a>
   </footer>
 </body>
