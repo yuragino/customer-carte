@@ -39,7 +39,6 @@
   <main>
     <div class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'">
       <span x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
-      <span x-show="!isLoggedIn">閲覧モード</span>
     </div>
     <table>
       <thead>

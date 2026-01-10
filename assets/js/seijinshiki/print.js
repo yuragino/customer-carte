@@ -1,6 +1,7 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { formatFullDateTime, formatDateOnly, formatTime, formatYen } from '../common/utils/format-utils.js';
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'seijinshiki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -32,6 +33,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     async init() {
+      setupAuth(this);
       const params = new URLSearchParams(window.location.search);
       this.selectedYear = params.get('year') || '';
       this.docId = params.get('docId');

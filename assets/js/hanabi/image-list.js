@@ -1,6 +1,7 @@
 import { getYearSettings } from "../common/year-selector.js";
 import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { handleError } from "../common/utils/ui-utils.js";
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
@@ -8,6 +9,7 @@ document.addEventListener('alpine:init', () => {
     customers: [],
 
     init() {
+      setupAuth(this);
       this.initYearSelector();
       this.load();
     },

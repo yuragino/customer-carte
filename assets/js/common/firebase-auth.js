@@ -28,7 +28,6 @@ export function signOutGoogle() {
   return signOut(auth)
     .then(() => {
       console.log("ログアウトしました");
-      alert("ログアウトしました");
     })
     .catch((error) => {
       console.error("ログアウト失敗:", error);

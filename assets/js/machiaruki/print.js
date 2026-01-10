@@ -1,6 +1,7 @@
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { db } from '../common/firebase-config.js';
 import { formatFullDateTime, formatTime, formatYen } from '../common/utils/format-utils.js';
+import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'machiaruki';
 document.addEventListener('alpine:init', () => {
   Alpine.data('printView', () => ({
@@ -29,6 +30,7 @@ document.addEventListener('alpine:init', () => {
 
     // ===== Initialization =====
     async init() {
+      setupAuth(this);
       const params = new URLSearchParams(window.location.search);
       const groupId = params.get('docId');
 

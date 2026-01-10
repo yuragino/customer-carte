@@ -7,7 +7,6 @@ import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil 
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'machiaruki';
-
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     formatYen,

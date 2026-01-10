@@ -7,7 +7,6 @@ import { formatFullDateTime, formatYen } from '../common/utils/format-utils.js';
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 import { setupAuth } from '../common/utils/auth-utils.js';
 const COLLECTION_NAME = 'seijinshiki';
-
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings("seijinshiki"),

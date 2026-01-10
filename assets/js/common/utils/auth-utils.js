@@ -7,5 +7,8 @@ export function setupAuth(context) {
   initAuthState((user) => {
     context.isLoggedIn = Boolean(user);
     context.user = user;
+    if (!user) {
+      window.location.href = '../index.html';
+    }
   });
 }

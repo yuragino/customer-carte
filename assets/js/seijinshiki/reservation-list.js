@@ -3,7 +3,7 @@ import { db } from '../common/firebase-config.js';
 import { signInWithGoogle } from "../common/firebase-auth.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 import { getYearSettings } from "../common/year-selector.js";
-import { getDocsByYear, getAllDocs } from "../common/utils/firestore-utils.js";
+import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
 import { STATUS_MAP } from "../common/constants.js";
