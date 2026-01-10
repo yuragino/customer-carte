@@ -19,15 +19,13 @@ export const getYearSettings = (eventType = "") => ({
       const firstMondayOffset = (8 - jan1.getDay()) % 7; // 1月最初の月曜
       const secondMondayDate = 1 + firstMondayOffset + 7; // 第2月曜の日付
       const seijinDay = new Date(currentYear, 0, secondMondayDate); // 成人の日
-      const dayAfterSeijin = new Date(seijinDay);
-      dayAfterSeijin.setDate(seijinDay.getDate() + 1); // 成人の日の翌日(火曜)
 
-      // 今日が成人の日翌日以降なら来年をデフォルトに
-      if (now >= dayAfterSeijin) {
-        this.selectedYear = currentYear + 1;
-      } else {
-        this.selectedYear = currentYear;
-      }
+      // 成人の日の1週間後の翌日 → 成人の日 + 8日
+      const thresholdDate = new Date(seijinDay);
+      thresholdDate.setDate(seijinDay.getDate() + 8);
+
+      // その日以降なら来年をデフォルトにする
+      this.selectedYear = now >= thresholdDate ? currentYear + 1 : currentYear;
     } else {
       this.selectedYear = new Date().getFullYear();
     }
