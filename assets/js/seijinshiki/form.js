@@ -184,7 +184,7 @@ function createInitialFormData() {
     },
     meetings: [],
     maedoriInfo: {
-      status: 'あり', type: 'スタジオ', camera: '', date: '', hairStart: '', hairEnd: '',
+      status: 'なし', type: 'スタジオ', camera: '', date: '', hairStart: '', hairEnd: '',
       kitsukeStart: '', kitsukeEnd: '', shootStart: '', shootEnd: '',
       place: '', note: ''
     },
