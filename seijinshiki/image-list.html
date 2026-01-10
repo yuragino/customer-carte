@@ -57,7 +57,6 @@
             </div>
           </template>
         </template>
-        <p x-show="!currentCustomer.media.imageUrls.length">画像が登録されていません</p>
 
         <!-- 動画 -->
         <template x-if="currentCustomer.media.videoUrls?.length > 0">
@@ -67,7 +66,22 @@
             </div>
           </template>
         </template>
-        <p x-show="!currentCustomer.media.videoUrls.length">動画が登録されていません</p>
+
+        <!-- 🩵 画像も動画も無い場合 -->
+        <template x-if="(currentCustomer.media.imageUrls.length === 0) && currentCustomer.media.videoUrls.length === 0">
+          <div class="media-item flex flex-col items-center justify-center text-gray-400">画像・動画は登録されていません</div>
+        </template>
+
+        <!-- Youtube -->
+        <div class="youtube-wrapper" x-show="currentCustomer.media.youtubeLink">
+          <iframe
+            :src="`https://www.youtube.com/embed/${extractYouTubeId(currentCustomer.media.youtubeLink)}`"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
 
         <!-- ナビゲーション -->
         <div class="nav-buttons top-nav">

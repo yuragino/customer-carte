@@ -37,5 +37,10 @@ document.addEventListener('alpine:init', () => {
       this.currentIndex = this.currentIndex === this.customers.length - 1 ? 0 : this.currentIndex + 1;
     },
 
+    extractYouTubeId(url) {
+      const match = url.match(/[?&]v=([^&#]+)/) || url.match(/youtu\.be\/([^&#]+)/);
+      return match ? match[1] : '';
+    }
+
   }));
 });
