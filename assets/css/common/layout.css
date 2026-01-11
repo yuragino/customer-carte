@@ -139,13 +139,6 @@ label:has(input:disabled) {
     gap: 0.5rem;
   }
 
-  .header-top {
-    display: flex;
-    justify-content: space-between; /* ← between配置 */
-    align-items: center;
-    width: 100%;
-  }
-
   .header-title {
     font-size: 1.1rem;
     padding: 0;
