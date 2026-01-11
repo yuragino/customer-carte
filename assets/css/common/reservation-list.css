@@ -178,3 +178,73 @@ table .is-canceled {
 .manual-link a:hover {
   text-decoration: underline;
 }
+
+/* ▼ スマホ（最大640px）向け */
+@media (max-width: 640px) {
+
+  main {
+    max-width: 100%;
+    margin: 0;
+    padding: 0 0.5rem;
+  }
+
+  /* テーブルを横スクロールに */
+  table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+    min-width: 700px; /* 折り返さず横スクロールで表示 */
+    box-shadow: none;
+    border-radius: 8px;
+  }
+
+  thead {
+    font-size: 0.8rem;
+  }
+
+  th, td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  select {
+    min-width: 70px;
+    font-size: 0.8rem;
+  }
+
+  /* ステータスボタンを少し小さく */
+  .status-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  /* ログイン状態と設定ボタンの並び */
+  .flex.justify-between.items-center.mb-4 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .login-status {
+    font-size: 0.85rem;
+  }
+
+  .flex.justify-between.items-center.mb-4 button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* モーダルの幅をデバイスに合わせる */
+  .fixed > .bg-white {
+    width: 90% !important;
+    max-width: 320px;
+    padding: 1rem;
+  }
+
+  /* マニュアルリンクを中央寄せ */
+  .manual-link {
+    text-align: center;
+    padding: 1rem;
+  }
+}
