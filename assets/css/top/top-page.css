@@ -6,6 +6,33 @@
   padding: 2rem;
 }
 
+/* ▼ スマホ（〜640px）は2列の正方形カード */
+@media (max-width: 640px) {
+  .menu {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  /* 正方形カード */
+  .menu-card {
+    aspect-ratio: 1 / 1;
+    font-size: 0.95rem;
+    justify-content: center;
+    height: 160px;
+  }
+
+  .menu-card i {
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .menu-card h2 {
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
 .menu-card {
   background: #fff;
   border: 1px solid #ddd;
@@ -54,6 +81,7 @@ footer a {
   color: #0077cc;
   text-decoration: none;
 }
+
 .manual-link {
   text-align: center;
   padding: 0 2rem;
