@@ -21,8 +21,9 @@ document.addEventListener('alpine:init', () => {
     },
 
     logout() {
-      confirm("ログアウトしますか?");
+      if (!confirm("ログアウトしますか？")) return;
       signOutGoogle();
     }
+    
   }));
 });
