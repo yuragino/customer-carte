@@ -93,7 +93,7 @@ document.addEventListener('alpine:init', () => {
         }
 
         // 予約登録成功後にGAS APIを呼び出してカレンダーにも登録
-        await fetch("https://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exec", {
+        await fetch("https://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exechttps://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exec", {
           method: "POST",
           body: JSON.stringify({
             name: this.form.name,
