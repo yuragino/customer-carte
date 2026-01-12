@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>一般着付け予約一覧</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/general/reservation-list.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/common/list-page.css">
+</head>
+
+<body x-data="app" x-init="init">
+  <header class="header">
+    <div class="header-inner">
+      <div class="flex gap-2 items-baseline">
+        <h1 class="header-title">
+          <a href="../index.html">着付予約管理</a>
+        </h1>
+        <div class="text-gray-300 text-sm">顧客登録をしてから予約を追加してください</div>
+      </div>
+      <nav class="header-nav">
+        <a href="./customer-form.html">顧客登録</a>
+        <a href="./index.html">顧客一覧</a>
+        <a href="./reservation-list.html" class="active">予約一覧</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- 検索ボックス -->
+    <div class="search-box">
+      <input type="text" placeholder="名前を入力してください" x-model="searchQuery" />
+      <i class="fa fa-search"></i>
+    </div>
+
+    <!-- 予約履歴一覧テーブル -->
+    <table class="w-full text-sm border-collapse bg-white rounded shadow">
+      <thead class="bg-gray-100">
+        <tr>
+          <th>お客様名</th>
+          <th>着付け日</th>
+          <th>所要時間</th>
+          <th>着付場所</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="r in reservations" :key="r.id">
+          <tr class="border-b">
+            <td x-text="r.name"></td>
+            <td x-text="formatDateOnly(r.date)"></td>
+            <td>
+              <span x-text="formatTime(r.startTime)"></span>
+              <span x-show="r.endTime">～</span>
+              <span x-text="formatTime(r.endTime)"></span>
+            </td>
+            <td x-text="r.location"></td>
+            <td>
+              <a :href="`./reservation-form.html?docId=${r.id}`"
+                target="_blank"
+                class="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
+                <i class="fa-solid fa-pen"></i> 編集
+              </a>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </main>
+</body>
+
+</html>

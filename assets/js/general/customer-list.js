@@ -2,7 +2,6 @@ import { db } from "../common/firebase-config.js";
 import { collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { handleError } from "../common/utils/ui-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
-import { signInWithGoogle } from "../common/firebase-auth.js";
 const RESERVATION_COLLECTION = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
 document.addEventListener("alpine:init", () => {
@@ -57,12 +56,6 @@ document.addEventListener("alpine:init", () => {
         .sort((a, b) => a.kana?.localeCompare(b.kana ?? "", "ja"));
     },
 
-    formatDate(ts) {
-      if (!ts) return "";
-      const date = ts.toDate ? ts.toDate() : new Date(ts);
-      return date.toLocaleDateString("ja-JP");
-    },
-
     // モーダル開閉
     openHistoryModal(customer) {
       this.selectedCustomer = {
@@ -80,16 +73,13 @@ document.addEventListener("alpine:init", () => {
 
     // 新規予約作成
     openReservationForm(customer) {
-      window.location.href = `./reservation-form.html?id=${customer.id}`;
+      const url = `./reservation-form.html?id=${customer.id}`;
+      window.open(url, "_blank");
     },
 
     openCustomerEdit(customer) {
-      window.location.href = `./customer-form.html?id=${customer.id}`;
-    },
-
-    // 予約フォーム遷移（編集）
-    openReservationEdit(reservation) {
-      window.location.href = `./reservation-form.html?docId=${reservation.id}`;
+      const url = `./customer-form.html?id=${customer.id}`;
+      window.open(url, "_blank");
     },
 
   }));

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>一般着付け顧客リスト</title>
+  <title>一般着付け顧客一覧</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Custom Script -->
   <script type="module" src="../assets/js/general/customer-list.js"></script>
@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
-  <link rel="stylesheet" href="../assets/css/common/reservation-list.css">
+  <link rel="stylesheet" href="../assets/css/common/list-page.css">
 </head>
 
 <body x-data="app" x-init="init">
@@ -27,8 +27,9 @@
         <div class="text-gray-300 text-sm">顧客登録をしてから予約を追加してください</div>
       </div>
       <nav class="header-nav">
-        <a href="./index.html" class="active">顧客リスト</a>
-        <a href="./customer-form.html" x-show="user">顧客登録</a>
+        <a href="./customer-form.html">顧客登録</a>
+        <a href="./index.html" class="active">顧客一覧</a>
+        <a href="./reservation-list.html">予約一覧</a>
       </nav>
     </div>
   </header>
@@ -42,13 +43,31 @@
     <table>
       <thead>
         <tr>
-          <th class="w-1/6">お名前</th>
-          <th class="w-2/6">住所</th>
-          <th class="w-1/6">予約回数</th>
-          <th class="w-2/6">操作</th>
+          <th>お名前</th>
+          <th>住所</th>
+          <th>電話番号</th>
+          <th>予約回数</th>
+          <th>備考</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody>
+        <!-- ▼ 該当データがない時 -->
+        <template x-if="filteredCustomers.length === 0">
+          <tr>
+            <td colspan="6" class="p-6 text-center text-gray-500">
+              <div class="flex flex-col items-center justify-center gap-4 py-6">
+                <p>該当する顧客データがありません。</p>
+                <a href="./customer-form.html"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow">
+                  <i class="fa-solid fa-user-plus"></i>
+                  新規顧客を登録する
+                </a>
+              </div>
+            </td>
+          </tr>
+        </template>
+        <!-- ▼ 顧客データがある場合 -->
         <template x-for="c in filteredCustomers" :key="c.id">
           <tr>
             <td class="p-2 leading-tight align-middle">
@@ -56,15 +75,22 @@
               <div x-text="c.name"></div>
             </td>
             <td x-text="c.address"></td>
+            <td x-text="c.phone"></td>
             <td x-text="c.reservationCount ?? 0"></td>
+            <td x-text="c.notes"></td>
             <td class="flex justify-center gap-2">
-              <button @click="openReservationForm(c)" class="px-3 py-1 border border-green-600 hover:bg-green-50 rounded-md transition">
+              <a :href="`./reservation-form.html?id=${c.id}`"
+                target="_blank"
+                class="inline-flex items-center gap-1 px-3 py-1 border border-green-600 hover:bg-green-50 rounded-md transition">
                 <i class="fa-solid fa-plus text-green-600"></i> 予約
-              </button>
-              <button @click="openCustomerEdit(c)" class="px-3 py-1 border border-yellow-500 hover:bg-yellow-50 rounded-md transition">
+              </a>
+              <a :href="`./customer-form.html?id=${c.id}`"
+                target="_blank"
+                class="inline-flex items-center gap-1 px-3 py-1 border border-yellow-500 hover:bg-yellow-50 rounded-md transition">
                 <i class="fa-solid fa-pen text-yellow-500"></i> 編集
-              </button>
-              <button @click="openHistoryModal(c)" class="px-3 py-1 border border-blue-600 hover:bg-blue-50 rounded-md transition">
+              </a>
+              <button @click="openHistoryModal(c)"
+                class="px-3 py-1 border border-blue-600 hover:bg-blue-50 rounded-md transition">
                 <i class="fa-solid fa-book text-blue-600"></i> 履歴
               </button>
             </td>
@@ -102,11 +128,13 @@
                   </td>
                   <td x-text="r.location"></td>
                   <td>
-                    <!-- 編集ボタン -->
-                    <button @click="openReservationEdit(r)" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
+                    <a :href="`./reservation-form.html?docId=${r.id}`"
+                      target="_blank"
+                      class="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
                       <i class="fa-solid fa-pen"></i> 編集
-                    </button>
+                    </a>
                   </td>
+                </tr>
                 </tr>
               </template>
             </tbody>
