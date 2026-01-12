@@ -24,7 +24,7 @@
         <h1 class="header-title">
           <a href="../index.html">着付予約管理</a>
         </h1>
-        <div class="text-gray-300 text-sm">顧客登録をしてから予約を追加してください</div>
+        <div class="text-gray-300 text-sm">新規顧客の場合は、顧客登録をしてから予約を追加してください</div>
       </div>
       <nav class="header-nav">
         <a href="./customer-form.html">顧客登録</a>
@@ -40,7 +40,11 @@
       <input type="text" placeholder="名前を入力してください" x-model="searchQuery" />
       <i class="fa fa-search"></i>
     </div>
-    <table>
+    <div x-show="isLoading" class="text-center text-gray-500 mt-10">
+      <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+      読み込み中...
+    </div>
+    <table x-show="!isLoading">
       <thead>
         <tr>
           <th>お名前</th>

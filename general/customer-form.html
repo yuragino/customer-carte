@@ -36,7 +36,11 @@
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
     </div>
-    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
+    <div x-show="isLoading" class="text-center text-gray-500 mt-10">
+      <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+      読み込み中...
+    </div>
+    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3" x-show="!isLoading">
       <div>
         <label>お名前</label>
         <input type="text" x-model="form.name" required />

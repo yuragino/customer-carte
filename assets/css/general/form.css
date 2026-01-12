@@ -1,6 +1,5 @@
 main {
   max-width: 800px;
-  margin: 0 auto;
 }
 
 /* ラベル */
@@ -44,4 +43,54 @@ textarea:focus {
 /* テキストエリアの高さ固定 */
 textarea {
   height: 6rem;
+}
+
+/* ========================= */
+/* 汎用：ボタン風ラジオCSS */
+/* ========================= */
+
+.radio-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* ボタン間の余白 */
+}
+
+/* ボタン全体 */
+.radio-btn {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: gray;
+  transition: 0.2s ease;
+}
+
+/* hover時 */
+.radio-btn:hover {
+  background-color: #e9ecef;
+}
+
+/* ラジオ本体は非表示 */
+.radio-btn input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 選択されたとき */
+.radio-btn:has(input[type="radio"]:checked) {
+  background-color: #2563eb; /* indigo-600 */
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* フォーカス時のアウトライン */
+.radio-btn input[type="radio"]:focus-visible + span {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }

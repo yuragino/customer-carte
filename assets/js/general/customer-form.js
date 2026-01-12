@@ -14,12 +14,17 @@ document.addEventListener("alpine:init", () => {
       notes: "",
     },
     isSaving: false,
+    isLoading: false,
 
     async init() {
       setupAuth(this);
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
-      if (id) await this.loadCustomer(id);
+      if (id) {
+        this.isLoading = true;
+        await this.loadCustomer(id);
+        this.isLoading = false;
+      }
     },
 
     async loadCustomer(id) {
@@ -31,28 +36,6 @@ document.addEventListener("alpine:init", () => {
         handleError("顧客情報の読込", e);
       }
     },
-
-    // async submitForm() {
-    //   this.isSaving = true;
-    //   try {
-    //     const { id, ...data } = this.form;
-    //     data.updatedAt = serverTimestamp();
-
-    //     if (id) {
-    //       await updateDoc(doc(db, COLLECTION_NAME, id), data);
-    //       alert("顧客情報を更新しました。");
-    //     } else {
-    //       data.createdAt = serverTimestamp();
-    //       await addDoc(collection(db, COLLECTION_NAME), data);
-    //       alert("顧客を登録しました。");
-    //     }
-    //     window.location.href = "./index.html";
-    //   } catch (e) {
-    //     handleError("顧客の保存", e);
-    //   } finally {
-    //     this.isSaving = false;
-    //   }
-    // },
 
     // 通常の登録・更新ボタン
     async submitForm() {

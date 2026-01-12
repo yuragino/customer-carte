@@ -11,10 +11,13 @@ document.addEventListener("alpine:init", () => {
     searchQuery: '',
     selectedCustomer: null,
     historyModalOpen: false,
+    isLoading: false,
 
     async init() {
       setupAuth(this);
+      this.isLoading = true;
       await this.loadCustomers();
+      this.isLoading = false;
       await this.loadReservations();
       this.mapReservationCounts();
     },

@@ -7,6 +7,10 @@
   font-family: "Noto Sans JP", sans-serif;
 }
 
+main{
+  margin: 20px auto;
+}
+
 [x-cloak] {
   display: none !important;
 }
@@ -16,7 +20,7 @@ body {
   background: #f4f6fa;
   color: #333;
   margin: 0;
-  padding-top: 90px;
+  padding-top: 70px;
 }
 
 .header {

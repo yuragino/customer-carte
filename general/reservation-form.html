@@ -36,7 +36,7 @@
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
     </div>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
       <div>
         <label>顧客名</label>
         <input type="text" x-model="form.name" @blur="findCustomerByName">
@@ -44,19 +44,19 @@
       <div>
         <label>受付</label>
         <div class="flex gap-8">
-          <label>
+          <label class="radio-btn">
             <input type="radio" name="lineType" value="教室LINE" @click="toggleRadio($event, 'lineType')"
               :checked="form.lineType === '教室LINE'"> 教室LINE
           </label>
-          <label>
+          <label class="radio-btn">
             <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
               :checked="form.lineType === '椿LINE'"> 椿LINE
           </label>
-          <label>
+          <label class="radio-btn">
             <input type="radio" name="lineType" value="お客様LINE" @click="toggleRadio($event, 'lineType')"
               :checked="form.lineType === 'お客様LINE'"> お客様LINE
           </label>
-          <label>
+          <label class="radio-btn">
             <input type="radio" name="lineType" value="くらしのマーケット" @click="toggleRadio($event, 'lineType')"
               :checked="form.lineType === 'くらしのマーケット'"> くらしのマーケット
           </label>
@@ -71,12 +71,7 @@
         <input type="date" x-model="form.date">
       </div>
       <div>
-        <div class="flex gap-3">
-          <label>着付場所</label>
-          <label class="flex items-center gap-1 text-sm">
-            <input type="checkbox" x-model="useHomeAddress" @change="applyHomeAddress"> 登録されている住所を使用
-          </label>
-        </div>
+        <label>着付場所</label>
         <input type="text" x-model="form.location">
       </div>
       <div class="field time-field">
@@ -111,9 +106,14 @@
         <textarea x-model="form.notes"></textarea>
       </div>
 
-      <div class="buttons">
-        <button type="submit" :disabled="isSaving">
-          <span x-show="!isSaving">保存</span>
+      <div class="flex justify-center">
+        <button
+          type="submit"
+          class="px-4 py-3 w-1/5 rounded-md text-lg text-white font-medium transition
+           focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300
+           bg-blue-600 hover:bg-blue-700"
+          :disabled="isSaving">
+          <span x-show="!isSaving" x-text="form.id ? '更新' : '登録'"></span>
           <span x-show="isSaving">保存中...</span>
         </button>
       </div>

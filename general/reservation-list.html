@@ -24,7 +24,7 @@
         <h1 class="header-title">
           <a href="../index.html">着付予約管理</a>
         </h1>
-        <div class="text-gray-300 text-sm">顧客登録をしてから予約を追加してください</div>
+        <div class="text-gray-300 text-sm">お客様名クリックで顧客情報の確認ができます</div>
       </div>
       <nav class="header-nav">
         <a href="./customer-form.html">顧客登録</a>
@@ -35,14 +35,11 @@
   </header>
 
   <main>
-    <!-- 検索ボックス -->
-    <div class="search-box">
-      <input type="text" placeholder="名前を入力してください" x-model="searchQuery" />
-      <i class="fa fa-search"></i>
+    <div x-show="isLoading" class="text-center text-gray-500 mt-10">
+      <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+      読み込み中...
     </div>
-
-    <!-- 予約履歴一覧テーブル -->
-    <table class="w-full text-sm border-collapse bg-white rounded shadow">
+    <table x-show="!isLoading">
       <thead class="bg-gray-100">
         <tr>
           <th>お客様名</th>
@@ -55,7 +52,9 @@
       <tbody>
         <template x-for="r in reservations" :key="r.id">
           <tr class="border-b">
-            <td x-text="r.name"></td>
+            <td>
+              <a :href="`./customer-form.html?id=${r.customerId}`" target="_blank" x-text="r.name" class="text-blue-600 border-blue-600 border-b"></a>
+            </td>
             <td x-text="formatDateOnly(r.date)"></td>
             <td>
               <span x-text="formatTime(r.startTime)"></span>
@@ -66,8 +65,8 @@
             <td>
               <a :href="`./reservation-form.html?docId=${r.id}`"
                 target="_blank"
-                class="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
-                <i class="fa-solid fa-pen"></i> 編集
+                class="inline-flex items-center gap-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
+                <i class="fa-solid fa-pen"></i> 予約編集
               </a>
             </td>
           </tr>

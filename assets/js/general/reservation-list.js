@@ -9,10 +9,13 @@ document.addEventListener("alpine:init", () => {
     formatDateOnly,
     formatTime,
     reservations: [],
+    isLoading: false,
 
     async init() {
       setupAuth(this);
+      this.isLoading = true;
       await this.loadReservations();
+      this.isLoading = false;
     },
 
     async loadReservations() {

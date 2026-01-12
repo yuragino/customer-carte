@@ -24,7 +24,6 @@ document.addEventListener('alpine:init', () => {
       notes: '',
     },
     isSaving: false,
-    useHomeAddress: false,
 
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
@@ -123,13 +122,6 @@ document.addEventListener('alpine:init', () => {
       if (this.form.feeItems[index].isCore) return alert('出張料は削除できません。');
       if (confirm('この行を削除しますか？')) {
         this.form.feeItems.splice(index, 1);
-      }
-    },
-    applyHomeAddress() {
-      if (this.useHomeAddress) {
-        this.form.location = this.form.address || '';
-      } else {
-        this.form.location = '';
       }
     },
   }));
