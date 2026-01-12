@@ -36,7 +36,7 @@
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
     </div>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
       <div>
         <label>お名前</label>
         <input type="text" x-model="form.name" required />
@@ -57,10 +57,28 @@
         <label>備考</label>
         <textarea x-model="form.notes"></textarea>
       </div>
-      <button type="submit" :disabled="isSaving">
-        <span x-show="!isSaving">保存</span>
-        <span x-show="isSaving">保存中...</span>
-      </button>
+      <div class="flex justify-evenly">
+        <!-- 登録／更新ボタン -->
+        <button
+          type="submit"
+          class="px-4 py-4 rounded-md text-white font-medium transition
+           focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300
+           bg-blue-600 hover:bg-blue-700"
+          :disabled="isSaving">
+          <span x-show="!isSaving" x-text="form.id ? '更新する' : '登録のみ行う'"></span>
+          <span x-show="isSaving">保存中...</span>
+        </button>
+        <!-- 新規登録時のみ「登録して予約へ」 -->
+        <button
+          type="button"
+          x-show="!form.id"
+          @click="submitAndGoReservation"
+          class="px-4 py-4 rounded-md text-white font-medium transition
+           bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-300
+           disabled:opacity-50">
+          登録して予約へ
+        </button>
+      </div>
     </form>
   </main>
 </body>
