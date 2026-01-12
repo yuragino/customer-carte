@@ -1,5 +1,5 @@
 import { db } from "../common/firebase-config.js";
-import { collection, addDoc, updateDoc, doc, getDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { collection, addDoc, updateDoc, doc, getDoc, getDocs, query, where, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = "generalReservations";
@@ -91,6 +91,18 @@ document.addEventListener('alpine:init', () => {
           data.createdAt = serverTimestamp();
           await addDoc(collection(db, COLLECTION_NAME), data);
         }
+
+        // 予約登録成功後にGAS APIを呼び出してカレンダーにも登録
+        await fetch("https://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exec", {
+          method: "POST",
+          body: JSON.stringify({
+            name: this.form.name,
+            startDateTime: `${this.form.date}T${this.form.startTime}:00+09:00`,
+            endDateTime: `${this.form.date}T${this.form.endTime}:00+09:00`,
+            location: this.form.location,
+            notes: this.form.notes,
+          }),
+        });
 
         window.location.href = './index.html';
       } catch (e) {
