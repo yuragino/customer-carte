@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/common/components.css">
   <link rel="stylesheet" href="../assets/css/general/form.css">
 </head>
 
@@ -22,9 +23,9 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理</a></h1>
       <nav class="header-nav">
-        <a href="./customer-form.html" class="active">顧客登録</a>
-        <a href="./index.html">顧客一覧</a>
         <a href="./reservation-list.html">予約一覧</a>
+        <a href="./index.html">顧客一覧</a>
+        <a href="./customer-form.html" class="active">顧客登録</a>
       </nav>
     </div>
   </header>
@@ -32,7 +33,7 @@
   <main>
     <div class="flex justify-between items-center mb-2">
       <h1 class="font-bold text-2xl">顧客登録フォーム</h1>
-      <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md" @click="deleteForm">
+      <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md" @click="deleteForm" x-show="form.id">
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
     </div>
@@ -40,7 +41,7 @@
       <i class="fa-solid fa-spinner fa-spin mr-2"></i>
       読み込み中...
     </div>
-    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3" x-show="!isLoading">
+    <form @submit.prevent="submitForm" @keydown.enter.prevent class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3" x-show="!isLoading">
       <div>
         <label>お名前</label>
         <input type="text" x-model="form.name" required />
@@ -48,6 +49,34 @@
       <div>
         <label>ふりがな</label>
         <input type="text" x-model="form.kana" />
+      </div>
+      <div>
+        <label>受付</label>
+        <div>
+          <div class="flex gap-5">
+            <label class="radio-btn">
+              <input type="radio" name="contactMethod" value="教室LINE" @click="toggleRadio($event, 'contactMethod')"
+                :checked="form.contactMethod === '教室LINE'"> 教室LINE
+            </label>
+            <label class="radio-btn">
+              <input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event, 'contactMethod')"
+                :checked="form.contactMethod === '椿LINE'"> 椿LINE
+            </label>
+            <label class="radio-btn">
+              <input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event, 'contactMethod')"
+                :checked="form.contactMethod === 'お客様LINE'"> お客様LINE
+            </label>
+            <label class="radio-btn">
+              <input type="radio" name="contactMethod" value="くらしのマーケット" @click="toggleRadio($event, 'contactMethod')"
+                :checked="form.contactMethod === 'くらしのマーケット'"> くらしのマーケット
+            </label>
+            <label class="radio-btn">
+              <input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event, 'contactMethod')"
+                :checked="form.contactMethod === 'その他'"> その他
+            </label>
+          </div>
+          <input type="text" x-model="form.contactRemark" x-show="form.contactMethod === 'その他'" placeholder="〇〇様の紹介">
+        </div>
       </div>
       <div>
         <label>電話番号</label>
@@ -58,10 +87,36 @@
         <input type="text" x-model="form.address" />
       </div>
       <div>
+        <label>GoogleMapリンク</label>
+        <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." />
+      </div>
+      <div>
         <label>備考</label>
         <textarea x-model="form.notes"></textarea>
       </div>
-      <div class="flex justify-evenly">
+      <div class="m-2">
+        <label>画像</label>
+        <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, 'image')">
+        <div class="flex flex-wrap gap-3 p-1">
+          <template x-for="(url, index) in form.imageUrls" :key="url">
+            <div>
+              <img :src="url" class="preview-image" @click="openMediaModal('image',url)">
+              <button type="button" class="btn-del" @click="removeMedia('saved-image', index)">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </template>
+          <template x-for="(src, index) in newImagePreviews" :key="src">
+            <div>
+              <img :src="src" class="preview-image" @click="openMediaModal('image',src)">
+              <button type="button" class="btn-del w-4 h-4 border-red-600 rounded p-3" @click="removeMedia('new-image', index)">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="flex gap-5 justify-center">
         <!-- 登録／更新ボタン -->
         <button
           type="submit"
@@ -84,6 +139,9 @@
         </button>
       </div>
     </form>
+    <div x-show="selectedMediaUrl" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50" @click.self="closeMediaModal">
+      <img x-show="selectedMediaType === 'image'" :src="selectedMediaUrl" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg object-contain" />
+    </div>
   </main>
 </body>
 

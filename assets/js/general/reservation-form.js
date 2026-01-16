@@ -8,10 +8,10 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     docId: null, // パラメータ
     form: {
-      id: null,
       customerId: null,
       name: '',
-      lineType: '',
+      contactMethod: '',
+      contactRemark: '',
       phone: '',
       date: '',
       location: '',
@@ -54,8 +54,11 @@ document.addEventListener('alpine:init', () => {
           const customer = customerSnap.data();
           this.form.customerId = customerId;
           this.form.name = customer.name || '';
+          this.form.contactMethod = customer.contactMethod || '';
+          this.form.contactRemark = customer.contactRemark || '';
           this.form.phone = customer.phone || '';
-          this.form.address = customer.address || '';
+          this.form.location = customer.address || '';
+          this.form.notes = customer.notes || '';
         }
       } catch (error) {
         handleError('顧客情報の取得', error);
@@ -76,8 +79,16 @@ document.addEventListener('alpine:init', () => {
 
     // 登録 or 更新
     async submitForm() {
-      if (!this.form.name || !this.form.date) {
-        alert('お名前と着付け日を入力してください。');
+      if (!this.form.date) {
+        alert('着付け日を入力してください。');
+        return;
+      }
+      if (!this.form.startTime) {
+        alert('開始時間を入力してください。');
+        return;
+      }
+      if (!this.form.endTime) {
+        alert('終了時間を入力してください。');
         return;
       }
       this.isSaving = true;
@@ -93,14 +104,16 @@ document.addEventListener('alpine:init', () => {
         }
 
         // 予約登録成功後にGAS APIを呼び出してカレンダーにも登録
-        await fetch("https://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exechttps://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exec", {
+        await fetch("https://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exec", {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: this.form.name,
             startDateTime: `${this.form.date}T${this.form.startTime}:00+09:00`,
             endDateTime: `${this.form.date}T${this.form.endTime}:00+09:00`,
             location: this.form.location,
             notes: this.form.notes,
+            link: `https://yuragino.github.io/customer-carte/general/customer-form.html?id=${this.form.customerId}`, // ← これで完璧！！
           }),
         });
 

@@ -143,7 +143,6 @@ document.addEventListener('alpine:init', () => {
     },
 
     async submitForm() {
-
       try {
         this.isSubmitting = true;
         if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;

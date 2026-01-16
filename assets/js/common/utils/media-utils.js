@@ -65,6 +65,7 @@ export function removeMediaUtil(mediaType, index, targetObj) {
   }
 }
 
+// HTML側にモーダルを追加して使う
 export const createMediaModal = () => ({
   selectedMediaUrl: null,
   selectedMediaType: null,
