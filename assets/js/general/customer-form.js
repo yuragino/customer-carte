@@ -1,5 +1,5 @@
 import { db } from "../common/firebase-config.js";
-import { collection, addDoc, updateDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { collection, addDoc, updateDoc, doc, getDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { handleError } from "../common/utils/ui-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = "generalCustomers";
