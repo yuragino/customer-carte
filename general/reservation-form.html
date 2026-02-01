@@ -77,10 +77,6 @@
         <label>着付け日</label>
         <input type="date" x-model="form.date">
       </div>
-      <div>
-        <label>着付場所</label>
-        <input type="text" x-model="form.location">
-      </div>
       <div class="field time-field">
         <label>所要時間</label>
         <div class="flex items-center gap-2">
@@ -88,6 +84,14 @@
           <span>～</span>
           <input type="time" x-model="form.endTime" class="flex-1">
         </div>
+      </div>
+      <div>
+        <label>着付場所</label>
+        <input type="text" x-model="form.location">
+      </div>
+      <div>
+        <label>GoogleMapリンク</label>
+        <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." />
       </div>
       <div>
         <label>着物・その他料金</label>

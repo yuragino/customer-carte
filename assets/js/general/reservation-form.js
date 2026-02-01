@@ -4,6 +4,7 @@ import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
+const GAS_API = "https://script.google.com/macros/s/AKfycby0zwLiRvb6JKbJPVQwlW7MM5wBFHM5oq-TuB9CVxv747pzkJl7wBfo2jYIdQgSijrs/exec";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     docId: null, // パラメータ
@@ -14,9 +15,10 @@ document.addEventListener('alpine:init', () => {
       contactRemark: '',
       phone: '',
       date: '',
-      location: '',
       startTime: '',
       endTime: '',
+      location: '',
+      mapLink: '',
       feeItems: [
         { name: '出張料', fee: 0, isCore: true },
         { name: '', fee: 0 },
@@ -44,6 +46,7 @@ document.addEventListener('alpine:init', () => {
         // 顧客ID付きで遷移された場合、顧客情報を取得して自動入力
         await this.loadCustomerData(id);
       }
+      console.log(this.form.customerId);
     },
 
     // 顧客データをロードしてフォームに反映
@@ -58,6 +61,7 @@ document.addEventListener('alpine:init', () => {
           this.form.contactRemark = customer.contactRemark || '';
           this.form.phone = customer.phone || '';
           this.form.location = customer.address || '';
+          this.form.mapLink = customer.mapLink || '';
           this.form.notes = customer.notes || '';
         }
       } catch (error) {
@@ -104,7 +108,7 @@ document.addEventListener('alpine:init', () => {
         }
 
         // 予約登録成功後にGAS APIを呼び出してカレンダーにも登録
-        await fetch("https://script.google.com/macros/s/AKfycbyH9hI06YIsD6lsAhT8PvimsYpTaEdEXEB70fgDhr4J4olg-YIvkTJpq8Ih8i9Ut64j/exec", {
+        await fetch(GAS_API, {
           method: "POST",
           headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({
@@ -114,6 +118,7 @@ document.addEventListener('alpine:init', () => {
             location: this.form.location,
             notes: this.form.notes,
             link: `https://yuragino.github.io/customer-carte/general/customer-form.html?id=${this.form.customerId}`,
+            mapLink: this.form.mapLink,
           }),
         });
 
