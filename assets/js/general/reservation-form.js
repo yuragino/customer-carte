@@ -104,20 +104,20 @@ document.addEventListener('alpine:init', () => {
         }
 
         // 予約登録成功後にGAS APIを呼び出してカレンダーにも登録
-        await fetch("https://script.google.com/macros/s/AKfycbxMmX73AHKAA8_Oi6ZtwOXrrnUDc0tuC_Ig7zETMhsZZJTgm6zQmttVtKBL6JbGn9Ly/exec", {
+        await fetch("https://script.google.com/macros/s/AKfycbyH9hI06YIsD6lsAhT8PvimsYpTaEdEXEB70fgDhr4J4olg-YIvkTJpq8Ih8i9Ut64j/exec", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({
             name: this.form.name,
             startDateTime: `${this.form.date}T${this.form.startTime}:00+09:00`,
             endDateTime: `${this.form.date}T${this.form.endTime}:00+09:00`,
             location: this.form.location,
             notes: this.form.notes,
-            link: `https://yuragino.github.io/customer-carte/general/customer-form.html?id=${this.form.customerId}`, // ← これで完璧！！
+            link: `https://yuragino.github.io/customer-carte/general/customer-form.html?id=${this.form.customerId}`,
           }),
         });
 
-        window.location.href = './index.html';
+        window.location.href = './reservation-list.html';
       } catch (e) {
         handleError('予約の保存', e);
       } finally {
