@@ -99,6 +99,7 @@ document.addEventListener('alpine:init', () => {
     async submitForm() {
       this.isSaving = true;
       try {
+        const reserveFormUrl = this.reservationId ? `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${this.reservationId}` : '';
         const newImageUrls = await this.uploadAllMedia();
         const mergedImageUrls = [...(this.form.imageUrls || []), ...newImageUrls];
         const dataToSave = {
@@ -115,7 +116,7 @@ document.addEventListener('alpine:init', () => {
           contactMethod: this.form.contactMethod,
           contactRemark: this.form.contactRemark,
           notes: this.form.notes,
-          link: `https://yuragino.github.io/customer-carte/general/customer-form.html?customerId=${this.form.customerId}`,
+          link: reserveFormUrl,
           mapLink: this.form.locationLabel === '自宅' ? this.form.mapLinkHome : this.form.mapLinkOther,
         };
 
@@ -133,6 +134,7 @@ document.addEventListener('alpine:init', () => {
           const reservationRef = await addDoc(collection(db, RESERVE_COLLECTION), dataToSave);
           const result = await this.syncToCalendar({
             ...calendarPayload,
+            link: `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${reservationRef.id}`,
             action: "create",
           });
           if (result?.eventId) {
