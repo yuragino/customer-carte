@@ -5,7 +5,7 @@ import { setupAuth } from "../common/utils/auth-utils.js";
 import { createMediaModal, removeMediaUtil, uploadMediaArrayToCloudinary, prepareMediaPreviewUtil } from "../common/utils/media-utils.js";
 const RESERVE_COLLECTION = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
-const GAS_API = "https://script.google.com/macros/s/AKfycbyz95Zx55WXr7UzDiCgLY8PApHP7ddRQ7RWxty9mixDq2jsOHeY5FgVbhPZYxYUgBjp/exec";
+const GAS_API = "https://script.google.com/macros/s/AKfycbxSLW0lXC8eJZZfn3lSM78Vk3rw5fMFWS54nW-ypCKs52KP2XhLWo_mIoRL2mlCfSm1/exec";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...createMediaModal(),
@@ -116,7 +116,7 @@ document.addEventListener('alpine:init', () => {
           contactMethod: this.form.contactMethod,
           contactRemark: this.form.contactRemark,
           notes: this.form.notes,
-          link: reserveFormUrl,
+          reserveFormUrl,
           mapLink: this.form.locationLabel === '自宅' ? this.form.mapLinkHome : this.form.mapLinkOther,
         };
 
@@ -134,7 +134,7 @@ document.addEventListener('alpine:init', () => {
           const reservationRef = await addDoc(collection(db, RESERVE_COLLECTION), dataToSave);
           const result = await this.syncToCalendar({
             ...calendarPayload,
-            link: `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${reservationRef.id}`,
+            reserveFormUrl: `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${reservationRef.id}`,
             action: "create",
           });
           if (result?.eventId) {

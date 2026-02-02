@@ -42,7 +42,7 @@
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
     </div>
-    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
+    <form @submit.prevent="submitForm" @keydown.enter.prevent class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
       <div>
         <label>顧客名</label>
         <input type="text" x-model="form.name" @blur="findCustomerByName">
