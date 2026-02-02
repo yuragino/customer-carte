@@ -24,7 +24,7 @@
         <h1 class="header-title">
           <a href="../index.html">着付予約管理</a>
         </h1>
-        <div class="text-gray-300 text-sm">お客様名クリックで顧客情報の確認ができます</div>
+        <div class="text-gray-300 text-sm">お客様名クリックで顧客情報の編集ページに移動します</div>
       </div>
       <nav class="header-nav">
         <a href="./reservation-list.html" class="active">予約一覧</a>
@@ -50,20 +50,23 @@
         </tr>
       </thead>
       <tbody>
-        <template x-for="r in reservations" :key="r.id">
+        <template x-for="reserve in reservations" :key="reserve.id">
           <tr class="border-b">
             <td>
-              <a :href="`./customer-form.html?customerId=${r.customerId}`" target="_blank" x-text="r.name" class="text-blue-600 border-blue-600 border-b"></a>
+              <a :href="`./customer-form.html?customerId=${reserve.customerId}`" target="_blank" class="hover:text-blue-700">
+                <span x-text="reserve.name"></span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[14px] opacity-60"></i>
+              </a>
             </td>
-            <td x-text="formatDateOnly(r.date)"></td>
+            <td x-text="formatDateOnly(reserve.date)"></td>
             <td>
-              <span x-text="formatTime(r.startTime)"></span>
-              <span x-show="r.endTime">～</span>
-              <span x-text="formatTime(r.endTime)"></span>
+              <span x-text="formatTime(reserve.startTime)"></span>
+              <span x-show="reserve.endTime">～</span>
+              <span x-text="formatTime(reserve.endTime)"></span>
             </td>
-            <td x-text="r.location"></td>
+            <td x-text="reserve.locationLabel === '自宅' ? reserve.address : reserve.location"></td>
             <td>
-              <a :href="`./reservation-form.html?reservationId=${r.id}`"
+              <a :href="`./reservation-form.html?reservationId=${reserve.id}`"
                 target="_blank"
                 class="inline-flex items-center gap-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
                 <i class="fa-solid fa-pen"></i> 予約編集

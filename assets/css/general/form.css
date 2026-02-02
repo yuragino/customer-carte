@@ -7,7 +7,6 @@ label {
   font-size: 1rem;
   font-weight: 600;
   color: #374151;
-  margin-bottom: 0.5rem;
 }
 
 /* テキスト入力・テキストエリア */
@@ -49,15 +48,7 @@ textarea {
 /* 汎用：ボタン風ラジオCSS */
 /* ========================= */
 
-.radio-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem; /* ボタン間の余白 */
-}
-
-/* ボタン全体 */
 .radio-btn {
-  position: relative;
   cursor: pointer;
   user-select: none;
   padding: 0.5rem 1rem;
@@ -67,6 +58,13 @@ textarea {
   font-size: 0.9rem;
   color: gray;
   transition: 0.2s ease;
+}
+
+.radio-btn--tab {
+  border-bottom: 1px solid #3B82F6;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  top: 1px;
 }
 
 /* hover時 */

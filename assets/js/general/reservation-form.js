@@ -19,8 +19,14 @@ document.addEventListener('alpine:init', () => {
       date: '',
       startTime: '',
       endTime: '',
+      // 自宅住所・マップ
+      address: '',
+      mapLinkHome: '',
+      // その他住所・マップ
       location: '',
-      mapLink: '',
+      mapLinkOther: '',
+      // 選択状態
+      locationLabel: '自宅',
       notes: '',
       // 連携情報
       calendarEventId: '',
@@ -55,8 +61,8 @@ document.addEventListener('alpine:init', () => {
             phone: customer.phone || '',
             contactMethod: customer.contactMethod || '',
             contactRemark: customer.contactRemark || '',
-            location: customer.address || '',
-            mapLink: customer.mapLink || '',
+            address: customer.address || '',
+            mapLinkHome: customer.mapLink || '',
             notes: customer.notes || '',
             calendarEventId: customer.calendarEventId || ''
           })
@@ -87,13 +93,13 @@ document.addEventListener('alpine:init', () => {
           name: this.form.name,
           startDateTime: `${this.form.date}T${this.form.startTime}:00+09:00`,
           endDateTime: `${this.form.date}T${this.form.endTime}:00+09:00`,
-          location: this.form.location,
+          location: this.form.locationLabel === '自宅' ? this.form.address : this.form.location,
           phone: this.form.phone,
           contactMethod: this.form.contactMethod,
           contactRemark: this.form.contactRemark,
           notes: this.form.notes,
           link: `https://yuragino.github.io/customer-carte/general/customer-form.html?customerId=${this.form.customerId}`,
-          mapLink: this.form.mapLink,
+          mapLink: this.form.locationLabel === '自宅' ? this.form.mapLinkHome : this.form.mapLinkOther,
         };
 
         if (this.reservationId) {
@@ -132,7 +138,8 @@ document.addEventListener('alpine:init', () => {
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error(`GAS API error: ${res.status}`);
-        return await res.json();
+        const text = await res.text();
+        return text;
       } catch (error) {
         handleError('GAS 同期', error);
         return null;

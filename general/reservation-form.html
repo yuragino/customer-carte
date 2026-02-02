@@ -72,7 +72,7 @@
                 :checked="form.contactMethod === 'その他'"> その他
             </label>
           </div>
-          <input type="text" x-model="form.contactRemark" x-show="form.contactMethod === 'その他'" placeholder="〇〇様の紹介">
+          <input type="text" x-model="form.contactRemark" x-show="form.contactMethod === 'その他'" placeholder="〇〇様の紹介" class="mt-2">
         </div>
       </div>
       <div>
@@ -81,23 +81,48 @@
       </div>
       <div>
         <label>着付け日</label>
-        <input type="date" x-model="form.date" required>
-      </div>
-      <div class="field time-field">
-        <label>所要時間</label>
-        <div class="flex items-center gap-2">
-          <input type="time" x-model="form.startTime" class="flex-1" required>
+        <div class="flex items-center gap-3">
+          <input type="date" x-model="form.date" required class="border rounded p-2">
+          <input type="time" x-model="form.startTime" required class="border rounded p-2 w-28">
           <span>～</span>
-          <input type="time" x-model="form.endTime" class="flex-1" required>
+          <input type="time" x-model="form.endTime" required class="border rounded p-2 w-28">
         </div>
       </div>
       <div>
-        <label>着付場所</label>
-        <input type="text" x-model="form.location">
-      </div>
-      <div>
-        <label>GoogleMapリンク</label>
-        <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." />
+        <div class="flex items-center gap-3">
+          <label>着付け場所</label>
+          <!-- タブ風 -->
+          <div class="flex items-center">
+            <label class="radio-btn radio-btn--tab">
+              <input type="radio" name="locationLabel" value="自宅" x-model="form.locationLabel"> 自宅
+            </label>
+            <label class="radio-btn radio-btn--tab">
+              <input type="radio" name="locationLabel" value="その他" x-model="form.locationLabel"> その他
+            </label>
+          </div>
+        </div>
+        <!-- 自宅 -->
+        <div x-show="form.locationLabel === '自宅'" class="flex flex-col gap-2 border border-blue-500 rounded-md p-3 bg-blue-50">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-house text-blue-500"></i>
+            <input type="text" x-model="form.address" class="border rounded p-2 flex-1" disabled>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-map-location-dot text-green-500"></i>
+            <input type="text" x-model="form.mapLinkHome" placeholder="自宅のGoogleMapリンク" class="border rounded p-2 flex-1">
+          </div>
+        </div>
+        <!-- その他 -->
+        <div x-show="form.locationLabel === 'その他'" class="flex flex-col gap-2 border border-blue-500 rounded-md p-3 bg-blue-50">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-location-dot text-blue-500 w-[18px] text-center"></i>
+            <input type="text" x-model="form.location" placeholder="着付け先の住所を入力" class="border rounded p-2 flex-1">
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-map-location-dot text-green-500"></i>
+            <input type="text" x-model="form.mapLinkOther" placeholder="着付け先のGoogleMapリンク" class="border rounded p-2 flex-1">
+          </div>
+        </div>
       </div>
       <div>
         <label>備考</label>
