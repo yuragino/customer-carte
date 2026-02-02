@@ -83,12 +83,12 @@
             <td x-text="c.reservationCount ?? 0"></td>
             <td x-text="c.notes"></td>
             <td class="flex justify-center gap-2">
-              <a :href="`./reservation-form.html?id=${c.id}`"
+              <a :href="`./reservation-form.html?customerId=${c.id}`"
                 target="_blank"
                 class="inline-flex items-center gap-1 px-3 py-1 border border-green-600 hover:bg-green-50 rounded-md transition">
                 <i class="fa-solid fa-plus text-green-600"></i> 予約
               </a>
-              <a :href="`./customer-form.html?id=${c.id}`"
+              <a :href="`./customer-form.html?customerId=${c.id}`"
                 target="_blank"
                 class="inline-flex items-center gap-1 px-3 py-1 border border-yellow-500 hover:bg-yellow-50 rounded-md transition">
                 <i class="fa-solid fa-pen text-yellow-500"></i> 編集
@@ -132,7 +132,7 @@
                   </td>
                   <td x-text="r.location"></td>
                   <td>
-                    <a :href="`./reservation-form.html?docId=${r.id}`"
+                    <a :href="`./reservation-form.html?reservationId=${r.id}`"
                       target="_blank"
                       class="inline-flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
                       <i class="fa-solid fa-pen"></i> 編集

@@ -8,6 +8,7 @@ const COLLECTION_NAME = "generalCustomers";
 document.addEventListener("alpine:init", () => {
   Alpine.data("app", () => ({
     ...createMediaModal(),
+    customerId: null,
     form: {
       name: "",
       kana: "",
@@ -23,26 +24,27 @@ document.addEventListener("alpine:init", () => {
     newImageFiles: [],
     newImagePreviews: [],
 
-    get docRef() {
-      return doc(db, COLLECTION_NAME, this.docId);
+    get customerRef() {
+      return doc(db, COLLECTION_NAME, this.customerId);
     },
 
     async init() {
       setupAuth(this);
       const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
-      if (id) {
+      this.customerId = params.get("customerId");
+      if (this.customerId) {
         this.isLoading = true;
-        await this.loadCustomer(id);
+        await this.loadCustomer();
         this.isLoading = false;
       }
     },
 
-    async loadCustomer(id) {
+    async loadCustomer() {
       try {
-        const docRef = doc(db, COLLECTION_NAME, id);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) this.form = { id, ...snap.data() };
+        const customerSnap = await getDoc(this.customerRef);
+        if (customerSnap.exists()) {
+          Object.assign(this.form, customerSnap.data());
+        }
       } catch (e) {
         handleError("顧客情報の読込", e);
       }
@@ -56,21 +58,20 @@ document.addEventListener("alpine:init", () => {
 
     // 新規登録＋すぐ予約フォームへ
     async submitAndGoReservation() {
-      const newId = await this.saveCustomer();
-      window.open(`./reservation-form.html?id=${newId}`, "_blank");
+      const newCustomerDocId = await this.saveCustomer();
+      window.open(`./reservation-form.html?customerId=${newCustomerDocId}`, "_blank");
       window.location.href = "./index.html";
     },
 
     // ===== メディアアップロード + 保存処理 =====
     async uploadAllMedia() {
-      const newImageUrls = await uploadMediaArrayToCloudinary(this.newImageFiles, COLLECTION_NAME);
-      return { newImageUrls };
+      return await uploadMediaArrayToCloudinary(this.newImageFiles, COLLECTION_NAME);
     },
 
     async saveCustomer() {
       this.isSaving = true;
       try {
-        const { newImageUrls } = await this.uploadAllMedia();
+        const newImageUrls = await this.uploadAllMedia();
         const mergedImageUrls = [...(this.form.imageUrls || []), ...newImageUrls];
 
         const dataToSave = {
@@ -79,13 +80,14 @@ document.addEventListener("alpine:init", () => {
           updatedAt: serverTimestamp(),
         };
 
-        if (this.form.id) {
-          await updateDoc(doc(db, COLLECTION_NAME, this.form.id), dataToSave);
-          return this.form.id;
+        if (this.customerId) {
+          // 更新
+          await updateDoc(this.customerRef, dataToSave);
         } else {
+          // 新規登録
           dataToSave.createdAt = serverTimestamp();
-          const docRef = await addDoc(collection(db, COLLECTION_NAME), dataToSave);
-          return docRef.id;
+          const customerRef = await addDoc(collection(db, COLLECTION_NAME), dataToSave);
+          return customerRef.id;
         }
       } catch (e) {
         handleError("顧客の保存", e);
@@ -97,7 +99,7 @@ document.addEventListener("alpine:init", () => {
     async deleteForm() {
       if (!confirm('この顧客情報を削除しますか？')) return;
       try {
-        await deleteDoc(this.docRef);
+        await deleteDoc(this.customerRef);
         window.location.href = './index.html';
       } catch (error) {
         handleError('データの削除', error);

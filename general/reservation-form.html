@@ -75,14 +75,14 @@
       </div>
       <div>
         <label>着付け日</label>
-        <input type="date" x-model="form.date">
+        <input type="date" x-model="form.date" required>
       </div>
       <div class="field time-field">
         <label>所要時間</label>
         <div class="flex items-center gap-2">
-          <input type="time" x-model="form.startTime" class="flex-1">
+          <input type="time" x-model="form.startTime" class="flex-1" required>
           <span>～</span>
-          <input type="time" x-model="form.endTime" class="flex-1">
+          <input type="time" x-model="form.endTime" class="flex-1" required>
         </div>
       </div>
       <div>
@@ -94,29 +94,9 @@
         <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." />
       </div>
       <div>
-        <label>着物・その他料金</label>
-        <template x-for="(item, index) in form.feeItems" :key="index">
-          <div class="flex items-center gap-2 mb-2">
-            <input type="text" x-model="item.name" placeholder="種類">
-            <input type="number" x-model.number="item.fee" placeholder="料金">
-            <button type="button" @click="removeFeeItem(index)" x-show="form.feeItems.length > 1"
-              class="text-red-500 text-sm hover:text-red-700">
-              ✕
-            </button>
-          </div>
-        </template>
-        <button type="button" @click="addFeeItem"
-          class="px-3 py-1 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200 mt-2">
-          ＋ 行を追加
-        </button>
-      </div>
-      <div x-text="`合計: ${totalFee.toLocaleString()} 円`" class="text-right font-bold text-base px-2"></div>
-
-      <div>
         <label>備考</label>
         <textarea x-model="form.notes"></textarea>
       </div>
-
       <div class="flex justify-center">
         <button
           type="submit"
@@ -124,7 +104,7 @@
            focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300
            bg-blue-600 hover:bg-blue-700"
           :disabled="isSaving">
-          <span x-show="!isSaving" x-text="form.id ? '更新' : '登録'"></span>
+          <span x-show="!isSaving" x-text="reservationId ? '更新' : '登録'"></span>
           <span x-show="isSaving">保存中...</span>
         </button>
       </div>
