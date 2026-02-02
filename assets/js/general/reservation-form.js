@@ -5,7 +5,7 @@ import { setupAuth } from "../common/utils/auth-utils.js";
 import { createMediaModal, removeMediaUtil, uploadMediaArrayToCloudinary, prepareMediaPreviewUtil } from "../common/utils/media-utils.js";
 const RESERVE_COLLECTION = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
-const GAS_API = "https://script.google.com/macros/s/AKfycbxSLW0lXC8eJZZfn3lSM78Vk3rw5fMFWS54nW-ypCKs52KP2XhLWo_mIoRL2mlCfSm1/exec";
+const GAS_API = "https://script.google.com/macros/s/AKfycbyVXwtAQAhXRacDEoeP__jMlZW2J74cjolDBxu-PliOIDScONEb5DE7Z8Yxikuh-J1t/exec";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...createMediaModal(),
@@ -136,7 +136,7 @@ document.addEventListener('alpine:init', () => {
             ...calendarPayload,
             reserveFormUrl: `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${reservationRef.id}`,
             action: "create",
-          });
+          });;
           if (result?.eventId) {
             await updateDoc(reservationRef, { calendarEventId: result.eventId });
           }
@@ -158,7 +158,8 @@ document.addEventListener('alpine:init', () => {
         });
         if (!res.ok) throw new Error(`GAS API error: ${res.status}`);
         const text = await res.text();
-        return text;
+        const parsed = JSON.parse(text);
+        return parsed;
       } catch (error) {
         handleError('GAS 同期', error);
         return null;
