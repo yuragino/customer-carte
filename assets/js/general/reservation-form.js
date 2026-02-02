@@ -5,7 +5,7 @@ import { setupAuth } from "../common/utils/auth-utils.js";
 import { createMediaModal, removeMediaUtil, uploadMediaArrayToCloudinary, prepareMediaPreviewUtil } from "../common/utils/media-utils.js";
 const RESERVE_COLLECTION = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
-const GAS_API = "https://script.google.com/macros/s/AKfycbyTr-Cj0ssON8_wbn9mAoIFFF0UKBKB2SZnenLlXXa-BBbjECO1RtWPSrpx9mQxovBL/exec";
+const GAS_API = "https://script.google.com/macros/s/AKfycbyz95Zx55WXr7UzDiCgLY8PApHP7ddRQ7RWxty9mixDq2jsOHeY5FgVbhPZYxYUgBjp/exec";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...createMediaModal(),
