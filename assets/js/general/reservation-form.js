@@ -2,11 +2,13 @@ import { db } from "../common/firebase-config.js";
 import { collection, addDoc, updateDoc, doc, getDoc, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
+import { createMediaModal, removeMediaUtil, uploadMediaArrayToCloudinary, prepareMediaPreviewUtil } from "../common/utils/media-utils.js";
 const RESERVE_COLLECTION = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
 const GAS_API = "https://script.google.com/macros/s/AKfycbyTr-Cj0ssON8_wbn9mAoIFFF0UKBKB2SZnenLlXXa-BBbjECO1RtWPSrpx9mQxovBL/exec";
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
+    ...createMediaModal(),
     reservationId: null,
     form: {
       // 顧客情報
@@ -28,10 +30,13 @@ document.addEventListener('alpine:init', () => {
       // 選択状態
       locationLabel: '自宅',
       notes: '',
+      imageUrls: [],
       // 連携情報
       calendarEventId: '',
     },
     isSaving: false,
+    newImageFiles: [],
+    newImagePreviews: [],
 
     get reservationRef() {
       return doc(db, RESERVE_COLLECTION, this.reservationId);
@@ -64,6 +69,7 @@ document.addEventListener('alpine:init', () => {
             address: customer.address || '',
             mapLinkHome: customer.mapLink || '',
             notes: customer.notes || '',
+            imageUrls: customer.imageUrls || [],
             calendarEventId: customer.calendarEventId || ''
           })
         }
@@ -84,11 +90,22 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // ===== メディアアップロード + 保存処理 =====
+    async uploadAllMedia() {
+      return await uploadMediaArrayToCloudinary(this.newImageFiles, RESERVE_COLLECTION);
+    },
+
     // 登録 or 更新
     async submitForm() {
       this.isSaving = true;
       try {
-        this.form.updatedAt = serverTimestamp();
+        const newImageUrls = await this.uploadAllMedia();
+        const mergedImageUrls = [...(this.form.imageUrls || []), ...newImageUrls];
+        const dataToSave = {
+          ...this.form,
+          imageUrls: mergedImageUrls,
+          updatedAt: serverTimestamp(),
+        };
         const calendarPayload = {
           name: this.form.name,
           startDateTime: `${this.form.date}T${this.form.startTime}:00+09:00`,
@@ -104,7 +121,7 @@ document.addEventListener('alpine:init', () => {
 
         if (this.reservationId) {
           // 更新
-          await updateDoc(this.reservationRef, this.form);
+          await updateDoc(this.reservationRef, dataToSave);
           await this.syncToCalendar({
             ...calendarPayload,
             action: "update",
@@ -113,7 +130,7 @@ document.addEventListener('alpine:init', () => {
         } else {
           // 新規登録
           this.form.createdAt = serverTimestamp();
-          const reservationRef = await addDoc(collection(db, RESERVE_COLLECTION), this.form);
+          const reservationRef = await addDoc(collection(db, RESERVE_COLLECTION), dataToSave);
           const result = await this.syncToCalendar({
             ...calendarPayload,
             action: "create",
@@ -167,6 +184,16 @@ document.addEventListener('alpine:init', () => {
     redirectToList() {
       window.location.href = './reservation-list.html';
     },
+
+    // ===== メディア処理 =====
+    prepareMediaPreview(event, type) {
+      prepareMediaPreviewUtil(event, type, this);
+    },
+
+    removeMedia(mediaType, index) {
+      removeMediaUtil(mediaType, index, this);
+    },
+
 
   }));
 });
