@@ -41,7 +41,7 @@
       <i class="fa-solid fa-spinner fa-spin mr-2"></i>
       読み込み中...
     </div>
-    <form @submit.prevent="submitForm" @keydown.enter.prevent class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3" x-show="!isLoading">
+    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3" x-show="!isLoading">
       <div>
         <label>お名前</label>
         <input type="text" x-model="form.name" required />
@@ -80,7 +80,7 @@
       </div>
       <div>
         <label>電話番号</label>
-        <input type="tel" x-model="form.phone" />
+        <input type="tel" x-model="form.phone" inputmode="numeric" pattern="[0-9]*" />
       </div>
       <div>
         <label>住所</label>
@@ -89,6 +89,24 @@
       <div>
         <label>GoogleMapリンク</label>
         <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." />
+      </div>
+      <div>
+        <label>家族構成</label>
+        <template x-for="(familyMember,index) in form.familyMembers">
+          <div class="grid grid-cols-12 gap-1" :class="index !== 0 ? 'mt-1' : ''">
+            <input type="text" x-model="familyMember.name" class="col-span-5" placeholder="名前"/>
+            <input type="text" x-model="familyMember.relation" class="col-span-5" placeholder="続柄"/>
+            <button type="button" class="text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 disabled:opacity-50 col-span-1" @click="addRow()">
+              <i class="fa-regular fa-plus"></i>
+            </button>
+            <button type="button" class="text-white bg-pink-600 p-1 text-sm rounded-md hover:bg-pink-700 col-span-1" :class="index === 0 ? 'opacity-50 pointer-events-none' : ''" @click="deleteRow(index)">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+        </template>
+        <button type="button" class="text-white bg-green-600 p-2 text-sm rounded-md hover:bg-green-700 col-span-1" @click="addRow()" x-show="form.familyMembers.length === 0">
+          <i class="fa-regular fa-plus"></i> 家族を追加する
+        </button>
       </div>
       <div>
         <label>備考</label>
@@ -133,8 +151,7 @@
           x-show="!customerId"
           @click="submitAndGoReservation"
           class="px-4 py-4 w-1/5 rounded-md text-white font-medium transition
-           bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-300
-           disabled:opacity-50">
+           bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-300">
           登録して予約へ
         </button>
       </div>

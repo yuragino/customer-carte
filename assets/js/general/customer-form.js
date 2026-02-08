@@ -14,6 +14,7 @@ document.addEventListener("alpine:init", () => {
       phone: "",
       address: "",
       mapLink: "",
+      familyMembers: [{ name: "", relation: "" }],
       notes: "",
       imageUrls: []
     },
@@ -103,6 +104,15 @@ document.addEventListener("alpine:init", () => {
       } catch (error) {
         handleError('データの削除', error);
       }
+    },
+
+    addRow() {
+      this.form.familyMembers.push({ name: "", relation: "" });
+    },
+    deleteRow(index) {
+      if (index === 0) return;
+      if (!confirm('この行を削除しますか？')) return;
+      this.form.familyMembers.splice(index, 1);
     },
 
     // ===== メディア処理 =====
