@@ -48,7 +48,7 @@ textarea {
 /* 汎用：ボタン風ラジオCSS */
 /* ========================= */
 
-.radio-btn {
+.option-btn {
   cursor: pointer;
   user-select: none;
   padding: 0.5rem 1rem;
@@ -60,7 +60,7 @@ textarea {
   transition: 0.2s ease;
 }
 
-.radio-btn--tab {
+.option-btn--tab {
   border-bottom: 1px solid #3B82F6;
   border-radius: 6px 6px 0 0;
   position: relative;
@@ -68,27 +68,31 @@ textarea {
 }
 
 /* hover時 */
-.radio-btn:hover {
+.option-btn:hover {
   background-color: #e9ecef;
 }
 
 /* ラジオ本体は非表示 */
-.radio-btn input[type="radio"] {
+.option-btn input[type="radio"],
+.option-btn input[type="checkbox"] {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
 
 /* 選択されたとき */
-.radio-btn:has(input[type="radio"]:checked) {
-  background-color: #2563eb; /* indigo-600 */
+.option-btn:has(input[type="radio"]:checked),
+.option-btn:has(input[type="checkbox"]:checked) {
+  background-color: #2563eb;
+  /* indigo-600 */
   border-color: #2563eb;
   color: #fff;
   font-weight: 600;
 }
 
 /* フォーカス時のアウトライン */
-.radio-btn input[type="radio"]:focus-visible + span {
+.option-btn input[type="radio"]:focus-visible+span,
+.option-btn input[type="checkbox"]:focus-visible + span {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }

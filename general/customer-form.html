@@ -33,6 +33,11 @@
   <main>
     <div class="flex justify-between items-center mb-2">
       <h1 class="font-bold text-2xl">顧客登録フォーム</h1>
+      <a
+        :href="`./reservation-form.html?customerId=${customerId}`" target="_blank"
+        class="text-green-500 border border-green-500 p-2 rounded-md hover:bg-green-50" x-show="customerId">
+        <i class="fas fa-calendar-plus"></i> 新規予約作成
+      </a>
       <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md hover:bg-red-50" @click="deleteForm" x-show="customerId">
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
@@ -54,23 +59,23 @@
         <label>受付</label>
         <div>
           <div class="flex gap-5">
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="教室LINE" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === '教室LINE'"> 教室LINE
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === '椿LINE'"> 椿LINE
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'お客様LINE'"> お客様LINE
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="くらしのマーケット" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'くらしのマーケット'"> くらしのマーケット
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'その他'"> その他
             </label>
@@ -84,18 +89,31 @@
       </div>
       <div>
         <label>住所</label>
-        <input type="text" x-model="form.address" />
+        <div class="grid grid-cols-6 gap-1">
+          <input type="text" x-model="form.address" class="col-span-5" />
+          <a :href="`https://www.google.com/maps?q=${form.address}`" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.address === '' ? 'pointer-events-none opacity-50' : ''">
+            <i class="fa-solid fa-up-right-from-square"></i>
+          </a>
+        </div>
       </div>
       <div>
         <label>GoogleMapリンク</label>
-        <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." />
+        <div class="grid grid-cols-6 gap-1">
+          <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." class="col-span-5" />
+          <a :href="form.mapLink" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.mapLink === '' ? 'pointer-events-none opacity-50' : ''">
+            <i class="fa-solid fa-up-right-from-square"></i>
+          </a>
+        </div>
       </div>
       <div>
         <label>家族構成</label>
         <template x-for="(familyMember,index) in form.familyMembers">
           <div class="grid grid-cols-12 gap-1" :class="index !== 0 ? 'mt-1' : ''">
-            <input type="text" x-model="familyMember.name" class="col-span-5" placeholder="名前"/>
-            <input type="text" x-model="familyMember.relation" class="col-span-5" placeholder="続柄"/>
+            <div class="col-span-5 flex items-center">
+              <input type="text" x-model="familyMember.name" class="w-full" placeholder="名前" />
+              <span class="font-bold whitespace-nowrap">様</span>
+            </div>
+            <input type="text" x-model="familyMember.relation" class="col-span-5" placeholder="続柄" />
             <button type="button" class="text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 disabled:opacity-50 col-span-1" @click="addRow()">
               <i class="fa-regular fa-plus"></i>
             </button>

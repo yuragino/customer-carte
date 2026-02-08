@@ -50,23 +50,23 @@
         <label>受付</label>
         <div>
           <div class="flex gap-5">
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="教室LINE" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === '教室LINE'"> 教室LINE
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === '椿LINE'"> 椿LINE
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'お客様LINE'"> お客様LINE
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="くらしのマーケット" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'くらしのマーケット'"> くらしのマーケット
             </label>
-            <label class="radio-btn">
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'その他'"> その他
             </label>
@@ -79,7 +79,7 @@
         <input type="tel" x-model="form.phone">
       </div>
       <div>
-        <label>着付け日</label>
+        <label>着付日</label>
         <div class="flex items-center gap-3">
           <input type="date" x-model="form.date" required class="border rounded p-2">
           <input type="time" x-model="form.startTime" required class="border rounded p-2 w-28">
@@ -89,17 +89,17 @@
       </div>
       <div>
         <div class="flex items-center gap-3">
-          <label>着付け場所</label>
+          <label>着付場所</label>
           <!-- タブ風 -->
           <div class="flex items-center">
-            <label class="radio-btn radio-btn--tab">
+            <label class="option-btn option-btn--tab">
               <input type="radio" name="locationLabel" value="自宅" x-model="form.locationLabel"> 自宅
             </label>
-            <label class="radio-btn radio-btn--tab">
+            <label class="option-btn option-btn--tab">
               <input type="radio" name="locationLabel" value="その他" x-model="form.locationLabel"> その他
             </label>
           </div>
-          <a href="https://www.google.co.jp/maps?q" target="_blank" class="text-green-600 hover:opacity-70">
+          <a href="https://www.google.com/maps" target="_blank" class="text-green-600 hover:opacity-70">
             GoogleMap <i class="fa-solid fa-up-right-from-square"></i>
           </a>
         </div>
@@ -109,9 +109,14 @@
             <i class="fa-solid fa-house text-blue-500"></i>
             <input type="text" x-model="form.address" class="border rounded p-2 flex-1" disabled>
           </div>
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-map-location-dot text-green-500"></i>
-            <input type="text" x-model="form.mapLinkHome" placeholder="自宅のGoogleMapリンク" class="border rounded p-2 flex-1">
+          <div class="grid grid-cols-12 gap-2">
+            <div class="flex items-center gap-2 col-span-11">
+              <i class="fa-solid fa-map-location-dot text-green-500"></i>
+              <input type="text" x-model="form.mapLinkHome" placeholder="自宅のGoogleMapリンク" class="border rounded p-2 flex-1" disabled>
+            </div>
+            <a :href="form.mapLinkHome" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.mapLinkHome === '' ? 'pointer-events-none opacity-50' : ''">
+              <i class="fa-solid fa-up-right-from-square"></i>
+            </a>
           </div>
         </div>
         <!-- その他 -->
@@ -120,10 +125,26 @@
             <i class="fa-solid fa-location-dot text-blue-500 w-[18px] text-center"></i>
             <input type="text" x-model="form.location" placeholder="着付け先の住所を入力" class="border rounded p-2 flex-1">
           </div>
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-map-location-dot text-green-500"></i>
-            <input type="text" x-model="form.mapLinkOther" placeholder="着付け先のGoogleMapリンク" class="border rounded p-2 flex-1">
+          <div class="grid grid-cols-12 gap-2">
+            <div class="flex items-center gap-2 col-span-11">
+              <i class="fa-solid fa-map-location-dot text-green-500"></i>
+              <input type="text" x-model="form.mapLinkOther" placeholder="着付け先のGoogleMapリンク" class="border rounded p-2 flex-1">
+            </div>
+            <a :href="form.mapLinkOther" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.mapLinkOther === '' ? 'pointer-events-none opacity-50' : ''">
+              <i class="fa-solid fa-up-right-from-square"></i>
+            </a>
           </div>
+        </div>
+      </div>
+      <div x-show="form.familyMembers">
+        <label>着付対象</label>
+        <div class="flex gap-2">
+          <template x-for="familyMember in form.familyMembers">
+            <label class="option-btn">
+              <input type="checkbox" x-model="form.fittingTargets" :value="familyMember.name">
+              <span x-text="`${familyMember.name}様（${familyMember.relation}）`"></span>
+            </label>
+          </template>
         </div>
       </div>
       <div>

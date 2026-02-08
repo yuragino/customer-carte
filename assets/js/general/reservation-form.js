@@ -29,6 +29,8 @@ document.addEventListener('alpine:init', () => {
       mapLinkOther: '',
       // 選択状態
       locationLabel: '自宅',
+      fittingTargets: [],
+      familyMembers: [],
       notes: '',
       imageUrls: [],
       // 連携情報
@@ -68,6 +70,7 @@ document.addEventListener('alpine:init', () => {
             contactRemark: customer.contactRemark || '',
             address: customer.address || '',
             mapLinkHome: customer.mapLink || '',
+            familyMembers: customer.familyMembers || [],
             notes: customer.notes || '',
             imageUrls: customer.imageUrls || [],
             calendarEventId: customer.calendarEventId || ''
@@ -114,6 +117,7 @@ document.addEventListener('alpine:init', () => {
           location: this.form.locationLabel === '自宅' ? this.form.address : this.form.location,
           phone: this.form.phone,
           contactMethod: this.form.contactMethod,
+          contactRemark: this.form.contactRemark,
           contactRemark: this.form.contactRemark,
           notes: this.form.notes,
           reserveFormUrl,
