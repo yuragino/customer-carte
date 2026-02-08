@@ -61,6 +61,37 @@
                     <input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event, 'reservationMethod')"
                       :checked="formData.representative.reservationMethod === 'アソビュー'"> アソビュー
                   </label>
+                  <label>
+                    <input type="radio" name="reservationMethod" value="個人" @click="toggleRadio($event, 'reservationMethod')"
+                      :checked="formData.representative.reservationMethod === '個人'"> 個人
+                  </label>
+                  <label>
+                    <input type="radio" name="reservationMethod" value="イベント" @click="toggleRadio($event, 'reservationMethod')"
+                      :checked="formData.representative.reservationMethod === 'イベント'"> イベント
+                  </label>
+                </td>
+              </tr>
+              <tr>
+                <th>連絡方法</th>
+                <td>
+                  <label>
+                    <input type="radio" name="contactMethod" value="教室LINE" @click="toggleRadio($event, 'contactMethod')"
+                      :checked="formData.representative.contactMethod === '教室LINE'"> 教室LINE
+                  </label>
+                  <label>
+                    <input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event, 'contactMethod')"
+                      :checked="formData.representative.contactMethod === '椿LINE'"> 椿LINE
+                  </label>
+                  <label>
+                    <input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event, 'contactMethod')"
+                      :checked="formData.representative.contactMethod === 'お客様LINE'"> お客様LINE
+                  </label>
+                  <label>
+                    <input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event, 'contactMethod')"
+                      :checked="formData.representative.contactMethod === 'その他'"> その他
+                  </label>
+                  <input type="text" x-model="form.contactRemark" x-show="formData.representative.contactMethod === 'その他'" placeholder="〇〇様の紹介">
+
                 </td>
               </tr>
               <tr>
@@ -70,6 +101,12 @@
               <tr>
                 <th>ふりがな</th>
                 <td><input type="text" x-model="formData.representative.kana" class="middle-width"></td>
+              </tr>
+              <tr>
+                <th>電話番号</th>
+                <td>
+                  <input type="tel" x-model="formData.representative.phone" class="middle-width" inputmode="numeric" pattern="[0-9]*">
+                </td>
               </tr>
               <tr>
                 <th>来店日時</th>
@@ -95,12 +132,6 @@
                 <td><input type="text" class="full-width" x-model="formData.representative.address"></td>
               </tr>
               <tr>
-                <th>電話番号</th>
-                <td>
-                  <input type="tel" x-model="formData.representative.phone" class="middle-width" inputmode="numeric" pattern="[0-9]*">
-                </td>
-              </tr>
-              <tr>
                 <th>交通手段</th>
                 <td>
                   <label>
@@ -118,23 +149,6 @@
                   <label>
                     <input type="radio" name="transportation" value="送迎" @click="toggleRadio($event, 'transportation')"
                       :checked="formData.representative.transportation === '送迎'"> 送迎
-                  </label>
-                </td>
-              </tr>
-              <tr>
-                <th>LINE</th>
-                <td>
-                  <label>
-                    <input type="radio" name="lineType" value="教室LINE" @click="toggleRadio($event, 'lineType')"
-                      :checked="formData.representative.lineType === '教室LINE'"> 教室LINE
-                  </label>
-                  <label>
-                    <input type="radio" name="lineType" value="椿LINE" @click="toggleRadio($event, 'lineType')"
-                      :checked="formData.representative.lineType === '椿LINE'"> 椿LINE
-                  </label>
-                  <label>
-                    <input type="radio" name="lineType" value="お客様LINE" @click="toggleRadio($event, 'lineType')"
-                      :checked="formData.representative.lineType === 'お客様LINE'"> お客様LINE
                   </label>
                 </td>
               </tr>
