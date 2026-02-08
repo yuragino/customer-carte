@@ -34,15 +34,14 @@
       <h1 class="font-bold text-2xl">予約登録フォーム</h1>
       <a
         :href="`./customer-form.html?customerId=${form.customerId}`" target="_blank"
-        class="text-green-500 border border-green-500 p-2 rounded-md hover:bg-green-50"
-        @keydown.enter.prevent>
+        class="text-green-500 border border-green-500 p-2 rounded-md hover:bg-green-50">
         <i class="fa-solid fa-link"></i> 顧客情報ページ
       </a>
-      <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md hover:bg-red-50" @click="deleteForm" x-show="reservationId" @keydown.enter.prevent>
+      <button type="button" class="text-red-500 border border-red-500 p-2 rounded-md hover:bg-red-50" @click="deleteForm" x-show="reservationId">
         <i class="fa-regular fa-trash-can"></i> 削除する
       </button>
     </div>
-    <form @submit.prevent="submitForm" @keydown.enter.prevent class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
+    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3">
       <div>
         <label>顧客名</label>
         <input type="text" x-model="form.name" @blur="findCustomerByName">
@@ -100,6 +99,9 @@
               <input type="radio" name="locationLabel" value="その他" x-model="form.locationLabel"> その他
             </label>
           </div>
+          <a href="https://www.google.co.jp/maps?q" target="_blank" class="text-green-600 hover:opacity-70">
+            GoogleMap <i class="fa-solid fa-up-right-from-square"></i>
+          </a>
         </div>
         <!-- 自宅 -->
         <div x-show="form.locationLabel === '自宅'" class="flex flex-col gap-2 border border-blue-500 rounded-md p-3 bg-blue-50">
