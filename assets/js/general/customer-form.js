@@ -120,7 +120,8 @@ document.addEventListener("alpine:init", () => {
     },
 
     removeMedia(mediaType, index) {
-      removeMediaUtil(mediaType, index, this);
+      const targetObj = mediaType === 'saved-image' ? this.form : this;
+      removeMediaUtil(mediaType, index, targetObj);
     },
 
     toggleRadio(event, modelName) {
