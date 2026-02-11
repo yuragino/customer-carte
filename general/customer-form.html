@@ -117,7 +117,7 @@
             <button type="button" class="text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 disabled:opacity-50 col-span-1" @click="addRow()">
               <i class="fa-regular fa-plus"></i>
             </button>
-            <button type="button" class="text-white bg-pink-600 p-1 text-sm rounded-md hover:bg-pink-700 col-span-1" :class="index === 0 ? 'opacity-50 pointer-events-none' : ''" @click="deleteRow(index)">
+            <button type="button" class="text-white bg-pink-600 p-1 text-sm rounded-md hover:bg-pink-700 col-span-1" @click="deleteRow(index)">
               <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>

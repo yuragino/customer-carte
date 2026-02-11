@@ -14,7 +14,7 @@ document.addEventListener("alpine:init", () => {
       phone: "",
       address: "",
       mapLink: "",
-      familyMembers: [{ name: "", relation: "" }],
+      familyMembers: [],
       notes: "",
       imageUrls: []
     },
@@ -110,7 +110,6 @@ document.addEventListener("alpine:init", () => {
       this.form.familyMembers.push({ name: "", relation: "" });
     },
     deleteRow(index) {
-      if (index === 0) return;
       if (!confirm('この行を削除しますか？')) return;
       this.form.familyMembers.splice(index, 1);
     },
