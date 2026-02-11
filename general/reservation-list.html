@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        <template x-for="reserve in reservations" :key="reserve.id">
+        <template x-for="reserve in reservations" :key="reserve.docId">
           <tr class="border-b">
             <td>
               <a :href="`./customer-form.html?customerId=${reserve.customerId}`" target="_blank" class="hover:text-blue-700">
@@ -66,7 +66,7 @@
             </td>
             <td x-text="reserve.locationLabel === '自宅' ? reserve.address : reserve.location"></td>
             <td>
-              <a :href="`./reservation-form.html?reservationId=${reserve.id}`"
+              <a :href="`./reservation-form.html?reservationId=${reserve.docId}`"
                 target="_blank"
                 class="inline-flex items-center gap-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
                 <i class="fa-solid fa-pen"></i> 予約編集

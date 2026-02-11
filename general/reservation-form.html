@@ -136,7 +136,7 @@
           </div>
         </div>
       </div>
-      <div x-show="form.familyMembers">
+      <div x-show="form.familyMembers.length>0">
         <label>着付対象</label>
         <div class="flex gap-2">
           <template x-for="familyMember in form.familyMembers">

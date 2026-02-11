@@ -20,15 +20,17 @@ document.addEventListener("alpine:init", () => {
 
     async loadReservations() {
       try {
-        // Firestoreから日付の新しい順で予約を取得
         const snap = await getDocs(
-          query(collection(db, RESERVATION_COLLECTION), orderBy("date", "desc"))
+          query(collection(db, RESERVATION_COLLECTION), orderBy("date", "asc"))
         );
-
-        this.reservations = snap.docs.map(doc => ({
-          id: doc.id,
+        const allReservations = snap.docs.map(doc => ({
+          docId: doc.id,
           ...doc.data(),
         }));
+        const today = new Date().toISOString().split('T')[0];
+        const upcoming = allReservations.filter(r => r.date > today);
+        const past = allReservations.filter(r => r.date < today);
+        this.reservations = upcoming.concat(past);
       } catch (e) {
         handleError("予約データ読込", e);
       }
