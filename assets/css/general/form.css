@@ -3,7 +3,7 @@ main {
 }
 
 /* ラベル */
-label {
+.form-label {
   font-size: 1rem;
   font-weight: 600;
   color: #374151;

@@ -18,19 +18,23 @@ document.addEventListener('alpine:init', () => {
       contactMethod: '',
       contactRemark: '',
       // 予約情報
+      isProvisional: false,
       date: '',
       startTime: '',
       endTime: '',
-      // 自宅住所・マップ
+      // 自宅住所
       address: '',
       mapLinkHome: '',
-      // その他住所・マップ
+      //その他住所
       location: '',
       mapLinkOther: '',
-      // 選択状態
       locationLabel: '自宅',
-      fittingTargets: [],
       familyMembers: [],
+      fittingTargets: [],
+      // 着物をお預かりする日
+      pickupDate: '',
+      pickupStartTime: '',
+      pickupEndTime: '',
       notes: '',
       imageUrls: [],
       // 連携情報
@@ -73,7 +77,7 @@ document.addEventListener('alpine:init', () => {
             familyMembers: customer.familyMembers || [],
             notes: customer.notes || '',
             imageUrls: customer.imageUrls || [],
-            calendarEventId: customer.calendarEventId || ''
+            calendarEventId: customer.calendarEventId || '',
           })
         }
       } catch (error) {

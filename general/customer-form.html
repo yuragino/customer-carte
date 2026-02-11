@@ -48,15 +48,15 @@
     </div>
     <form @submit.prevent="submitForm" class="bg-white p-4 rounded-lg shadow-md flex flex-col gap-3" x-show="!isLoading">
       <div>
-        <label>お名前</label>
+        <div class="form-label">お名前</div>
         <input type="text" x-model="form.name" required />
       </div>
       <div>
-        <label>ふりがな</label>
+        <div class="form-label">ふりがな</div>
         <input type="text" x-model="form.kana" />
       </div>
       <div>
-        <label>受付</label>
+        <div class="form-label">受付</div>
         <div>
           <div class="flex gap-5">
             <label class="option-btn">
@@ -72,6 +72,10 @@
                 :checked="form.contactMethod === 'お客様LINE'"> お客様LINE
             </label>
             <label class="option-btn">
+              <input type="radio" name="contactMethod" value="個人LINE" @click="toggleRadio($event, 'contactMethod')"
+                :checked="form.contactMethod === '個人LINE'"> 個人LINE
+            </label>
+            <label class="option-btn">
               <input type="radio" name="contactMethod" value="くらしのマーケット" @click="toggleRadio($event, 'contactMethod')"
                 :checked="form.contactMethod === 'くらしのマーケット'"> くらしのマーケット
             </label>
@@ -84,11 +88,11 @@
         </div>
       </div>
       <div>
-        <label>電話番号</label>
+        <div class="form-label">電話番号</div>
         <input type="tel" x-model="form.phone" inputmode="numeric" pattern="[0-9]*" />
       </div>
       <div>
-        <label>住所</label>
+        <div class="form-label">住所</div>
         <div class="grid grid-cols-6 gap-1">
           <input type="text" x-model="form.address" class="col-span-5" />
           <a :href="`https://www.google.com/maps?q=${form.address}`" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.address === '' ? 'pointer-events-none opacity-50' : ''">
@@ -97,10 +101,12 @@
         </div>
       </div>
       <div>
-        <label>GoogleMapリンク</label>
-        <a href="https://www.google.com/maps" target="_blank" class="text-green-600 hover:opacity-70">
-          GoogleMap <i class="fa-solid fa-up-right-from-square"></i>
-        </a>
+        <div class="flex gap-2">
+          <div class="form-label">GoogleMapリンク</div>
+          <a href="https://www.google.com/maps" target="_blank" class="text-green-600 hover:opacity-70">
+            GoogleMap <i class="fa-solid fa-up-right-from-square"></i>
+          </a>
+        </div>
         <div class="grid grid-cols-6 gap-1">
           <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." class="col-span-5" />
           <a :href="form.mapLink" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.mapLink === '' ? 'pointer-events-none opacity-50' : ''">
@@ -109,7 +115,10 @@
         </div>
       </div>
       <div>
-        <label>家族構成</label>
+        <div class="form-label">家族構成</div>
+        <button type="button" class="text-white bg-green-600 p-2 text-sm rounded-md hover:bg-green-700 col-span-1" @click="addRow()" x-show="form.familyMembers.length === 0">
+          <i class="fa-regular fa-plus"></i> 家族を追加する
+        </button>
         <template x-for="(familyMember,index) in form.familyMembers">
           <div class="grid grid-cols-12 gap-1" :class="index !== 0 ? 'mt-1' : ''">
             <div class="col-span-5 flex items-center">
@@ -125,17 +134,17 @@
             </button>
           </div>
         </template>
-        <button type="button" class="text-white bg-green-600 p-2 text-sm rounded-md hover:bg-green-700 col-span-1" @click="addRow()" x-show="form.familyMembers.length === 0">
-          <i class="fa-regular fa-plus"></i> 家族を追加する
-        </button>
       </div>
       <div>
-        <label>備考</label>
+        <div class="form-label">備考</div>
         <textarea x-model="form.notes"></textarea>
       </div>
-      <div class="m-2">
-        <label>画像</label>
-        <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, 'image')">
+      <div>
+        <div class="form-label">画像</div>
+        <label class="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-md cursor-pointer hover:bg-pink-600 transition">
+          <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, 'image')" class="hidden">
+          <i class="fa-solid fa-camera"></i> 写真を追加
+        </label>
         <div class="flex flex-wrap gap-3 p-1">
           <template x-for="(url, index) in form.imageUrls" :key="url">
             <div>
