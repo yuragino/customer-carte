@@ -98,6 +98,9 @@
       </div>
       <div>
         <label>GoogleMapリンク</label>
+        <a href="https://www.google.com/maps" target="_blank" class="text-green-600 hover:opacity-70">
+          GoogleMap <i class="fa-solid fa-up-right-from-square"></i>
+        </a>
         <div class="grid grid-cols-6 gap-1">
           <input type="text" x-model="form.mapLink" placeholder="例 : https://maps.app.goo.gl/..." class="col-span-5" />
           <a :href="form.mapLink" target="_blank" class="flex justify-center items-center text-white bg-green-600 p-1 text-sm rounded-md hover:bg-green-700 col-span-1" :class="form.mapLink === '' ? 'pointer-events-none opacity-50' : ''">
