@@ -155,13 +155,21 @@
         </div>
       </div>
       <div>
-        <div class="form-label">着物お預かり日</div>
-        <div class="flex items-center gap-3">
-          <input type="date" x-model="form.pickupDate" class="border rounded p-2">
-          <input type="time" x-model="form.pickupStartTime" class="border rounded p-2 w-28">
-          <span>～</span>
-          <input type="time" x-model="form.pickupEndTime" class="border rounded p-2 w-28">
+        <div class="flex gap-3 items-center">
+          <div class="form-label">着物お預かり(打ち合わせ)</div>
+          <label class="flex items-center gap-1 text-pink-600">
+            <input type="checkbox" x-model="form.hasPickup" class="accent-pink-500">
+            お預かりがある場合はここにチェック
+          </label>
         </div>
+        <template x-if="form.hasPickup">
+          <div class="flex items-center gap-3">
+            <input type="date" required x-model="form.pickupDate" class="border rounded p-2">
+            <input type="time" required x-model="form.pickupStartTime" class="border rounded p-2 w-28">
+            <span>～</span>
+            <input type="time" required x-model="form.pickupEndTime" class="border rounded p-2 w-28">
+          </div>
+        </template>
       </div>
       <div>
         <div class="form-label">備考</div>
