@@ -28,253 +28,241 @@
     </div>
   </header>
 
-  <main>
-    <div class="cancellation-status" x-show="formData.representative.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
-    <div class="delete-container">
-      <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
-        <i class="fa-regular fa-trash-can"></i> カルテを削除
-      </button>
-      <!-- 印刷 -->
-      <a :href="`./print.html?docId=${docId}`" target="_blank" class="print-btn" x-show="docId">
-        印刷用ページ
-      </a>
+  <main class="p-6 space-y-8 bg-gray-50 min-h-screen">
+    <div x-show="formData.representative.isCanceled" class="p-3 bg-red-100 text-red-700 text-center rounded" x-cloak>この予約はすでにキャンセルされています</div>
+
+    <div class="flex justify-between items-center mb-4">
+      <div class="space-x-2">
+        <button type="button" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition" x-show="docId" @click="deleteForm"><i class="fa-regular fa-trash-can mr-1"></i>カルテを削除</button>
+        <a :href="`./print.html?docId=${docId}`" target="_blank" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition" x-show="docId">印刷用ページ</a>
+      </div>
     </div>
 
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" class="space-y-6">
       <fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
-        <div class="form-section">
-          <h2 class="section-title">代表者情報</h2>
-          <div>
-            <table class="form-table">
-              <tr>
-                <th>予約方法</th>
-                <td>
-                  <label>
-                    <input type="radio" name="reservationMethod" value="じゃらん椿" @click="toggleRadio($event, 'reservationMethod')"
-                      :checked="formData.representative.reservationMethod === 'じゃらん椿'"> じゃらん椿
-                  </label>
-                  <label>
-                    <input type="radio" name="reservationMethod" value="じゃらん教室" @click="toggleRadio($event, 'reservationMethod')"
-                      :checked="formData.representative.reservationMethod === 'じゃらん教室'"> じゃらん教室
-                  </label>
-                  <label>
-                    <input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event, 'reservationMethod')"
-                      :checked="formData.representative.reservationMethod === 'アソビュー'"> アソビュー
-                  </label>
-                  <label>
-                    <input type="radio" name="reservationMethod" value="個人" @click="toggleRadio($event, 'reservationMethod')"
-                      :checked="formData.representative.reservationMethod === '個人'"> 個人
-                  </label>
-                  <label>
-                    <input type="radio" name="reservationMethod" value="イベント" @click="toggleRadio($event, 'reservationMethod')"
-                      :checked="formData.representative.reservationMethod === 'イベント'"> イベント
-                  </label>
-                </td>
-              </tr>
-              <tr>
-                <th>連絡方法</th>
-                <td>
-                  <label>
-                    <input type="radio" name="contactMethod" value="教室LINE" @click="toggleRadio($event, 'contactMethod')"
-                      :checked="formData.representative.contactMethod === '教室LINE'"> 教室LINE
-                  </label>
-                  <label>
-                    <input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event, 'contactMethod')"
-                      :checked="formData.representative.contactMethod === '椿LINE'"> 椿LINE
-                  </label>
-                  <label>
-                    <input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event, 'contactMethod')"
-                      :checked="formData.representative.contactMethod === 'お客様LINE'"> お客様LINE
-                  </label>
-                  <label>
-                    <input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event, 'contactMethod')"
-                      :checked="formData.representative.contactMethod === 'その他'"> その他
-                  </label>
-                  <input type="text" x-model="form.contactRemark" x-show="formData.representative.contactMethod === 'その他'" placeholder="〇〇様の紹介">
+        <div class="bg-white rounded-xl shadow p-6 space-y-6">
+          <h2 class="text-lg font-semibold border-b pb-2 mb-2">代表者情報</h2>
+          <table class="w-full text-sm border-collapse">
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2 w-32">予約方法</th>
+              <td class="p-2 space-x-3">
+                <label><input type="radio" name="reservationMethod" value="じゃらん椿" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='じゃらん椿'">じゃらん椿</label>
+                <label><input type="radio" name="reservationMethod" value="じゃらん教室" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='じゃらん教室'">じゃらん教室</label>
+                <label><input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='アソビュー'">アソビュー</label>
+                <label><input type="radio" name="reservationMethod" value="個人" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='個人'">個人</label>
+                <label><input type="radio" name="reservationMethod" value="イベント" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='イベント'">イベント</label>
+              </td>
+            </tr>
 
-                </td>
-              </tr>
-              <tr>
-                <th>代表者名</th>
-                <td><input type="text" x-model="formData.representative.name" required class="middle-width"></td>
-              </tr>
-              <tr>
-                <th>ふりがな</th>
-                <td><input type="text" x-model="formData.representative.kana" class="middle-width"></td>
-              </tr>
-              <tr>
-                <th>電話番号</th>
-                <td>
-                  <input type="tel" x-model="formData.representative.phone" class="middle-width" inputmode="numeric" pattern="[0-9]*">
-                </td>
-              </tr>
-              <tr>
-                <th>来店日時</th>
-                <td><input type="datetime-local" x-model="formData.representative.visitDateTime" class="middle-width"></td>
-              </tr>
-              <tr>
-                <th>仕上がり時間</th>
-                <td><input type="time" x-model="formData.representative.finishTime" class="middle-width"></td>
-              </tr>
-              <tr>
-                <th>お戻り予定時間</th>
-                <td><input type="time" x-model="formData.representative.returnTime" class="middle-width"></td>
-              </tr>
-              <tr>
-                <th>人数</th>
-                <td class="person-count">
-                  女 <input type="number" min="0" x-model.number="formData.femaleCount" @change="updateCustomerList">
-                  男 <input type="number" min="0" x-model.number="formData.maleCount" @change="updateCustomerList">
-                </td>
-              </tr>
-              <tr>
-                <th>住所</th>
-                <td><input type="text" class="full-width" x-model="formData.representative.address"></td>
-              </tr>
-              <tr>
-                <th>交通手段</th>
-                <td>
-                  <label>
-                    <input type="radio" name="transportation" value="車" @click="toggleRadio($event, 'transportation')"
-                      :checked="formData.representative.transportation === '車'"> 車
-                  </label>
-                  <label>
-                    <input type="radio" name="transportation" value="JR" @click="toggleRadio($event, 'transportation')"
-                      :checked="formData.representative.transportation === 'JR'"> JR
-                  </label>
-                  <label>
-                    <input type="radio" name="transportation" value="東武" @click="toggleRadio($event, 'transportation')"
-                      :checked="formData.representative.transportation === '東武'"> 東武
-                  </label>
-                  <label>
-                    <input type="radio" name="transportation" value="送迎" @click="toggleRadio($event, 'transportation')"
-                      :checked="formData.representative.transportation === '送迎'"> 送迎
-                  </label>
-                </td>
-              </tr>
-              <tr>
-                <th>備考</th>
-                <td><input type="text" class="full-width" x-model="formData.representative.notes"></td>
-              </tr>
-              <tr>
-                <th>お伝え事項</th>
-                <td>
-                  <label><input type="checkbox" x-model="formData.representative.checkpoints.rentalPage"> きものレンタルページ</label>
-                  <label><input type="checkbox" x-model="formData.representative.checkpoints.footwearBag"> 履物バッグ</label>
-                  <label><input type="checkbox" x-model="formData.representative.checkpoints.price"> 料金</label>
-                  <label><input type="checkbox" x-model="formData.representative.checkpoints.location"> 当店の場所</label>
-                  <label><input type="checkbox" x-model="formData.representative.checkpoints.parking"> 駐車場</label>
-                </td>
-              </tr>
-              <tr>
-                <th>支払い区分</th>
-                <td>
-                  <label><input type="radio" name="paymentType" value="group" x-model="formData.representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="formData.representative.paymentType === 'group'"> グループでまとめて</label>
-                  <label><input type="radio" name="paymentType" value="individual" x-model="formData.representative.paymentType" @click="toggleRadio($event, 'paymentType')" :checked="formData.representative.paymentType === 'individual'"> 個別で支払い</label>
-                </td>
-              </tr>
-            </table>
-          </div>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">連絡方法</th>
+              <td class="p-2 space-x-3">
+                <label><input type="radio" name="contactMethod" value="教室LINE" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='教室LINE'">教室LINE</label>
+                <label><input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='椿LINE'">椿LINE</label>
+                <label><input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='お客様LINE'">お客様LINE</label>
+                <label><input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='その他'">その他</label>
+                <input type="text" x-model="form.contactRemark" x-show="formData.representative.contactMethod==='その他'" placeholder="〇〇様の紹介" class="border rounded px-2 py-1">
+              </td>
+            </tr>
+
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">代表者名</th>
+              <td class="p-2"><input type="text" x-model="formData.representative.name" required class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">ふりがな</th>
+              <td class="p-2"><input type="text" x-model="formData.representative.kana" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">電話番号</th>
+              <td class="p-2"><input type="tel" x-model="formData.representative.phone" inputmode="numeric" pattern="[0-9]*" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">来店日時</th>
+              <td class="p-2"><input type="datetime-local" x-model="formData.representative.visitDateTime" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">仕上がり時間</th>
+              <td class="p-2"><input type="time" x-model="formData.representative.finishTime" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">お戻り予定時間</th>
+              <td class="p-2"><input type="time" x-model="formData.representative.returnTime" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">人数</th>
+              <td class="p-2">
+                <div class="flex gap-4">
+                  <div class="flex items-center gap-2">女:<input type="number" min="0" x-model.number="formData.femaleCount" @change="updateCustomerList" class="border rounded px-2 py-1 w-20"></div>
+                  <div class="flex items-center gap-2">男:<input type="number" min="0" x-model.number="formData.maleCount" @change="updateCustomerList" class="border rounded px-2 py-1 w-20"></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">住所</th>
+              <td class="p-2"><input type="text" x-model="formData.representative.address" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">交通手段</th>
+              <td class="p-2 space-x-3">
+                <label><input type="radio" name="transportation" value="車" @click="toggleRadio($event,'transportation')" :checked="formData.representative.transportation==='車'">車</label>
+                <label><input type="radio" name="transportation" value="JR" @click="toggleRadio($event,'transportation')" :checked="formData.representative.transportation==='JR'">JR</label>
+                <label><input type="radio" name="transportation" value="東武" @click="toggleRadio($event,'transportation')" :checked="formData.representative.transportation==='東武'">東武</label>
+                <label><input type="radio" name="transportation" value="送迎" @click="toggleRadio($event,'transportation')" :checked="formData.representative.transportation==='送迎'">送迎</label>
+              </td>
+            </tr>
+
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">備考</th>
+              <td class="p-2"><input type="text" x-model="formData.representative.notes" class="border rounded px-2 py-1 w-full"></td>
+            </tr>
+
+            <!-- ここ抜けていたお伝え事項と支払い区分 -->
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">お伝え事項</th>
+              <td class="p-2 space-x-2"><label><input type="checkbox" x-model="formData.representative.checkpoints.rentalPage" class="mr-1">きものレンタルページ</label><label><input type="checkbox" x-model="formData.representative.checkpoints.footwearBag" class="mr-1">履物バッグ</label><label><input type="checkbox" x-model="formData.representative.checkpoints.price" class="mr-1">料金</label><label><input type="checkbox" x-model="formData.representative.checkpoints.location" class="mr-1">当店の場所</label><label><input type="checkbox" x-model="formData.representative.checkpoints.parking" class="mr-1">駐車場</label></td>
+            </tr>
+            <tr class="border-b">
+              <th class="text-left font-semibold bg-gray-100 p-2">支払い区分</th>
+              <td class="p-2 space-x-4"><label><input type="radio" name="paymentType" value="group" x-model="formData.representative.paymentType" @click="toggleRadio($event,'paymentType')" :checked="formData.representative.paymentType==='group'">グループでまとめて</label><label><input type="radio" name="paymentType" value="individual" x-model="formData.representative.paymentType" @click="toggleRadio($event,'paymentType')" :checked="formData.representative.paymentType==='individual'">個別で支払い</label></td>
+            </tr>
+          </table>
         </div>
 
-        <div class="customer-details-grid">
-          <div class="customer-column-header">
-            <div class="header-item">名前</div>
-            <div class="header-item">性別</div>
-            <div class="header-item">体型</div>
-            <div class="header-item">身長,足のサイズ</div>
-            <div class="header-item">着付種別</div>
-            <div class="header-item">追加レンタル</div>
-            <div class="header-item">画像アップロード</div>
-            <div class="header-item">合計</div>
-            <!-- 支払い方法は個別支払いの時のみ表示 -->
-            <template x-if="formData.representative.paymentType === 'individual'">
-              <div class="header-item">支払い方法</div>
-            </template>
-          </div>
+        <div class="overflow-x-auto">
+          <div class="table border-collapse border w-auto text-sm">
+            <div class="table-row-group">
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">名前</div>
+                <template x-for="(c,i) in formData.customers" :key="c.id">
+                  <div class="table-cell border p-2 w-64 align-top">
+                    <input type="text" x-model="c.kana" placeholder="ふりがな" class="text-xs border rounded w-full px-2 py-1 mb-1">
+                    <input type="text" x-model="c.name" placeholder="名前" class="border rounded w-full px-2 py-1">
+                  </div>
+                </template>
+              </div>
 
-          <template x-for="(customer, customerIndex) in formData.customers" :key="customer.id">
-            <div class="customer-column">
-              <div class="form-cell flex flex-col">
-                <input type="text" x-model="customer.kana" class="h-4 text-xs w-[191.8px]" pattern="[\u3041-\u3096]*" placeholder="ふりがな">
-                <input type="text" x-model="customer.name" placeholder="名前">
-              </div>
-              <div class="form-cell">
-                <label><input type="radio" :name="'gender' + customerIndex" value="female" x-model="customer.gender"> 女</label>
-                <label><input type="radio" :name="'gender' + customerIndex" value="male" x-model="customer.gender"> 男</label>
-              </div>
-              <div class="form-cell">
-                <label><input type="radio" :name="'bodyShape' + customerIndex" value="S" x-model="customer.bodyShape"> S</label>
-                <label><input type="radio" :name="'bodyShape' + customerIndex" value="M" x-model="customer.bodyShape"> M</label>
-                <label><input type="radio" :name="'bodyShape' + customerIndex" value="L" x-model="customer.bodyShape"> L</label>
-                <input type="number" class="small-input" x-model.number="customer.weight" min="0">
-                <span x-text="customer.gender === 'female' ? '号' : 'kg'"></span>
-              </div>
-              <div class="form-cell">
-                身長 <input type="number" class="small-input" x-model.number="customer.height" min="0" step="0.1"> cm
-                足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0" step="0.1"> cm
-              </div>
-              <div class="form-cell flex flex-col">
-                <div>
-                  <label><input type="radio" :name="'dressingType' + customerIndex" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
-                  <label><input type="radio" :name="'dressingType' + customerIndex" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
-                </div>
-                <div><input type="number" x-model.number="customer.dressingPrice">円</div>
-              </div>
-              <!-- 追加レンタル -->
-              <div class="form-cell flex flex-col gap-1">
-                <ul class="rental-list">
-                  <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
-                    <li>
-                      <span x-text="`${item.name} ${formatYen(item.price)}`"></span>
-                      <button type="button" class="delete-btn" @click="removeRentalItem(customerIndex, itemIndex)"><i class="fa-regular fa-trash-can"></i></button>
-                    </li>
-                  </template>
-                </ul>
-                <button type="button" class="bg-blue-500 text-white rounded py-2 px-3" @click="openRentalModal(customerIndex)">追加 <i class="fa-solid fa-plus"></i></button>
-              </div>
-              <!-- 画像アップロード -->
-              <div class="form-cell flex justify-around">
-                <div class="preview-container">
-                  <!-- 保存済み -->
-                  <template x-for="(url, imageIndex) in customer.imageUrls" :key="url">
-                    <div class="flex gap-1 border border-gray-400 p-1">
-                      <img :src="url" class="preview-image" @click="openImageModal(url)">
-                      <button type="button" class="btn-del" @click="removeMedia(customerIndex,'saved-image',imageIndex)">
-                        <i class="fa-solid fa-trash"></i>
-                      </button>
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">性別</div>
+                <template x-for="(c,i) in formData.customers" :key="'gender'+c.id">
+                  <div class="table-cell border p-2">
+                    <div class="flex gap-3 justify-center pointer-events-none">
+                      <label class="block text-sm"><input type="radio" :name="'gender'+i" value="female" x-model="c.gender">女</label>
+                      <label class="block text-sm"><input type="radio" :name="'gender'+i" value="male" x-model="c.gender">男</label>
                     </div>
-                  </template>
-                  <!-- 新規追加プレビュー -->
-                  <template x-for="(src, imageIndex) in customer.newImagePreviews" :key="src">
-                    <div class="flex gap-1 border border-gray-400 p-1">
-                      <img :src="src" class="preview-image" @click="openImageModal(src)">
-                      <button type="button" class="btn-del" @click="removeMedia(customerIndex,'new-image',imageIndex)">
-                        <i class="fa-solid fa-trash"></i>
-                      </button>
+                  </div>
+                </template>
+              </div>
+
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">体型</div>
+                <template x-for="(c,i) in formData.customers" :key="'body'+c.id">
+                  <div class="table-cell border p-2">
+                    <label><input type="radio" :name="'bodyShape'+i" value="S" x-model="c.bodyShape">S</label>
+                    <label><input type="radio" :name="'bodyShape'+i" value="M" x-model="c.bodyShape">M</label>
+                    <label><input type="radio" :name="'bodyShape'+i" value="L" x-model="c.bodyShape">L</label>
+                    <input type="number" x-model.number="c.weight" class="border rounded w-16 ml-1 inline-block">
+                    <span x-text="c.gender === 'female' ? '号' : 'kg'"></span>
+                  </div>
+                </template>
+              </div>
+
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">身長,足のサイズ<br><span class="text-sm text-gray-500 font-light">半角数字で入力</span></div>
+                <template x-for="(c,i) in formData.customers" :key="'size'+c.id">
+                  <div class="table-cell border p-2">
+                    <div class="mb-1 flex items-center gap-1">
+                      <span>身長</span>
+                      <input type="number" x-model.number="c.height" step="0.1" min="0"
+                        class="flex-1 border rounded px-2 py-1">
+                      <span>cm</span>
                     </div>
-                  </template>
-                </div>
-                <label class="file-upload-label">
-                  <i class="fa-solid fa-camera"></i>
-                  <input type="file" multiple accept="image/*" @change="prepareMediaPreview($event, customerIndex)">
-                </label>
+                    <div class="flex items-center gap-1">
+                      <span>足</span>
+                      <input type="number" x-model.number="c.footSize" step="0.1" min="0"
+                        class="flex-1 border rounded px-2 py-1">
+                      <span>cm</span>
+                    </div>
+                  </div>
+                </template>
               </div>
-              <div class="form-cell">
-                <span x-text="formatYen(customerTotalPrepayment(customer))"></span>
+
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">着付種別</div>
+                <template x-for="(c,i) in formData.customers" :key="'type'+c.id">
+                  <div class="table-cell border p-2">
+                    <div class="flex gap-3">
+                      <label class="block text-sm"><input type="radio" :name="'dressingType'+i" value="レンタル&着付" x-model="c.dressingType">レンタル＆着付</label>
+                      <label class="block text-sm"><input type="radio" :name="'dressingType'+i" value="着付のみ" x-model="c.dressingType">着付のみ</label>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <input type="number" x-model.number="c.dressingPrice" class="border rounded w-24 px-2 py-1 text-right flex-1">
+                      <span>円</span>
+                    </div>
+                  </div>
+                </template>
               </div>
-              <!-- 個別の支払い方法 -->
+
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">追加レンタル</div>
+                <template x-for="(c,i) in formData.customers" :key="'rent'+c.id">
+                  <div class="table-cell border p-2 align-top">
+                    <ul class="space-y-1 text-sm">
+                      <template x-for="(it,j) in c.additionalRentals" :key="j">
+                        <li class="flex justify-between items-center"><span x-text="`${it.name} ${formatYen(it.price)}`"></span><button type="button" class="text-gray-400 hover:text-red-500" @click="removeRentalItem(i,j)"><i class="fa-regular fa-trash-can"></i></button></li>
+                      </template>
+                    </ul>
+                    <button type="button" @click="openRentalModal(i)" class="bg-blue-500 text-white rounded py-1 px-2 mt-1 w-full text-xs hover:bg-blue-600">追加</button>
+                  </div>
+                </template>
+              </div>
+
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">画像アップロード</div>
+                <template x-for="(c,i) in formData.customers" :key="'img'+c.id">
+                  <div class="table-cell border p-2">
+                    <div class="space-y-1">
+                      <template x-for="(url,j) in c.imageUrls" :key="url">
+                        <div class="flex justify-around border p-1"><img :src="url" class="w-10 h-10 object-cover rounded cursor-pointer" @click="openImageModal(url)"><button type="button" class="text-red-500" @click="removeMedia(i,'saved-image',j)"><i class="fa-solid fa-trash"></i></button></div>
+                      </template>
+                      <template x-for="(src,j) in c.newImagePreviews" :key="src">
+                        <div class="flex justify-around border p-1"><img :src="src" class="w-10 h-10 object-cover rounded cursor-pointer" @click="openImageModal(src)"><button type="button" class="text-red-500" @click="removeMedia(i,'new-image',j)"><i class="fa-solid fa-trash"></i></button></div>
+                      </template>
+                    </div>
+                    <label class="flex flex-col items-center justify-center text-gray-600 cursor-pointer hover:text-blue-600 mt-1">
+                      <i class="fa-solid fa-camera text-lg"></i>
+                      <input type="file" multiple accept="image/*" class="hidden" @change="prepareMediaPreview($event,i)">
+                    </label>
+                  </div>
+                </template>
+              </div>
+
+              <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">合計</div>
+                <template x-for="(c,i) in formData.customers" :key="'total'+c.id">
+                  <div class="table-cell border p-2 text-center">
+                    <span class="font-bold" x-text="formatYen(customerTotalAdjusted(c))"></span>
+                    <span class="text-gray-500 text-xs"
+                      x-text="c.discountAmount>0 ? '(値引:'+formatYen(c.discountAmount)+')' : ''"></span>
+                    <button type="button" @click="openDiscountModal(i)" class="block text-blue-500 text-xs underline mt-1 mx-auto">割引する</button>
+                  </div>
+                </template>
+              </div>
+
               <template x-if="formData.representative.paymentType==='individual'">
-                <div class="form-cell">
-                  <input type="text" x-model="customer.paymentMethod">
+                <div class="table-row">
+                  <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">支払い方法</div>
+                  <template x-for="(c,i) in formData.customers" :key="'pay'+c.id">
+                    <div class="table-cell border p-2"><input type="text" x-model="c.paymentMethod" class="border rounded w-full px-2 py-1 text-sm"></div>
+                  </template>
                 </div>
               </template>
             </div>
-          </template>
+          </div>
         </div>
 
         <div class="form-section totals-section">
-          グループ合計：<span x-text="formatYen(groupTotalPrepayment)"></span>
+          <div>グループ合計：<span x-text="formatYen(groupTotalPrepayment)"></span></div>
           <div class="group-payment-method" x-show="formData.representative.paymentType === 'group'">
             支払い方法：
             <input type="text" x-model="formData.representative.groupPaymentMethod">
@@ -306,6 +294,37 @@
         <input type="number" x-model.number="rentalModal.input.price">
       </div>
       <button class="submit-btn" @click="addRentalItem()">追加登録</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" x-show="discountModal.isOpen" @click="discountModal.isOpen = false" x-cloak>
+    <div class="modal-content discount-modal" @click.stop>
+      <h3>現地支払い金額の修正</h3>
+      <div class="price-box">
+        <div>
+          <span class="label">元の金額</span>
+          <span class="value" x-text="formatYen(discountModal.originalPrice)"></span>
+        </div>
+        <div>
+          <span class="label">値引き額</span>
+          <span class="value">
+            <input type="number" min="0"
+              x-model.number="discountModal.input.amount"
+              @input="discountModal.adjustedPrice = discountModal.originalPrice - discountModal.input.amount"
+              class="discount-input"> 円
+          </span>
+        </div>
+        <div>
+          <span class="label">調整後金額</span>
+          <span class="value text-lg font-bold text-blue-600"
+            x-text="formatYen(discountModal.adjustedPrice)"></span>
+        </div>
+        <div>
+          <label>メモ</label>
+          <input type="text" x-model="discountModal.input.memo">
+        </div>
+      </div>
+      <button class="submit-btn" @click="applyDiscount()">確定</button>
     </div>
   </div>
 

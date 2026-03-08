@@ -2,7 +2,6 @@ import { doc, getDoc, collection, addDoc, updateDoc, deleteDoc, serverTimestamp 
 import { db } from '../common/firebase-config.js';
 import { formatYen } from "../common/utils/format-utils.js";
 import { toggleRadioUtil } from "../common/utils/ui-utils.js";
-import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
@@ -30,24 +29,29 @@ document.addEventListener('alpine:init', () => {
       return doc(db, COLLECTION_NAME, this.docId);
     },
 
-    // 各顧客の支払い金額（着付＋追加レンタル）を合計
     // 個々の顧客の合計金額（着付＋追加レンタル）
     customerTotalPrepayment(customer) {
       if (!customer) return 0;
-
       const dressing = Number(customer.dressingPrice) || 0;
       const rentals = (customer.additionalRentals || []).reduce(
         (sum, item) => sum + (Number(item.price) || 0),
         0
       );
-
       return dressing + rentals;
     },
 
+    // 顧客1人あたりの割引後合計
+    customerTotalAdjusted(customer) {
+      const base = this.customerTotalPrepayment(customer);
+      const discount = Number(customer.discountAmount) || 0;
+      return base - discount;
+    },
+
+    // グループ全体の合計（割引込み）
     get groupTotalPrepayment() {
       if (!this.formData?.customers?.length) return 0;
       return this.formData.customers.reduce(
-        (total, customer) => total + this.customerTotalPrepayment(customer),
+        (total, customer) => total + this.customerTotalAdjusted(customer),
         0
       );
     },
@@ -98,6 +102,27 @@ document.addEventListener('alpine:init', () => {
     removeRentalItem(customerIndex, itemIndex) {
       if (!confirm('この項目を削除しますか？')) return;
       this.formData.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
+    },
+
+    // 値引き調整
+    openDiscountModal(customerIndex) {
+      const customer = this.formData.customers[customerIndex];
+      this.activeCustomerIndex = customerIndex;
+
+      // 元の金額（割引前）
+      this.discountModal.originalPrice = this.customerTotalPrepayment(customer);
+      this.discountModal.input.amount = customer.discountAmount || 0;
+      this.discountModal.input.memo = customer.discountMemo || "";
+      this.discountModal.adjustedPrice =
+        this.discountModal.originalPrice - this.discountModal.input.amount;
+
+      this.discountModal.isOpen = true;
+    },
+    applyDiscount() {
+      const customer = this.formData.customers[this.activeCustomerIndex];
+      customer.discountAmount = this.discountModal.input.amount;
+      customer.discountMemo = this.discountModal.input.memo;
+      this.discountModal.isOpen = false;
     },
 
     updateCustomerList() {
@@ -198,7 +223,6 @@ function createInitialCustomerData(gender, id) {
     paymentMethod: '',
     discountAmount: 0,
     discountMemo: '',
-    onSitePaymentAdjusted: 0,
   };
 }
 

@@ -14,19 +14,33 @@ document.addEventListener('alpine:init', () => {
     customers: [],
     femaleCount: 0,
     maleCount: 0,
-    totalPrepayment: 0,
-    totalOnSitePayment: 0,
 
-    // ===== Computed Properties for Totals =====
+    // 個々の顧客の合計金額（着付＋追加レンタル）
+    customerTotalPrepayment(customer) {
+      if (!customer) return 0;
+      const dressing = Number(customer.dressingPrice) || 0;
+      const rentals = (customer.additionalRentals || []).reduce(
+        (sum, item) => sum + (Number(item.price) || 0),
+        0
+      );
+      return dressing + rentals;
+    },
+
+    // 顧客1人あたりの割引後合計
+    customerTotalAdjusted(customer) {
+      const base = this.customerTotalPrepayment(customer);
+      const discount = Number(customer.discountAmount) || 0;
+      return base - discount;
+    },
+
+    // グループ全体の合計（割引込み）
     get groupTotalPrepayment() {
-      if (!this.customers) return 0;
-      return this.customers.reduce((total, customer) => total + this.calculateCustomerPrepayment(customer), 0);
+      return this.customers.reduce(
+        (total, customer) => total + this.customerTotalAdjusted(customer),
+        0
+      );
     },
 
-    get groupTotalOnSitePayment() {
-      if (!this.customers) return 0;
-      return this.customers.reduce((total, customer) => total + this.calculateCustomerOnSitePayment(customer), 0);
-    },
 
     // ===== Initialization =====
     async init() {
@@ -54,10 +68,6 @@ document.addEventListener('alpine:init', () => {
           this.customers = data.customers || [];
           this.femaleCount = data.femaleCount ?? 0;
           this.maleCount = data.maleCount ?? 0;
-
-          this.totalPrepayment = data.totalPrepayment ?? 0;
-          this.totalOnSitePaymentAdjusted = data.totalOnSitePaymentAdjusted ?? 0;
-          this.totalOnSitePayment = data.totalOnSitePayment ?? 0;
         } else {
           this.error = "指定された予約データが見つかりませんでした。";
         }
@@ -78,7 +88,6 @@ document.addEventListener('alpine:init', () => {
       };
       return labels[key] || key;
     },
-
 
   }));
 });
