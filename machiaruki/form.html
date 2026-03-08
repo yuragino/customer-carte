@@ -212,8 +212,8 @@
                 <span x-text="customer.gender === 'female' ? '号' : 'kg'"></span>
               </div>
               <div class="form-cell">
-                身長 <input type="number" class="small-input" x-model.number="customer.height" min="0"> cm
-                足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0"> cm
+                身長 <input type="number" class="small-input" x-model.number="customer.height" min="0" step="0.1"> cm
+                足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0" step="0.1"> cm
               </div>
               <div class="form-cell">
                 <label><input type="radio" :name="'dressingType' + customerIndex" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
