@@ -51,6 +51,7 @@
                 <label><input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='アソビュー'">アソビュー</label>
                 <label><input type="radio" name="reservationMethod" value="個人" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='個人'">個人</label>
                 <label><input type="radio" name="reservationMethod" value="イベント" @click="toggleRadio($event,'reservationMethod')" :checked="formData.representative.reservationMethod==='イベント'">イベント</label>
+                <input type="text" x-model="formData.representative.eventName" x-show="formData.representative.reservationMethod==='イベント'" placeholder="イベント名" class="border rounded px-2 py-1">
               </td>
             </tr>
 
@@ -61,7 +62,7 @@
                 <label><input type="radio" name="contactMethod" value="椿LINE" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='椿LINE'">椿LINE</label>
                 <label><input type="radio" name="contactMethod" value="お客様LINE" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='お客様LINE'">お客様LINE</label>
                 <label><input type="radio" name="contactMethod" value="その他" @click="toggleRadio($event,'contactMethod')" :checked="formData.representative.contactMethod==='その他'">その他</label>
-                <input type="text" x-model="form.contactRemark" x-show="formData.representative.contactMethod==='その他'" placeholder="〇〇様の紹介" class="border rounded px-2 py-1">
+                <input type="text" x-model="formData.representative.contactRemark" x-show="formData.representative.contactMethod==='その他'" placeholder="〇〇様の紹介" class="border rounded px-2 py-1">
               </td>
             </tr>
 

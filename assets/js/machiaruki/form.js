@@ -194,7 +194,9 @@ document.addEventListener('alpine:init', () => {
 function createInitialFormData() {
   return {
     representative: {
-      reservationMethod: null, name: '', kana: '',
+      reservationMethod: null,
+      eventName:null,
+      name: '', kana: '',
       visitDateTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
       transportation: '',
