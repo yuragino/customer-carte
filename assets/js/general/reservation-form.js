@@ -3,9 +3,11 @@ import { collection, addDoc, updateDoc, doc, getDoc, serverTimestamp, deleteDoc 
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 import { createMediaModal, removeMediaUtil, uploadMediaArrayToCloudinary, prepareMediaPreviewUtil } from "../common/utils/media-utils.js";
+
 const RESERVE_COLLECTION = "generalReservations";
 const CUSTOMERS_COLLECTION = "generalCustomers";
-const GAS_API = "https://script.google.com/macros/s/AKfycbweoz-pwU7_5OGbcAvXDNsnv7bz42MrS6Y26-Me92hRXrwY8FQGrFXHY4UmjTOdVxt-/exec";
+const GAS_API = "https://script.google.com/macros/s/AKfycbxF167IRD6y4ffSV-J1u-dyf5t6EoQfoiGton4CoH8nwfc4ZmmEb3icaC3ynhBoZ9iu/exec";
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...createMediaModal(),
@@ -32,13 +34,15 @@ document.addEventListener('alpine:init', () => {
       familyMembers: [],
       fittingTargets: [],
       // 着物をお預かりする日
+      hasPickup: false,
       pickupDate: '',
       pickupStartTime: '',
       pickupEndTime: '',
       notes: '',
       imageUrls: [],
-      // 連携情報
-      calendarEventId: '',
+      // 連携情報（Googleカレンダー）
+      calendarEventId: '',   // 着付けイベントID
+      pickupEventId: '',     // お預かりイベントID
     },
     isSaving: false,
     newImageFiles: [],
@@ -78,7 +82,7 @@ document.addEventListener('alpine:init', () => {
             notes: customer.notes || '',
             imageUrls: customer.imageUrls || [],
             calendarEventId: customer.calendarEventId || '',
-          })
+          });
         }
       } catch (error) {
         handleError('顧客情報の取得', error);
@@ -102,11 +106,14 @@ document.addEventListener('alpine:init', () => {
       return await uploadMediaArrayToCloudinary(this.newImageFiles, RESERVE_COLLECTION);
     },
 
-    // 登録 or 更新
+    // ===== 登録 or 更新 =====
     async submitForm() {
       this.isSaving = true;
       try {
-        const reserveFormUrl = this.reservationId ? `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${this.reservationId}` : '';
+        const reserveFormUrl = this.reservationId
+          ? `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${this.reservationId}`
+          : '';
+
         const newImageUrls = await this.uploadAllMedia();
         const mergedImageUrls = [...(this.form.imageUrls || []), ...newImageUrls];
         const dataToSave = {
@@ -114,41 +121,64 @@ document.addEventListener('alpine:init', () => {
           imageUrls: mergedImageUrls,
           updatedAt: serverTimestamp(),
         };
+
+        // ——— Googleカレンダー同期用ペイロード ———
         const calendarPayload = {
           name: this.form.name,
+          date: this.form.date,
           startDateTime: `${this.form.date}T${this.form.startTime}:00+09:00`,
           endDateTime: `${this.form.date}T${this.form.endTime}:00+09:00`,
-          location: this.form.locationLabel === '自宅' ? this.form.address : this.form.location,
+          pickupStartDateTime: this.form.pickupDate
+            ? `${this.form.pickupDate}T${this.form.pickupStartTime}:00+09:00`
+            : '',
+          pickupEndDateTime: this.form.pickupDate
+            ? `${this.form.pickupDate}T${this.form.pickupEndTime}:00+09:00`
+            : '',
+          location:
+            this.form.locationLabel === '自宅'
+              ? this.form.address
+              : this.form.location,
           phone: this.form.phone,
           contactMethod: this.form.contactMethod,
           contactRemark: this.form.contactRemark,
-          contactRemark: this.form.contactRemark,
           notes: this.form.notes,
           reserveFormUrl,
-          mapLink: this.form.locationLabel === '自宅' ? this.form.mapLinkHome : this.form.mapLinkOther,
+          mapLink:
+            this.form.locationLabel === '自宅'
+              ? this.form.mapLinkHome
+              : this.form.mapLinkOther,
         };
 
+        // ——— 新規 or 更新 ———
         if (this.reservationId) {
-          // 更新
+          // 更新モード
           await updateDoc(this.reservationRef, dataToSave);
+
           await this.syncToCalendar({
             ...calendarPayload,
-            action: "update",
+            action: 'update',
             eventId: this.form.calendarEventId,
+            pickupEventId: this.form.pickupEventId,
           });
         } else {
-          // 新規登録
+          // 新規登録モード
           this.form.createdAt = serverTimestamp();
           const reservationRef = await addDoc(collection(db, RESERVE_COLLECTION), dataToSave);
+
           const result = await this.syncToCalendar({
             ...calendarPayload,
             reserveFormUrl: `https://yuragino.github.io/customer-carte/general/reservation-form.html?reservationId=${reservationRef.id}`,
-            action: "create",
-          });;
-          if (result?.eventId) {
-            await updateDoc(reservationRef, { calendarEventId: result.eventId });
+            action: 'create',
+          });
+
+          if (result?.eventId || result?.pickupEventId) {
+            await updateDoc(reservationRef, {
+              calendarEventId: result.eventId || '',
+              pickupEventId: result.pickupEventId || '',
+            });
           }
         }
+
         this.redirectToList();
       } catch (e) {
         handleError('予約の保存', e);
@@ -157,6 +187,7 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // ===== GoogleカレンダーAPI 連携 =====
     async syncToCalendar(payload) {
       try {
         const res = await fetch(GAS_API, {
@@ -174,13 +205,15 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // ===== 予約削除 + カレンダー削除 =====
     async deleteForm() {
       if (!confirm('この予約を削除しますか？')) return;
       try {
         await deleteDoc(this.reservationRef);
         await this.syncToCalendar({
-          action: "delete",
+          action: 'delete',
           eventId: this.form.calendarEventId,
+          pickupEventId: this.form.pickupEventId,
         });
         this.redirectToList();
       } catch (error) {
@@ -205,6 +238,5 @@ document.addEventListener('alpine:init', () => {
       const targetObj = mediaType === 'saved-image' ? this.form : this;
       removeMediaUtil(mediaType, index, targetObj);
     },
-
   }));
 });

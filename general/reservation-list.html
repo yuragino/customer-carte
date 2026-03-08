@@ -43,26 +43,37 @@
       <thead class="bg-gray-100">
         <tr>
           <th>お客様名</th>
+          <th>お預かり日</th>
           <th>着付日</th>
-          <th>所要時間</th>
           <th>着付場所</th>
           <th>操作</th>
         </tr>
       </thead>
       <tbody>
         <template x-for="reserve in reservations" :key="reserve.docId">
-          <tr class="border-b">
+          <tr class="border-b" :class="reserve.isPast ? 'bg-gray-100 text-gray-500' : 'bg-white'">
             <td>
               <a :href="`./customer-form.html?customerId=${reserve.customerId}`" target="_blank" class="hover:text-blue-700">
                 <span x-text="reserve.name"></span>
                 <i class="fa-solid fa-arrow-up-right-from-square text-[14px] opacity-60"></i>
               </a>
             </td>
-            <td x-text="formatDateOnly(reserve.date)"></td>
             <td>
-              <span x-text="formatTime(reserve.startTime)"></span>
-              <span x-show="reserve.endTime">～</span>
-              <span x-text="formatTime(reserve.endTime)"></span>
+              <span x-text="formatDateOnly(reserve.pickupDate)"></span>
+              <div x-show="reserve.hasPickup">
+                <span x-text="formatTime(reserve.pickupStartTime)"></span>
+                <span x-show="reserve.endTime">～</span>
+                <span x-text="formatTime(reserve.pickupEndTime)"></span>
+              </div>
+            </td>
+            <td>
+              <span x-text="formatDateOnly(reserve.date)"></span>
+              <div>
+                <span x-text="formatTime(reserve.startTime)"></span>
+                <span x-show="reserve.endTime">～</span>
+                <span x-text="formatTime(reserve.endTime)"></span>
+                <span class="text-pink-400 font-bold" x-show="reserve.isProvisional">(仮)</span>
+              </div>
             </td>
             <td x-text="reserve.locationLabel === '自宅' ? reserve.address : reserve.location"></td>
             <td>

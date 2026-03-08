@@ -28,8 +28,13 @@ document.addEventListener("alpine:init", () => {
           ...doc.data(),
         }));
         const today = new Date().toISOString().split('T')[0];
-        const upcoming = allReservations.filter(r => r.date > today);
-        const past = allReservations.filter(r => r.date < today);
+        const reservationsWithStatus = allReservations.map(r => ({
+          ...r,
+          isPast: r.date < today,
+        }));
+        // 「今日以降」を先・「過去」を後ろ
+        const upcoming = reservationsWithStatus.filter(r => !r.isPast);
+        const past = reservationsWithStatus.filter(r => r.isPast);
         this.reservations = upcoming.concat(past);
       } catch (e) {
         handleError("予約データ読込", e);
