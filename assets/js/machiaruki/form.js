@@ -29,23 +29,26 @@ document.addEventListener('alpine:init', () => {
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
     },
-    // 各顧客の前払い金額を合計
-    get totalPrepayment() {
-      if (this.formData.representative.reservationMethod === null) return 0;
-      return this.formData.customers.reduce(
-        (total, customer) => total + this.calculateCustomerPrepayment(customer), 0
+
+    // 各顧客の支払い金額（着付＋追加レンタル）を合計
+    // 個々の顧客の合計金額（着付＋追加レンタル）
+    customerTotalPrepayment(customer) {
+      if (!customer) return 0;
+
+      const dressing = Number(customer.dressingPrice) || 0;
+      const rentals = (customer.additionalRentals || []).reduce(
+        (sum, item) => sum + (Number(item.price) || 0),
+        0
       );
+
+      return dressing + rentals;
     },
-    // 値引きを考慮しない元の（合計）現地支払い金額
-    get totalOnSitePayment() {
+
+    get groupTotalPrepayment() {
+      if (!this.formData?.customers?.length) return 0;
       return this.formData.customers.reduce(
-        (total, customer) => total + this.calculateCustomerOnSitePayment(customer), 0
-      );
-    },
-    // 値引き適用後の合計現地支払い金額
-    get totalOnSitePaymentAdjusted() {
-      return this.formData.customers.reduce(
-        (total, customer) => total + this.calculateCustomerOnSitePaymentAdjusted(customer), 0
+        (total, customer) => total + this.customerTotalPrepayment(customer),
+        0
       );
     },
 
@@ -95,23 +98,6 @@ document.addEventListener('alpine:init', () => {
     removeRentalItem(customerIndex, itemIndex) {
       if (!confirm('この項目を削除しますか？')) return;
       this.formData.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
-    },
-
-    // 値引き調整
-    openDiscountModal(customerIndex) {
-      const customer = this.formData.customers[customerIndex];
-      this.activeCustomerIndex = customerIndex;
-      this.discountModal.originalPrice = this.calculateCustomerOnSitePayment(customer);
-      this.discountModal.input.amount = customer.discountAmount;
-      this.discountModal.input.memo = customer.discountMemo;
-      this.discountModal.adjustedPrice = this.discountModal.originalPrice - this.discountModal.input.amount;
-      this.discountModal.isOpen = true;
-    },
-    applyDiscount() {
-      const customer = this.formData.customers[this.activeCustomerIndex];
-      customer.discountAmount = this.discountModal.input.amount;
-      customer.discountMemo = this.discountModal.input.memo;
-      this.discountModal.isOpen = false;
     },
 
     updateCustomerList() {
@@ -177,20 +163,6 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    // ==== 料金関係 ====
-    // 前払い
-    calculateCustomerPrepayment(customer) {
-      return calculateCustomerPayment(this, customer, 'prepayment');
-    },
-    // 現地払い（値引き前）
-    calculateCustomerOnSitePayment(customer) {
-      return calculateCustomerPayment(this, customer, 'onSite');
-    },
-    // 現地払い（値引き後）
-    calculateCustomerOnSitePaymentAdjusted(customer) {
-      return calculateCustomerPayment(this, customer, 'onSiteAdjusted', true);
-    },
-
   }));
 });
 
@@ -217,6 +189,7 @@ function createInitialCustomerData(gender, id) {
     id, gender, name: '', kana: '',
     bodyShape: null, weight: null, height: null, footSize: null,
     dressingType: 'レンタル&着付',
+    dressingPrice: null,
     options: { footwear: false, obiBag: false },
     additionalRentals: [],
     imageUrls: [],          // ← DBに保存済みのURL群

@@ -184,7 +184,6 @@
             <div class="header-item">体型</div>
             <div class="header-item">身長,足のサイズ</div>
             <div class="header-item">着付種別</div>
-            <div class="header-item">オプション</div>
             <div class="header-item">追加レンタル</div>
             <div class="header-item">画像アップロード</div>
             <div class="header-item">合計</div>
@@ -215,16 +214,15 @@
                 身長 <input type="number" class="small-input" x-model.number="customer.height" min="0" step="0.1"> cm
                 足 <input type="number" class="small-input" x-model.number="customer.footSize" min="0" step="0.1"> cm
               </div>
-              <div class="form-cell">
-                <label><input type="radio" :name="'dressingType' + customerIndex" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
-                <label><input type="radio" :name="'dressingType' + customerIndex" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
-              </div>
-              <div class="form-cell">
-                <label><input type="checkbox" x-model="customer.options.footwear"> 履き物</label>
-                <label x-show="customer.gender === 'female'"><input type="checkbox" x-model="customer.options.obiBag"> バッグ</label>
+              <div class="form-cell flex flex-col">
+                <div>
+                  <label><input type="radio" :name="'dressingType' + customerIndex" value="レンタル&着付" x-model="customer.dressingType"> レンタル＆着付</label>
+                  <label><input type="radio" :name="'dressingType' + customerIndex" value="着付のみ" x-model="customer.dressingType"> 着付のみ</label>
+                </div>
+                <div><input type="number" x-model.number="customer.dressingPrice">円</div>
               </div>
               <!-- 追加レンタル -->
-              <div class="form-cell">
+              <div class="form-cell flex flex-col gap-1">
                 <ul class="rental-list">
                   <template x-for="(item, itemIndex) in customer.additionalRentals" :key="itemIndex">
                     <li>
@@ -233,7 +231,7 @@
                     </li>
                   </template>
                 </ul>
-                <button type="button" class="add-btn" @click="openRentalModal(customerIndex)"><i class="fa-solid fa-circle-plus"></i></button>
+                <button type="button" class="bg-blue-500 text-white rounded py-2 px-3" @click="openRentalModal(customerIndex)">追加 <i class="fa-solid fa-plus"></i></button>
               </div>
               <!-- 画像アップロード -->
               <div class="form-cell flex justify-around">
@@ -263,27 +261,7 @@
                 </label>
               </div>
               <div class="form-cell">
-                <div x-show="formData.representative.reservationMethod">
-                  前払：<span x-text="formatYen(calculateCustomerPrepayment(customer))"></span>
-                </div>
-                <div x-show="calculateCustomerOnSitePayment(customer) > 0">
-                  現地：
-                  <template x-if="customer.discountAmount > 0">
-                    <span class="discounted">
-                      <span class="old-price" x-text="formatYen(calculateCustomerOnSitePayment(customer))"></span>
-                      →
-                      <span class="new-price" x-text="formatYen(calculateCustomerOnSitePaymentAdjusted(customer))"></span>
-                    </span>
-                  </template>
-
-                  <template x-if="!customer.discountAmount || customer.discountAmount === 0">
-                    <span x-text="formatYen(calculateCustomerOnSitePayment(customer))"></span>
-                  </template>
-
-                  <button type="button" class="edit-btn" @click="openDiscountModal(customerIndex)">
-                    <i class="fa-solid fa-pen"></i>
-                  </button>
-                </div>
+                <span x-text="formatYen(customerTotalPrepayment(customer))"></span>
               </div>
               <!-- 個別の支払い方法 -->
               <template x-if="formData.representative.paymentType==='individual'">
@@ -296,25 +274,7 @@
         </div>
 
         <div class="form-section totals-section">
-          <span>グループ合計</span>
-          <span x-show="formData.representative.reservationMethod">
-            前払：<span x-text="formatYen(totalPrepayment)"></span>
-          </span>
-          <span x-show="totalOnSitePayment > 0">
-            現地：
-            <template x-if="formData.customers.some(c => c.discountAmount > 0)">
-              <!-- 値引きがある場合は線付きで表示 -->
-              <span class="discounted">
-                <span class="old-price" x-text="formatYen(totalOnSitePayment)">
-                </span>
-                →
-                <span class="new-price" x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
-              </span>
-            </template>
-            <template x-if="!formData.customers.some(c => c.discountAmount > 0)">
-              <span x-text="formatYen(totalOnSitePayment)"></span>
-            </template>
-          </span>
+          グループ合計：<span x-text="formatYen(groupTotalPrepayment)"></span>
           <div class="group-payment-method" x-show="formData.representative.paymentType === 'group'">
             支払い方法：
             <input type="text" x-model="formData.representative.groupPaymentMethod">
@@ -346,27 +306,6 @@
         <input type="number" x-model.number="rentalModal.input.price">
       </div>
       <button class="submit-btn" @click="addRentalItem()">追加登録</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" x-show="discountModal.isOpen" @click="discountModal.isOpen = false" x-cloak>
-    <div class="modal-content discount-modal" @click.stop>
-      <h3>現地支払い金額の修正</h3>
-      <div class="price-box">
-        <div>
-          <span class="label">元の金額</span>
-          <span class="value" x-text="formatYen(discountModal.originalPrice)"></span>
-        </div>
-        <div>
-          <span class="label">値引き額</span>
-          <span class="value"><input type="number" min="0" x-model.number="discountModal.input.amount" class="discount-input"> 円</span>
-        </div>
-        <div>
-          <label>メモ</label>
-          <input type="text" x-model="discountModal.input.memo">
-        </div>
-      </div>
-      <button class="submit-btn" @click="applyDiscount()">確定</button>
     </div>
   </div>
 
