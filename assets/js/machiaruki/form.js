@@ -320,6 +320,7 @@ function createInitialCustomerData(gender, id) {
     paymentMethod: '',
     discountAmount: 0,
     discountMemo: '',
+    notes: '',
   };
 }
 
