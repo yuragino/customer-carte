@@ -28,19 +28,17 @@
     </div>
   </header>
 
-  <main class="p-6 space-y-8 bg-gray-50 min-h-screen">
+  <main class="p-6 bg-gray-50 min-h-screen">
     <div x-show="formData.representative.isCanceled" class="p-3 bg-red-100 text-red-700 text-center rounded" x-cloak>この予約はすでにキャンセルされています</div>
 
-    <div class="flex justify-between items-center mb-4">
-      <div class="space-x-2">
-        <button type="button" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition" x-show="docId" @click="deleteForm"><i class="fa-regular fa-trash-can mr-1"></i>カルテを削除</button>
-        <a :href="`./print.html?docId=${docId}`" target="_blank" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition" x-show="docId">印刷用ページ</a>
-      </div>
+    <div class="flex justify-between">
+      <button type="button" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition" x-show="docId" @click="deleteForm"><i class="fa-regular fa-trash-can mr-1"></i>カルテを削除</button>
+      <a :href="`./print.html?docId=${docId}`" target="_blank" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition" x-show="docId">印刷用ページ</a>
     </div>
 
-    <form @submit.prevent="submitForm" class="space-y-6">
+    <form @submit.prevent="submitForm">
       <fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
-        <div class="bg-white rounded-xl shadow p-6 space-y-6">
+        <div class="bg-white rounded-xl shadow p-6 space-y-6 my-3">
           <h2 class="text-lg font-semibold border-b pb-2 mb-2">代表者情報</h2>
           <table class="w-full text-sm border-collapse">
             <tr class="border-b">
@@ -80,11 +78,11 @@
             </tr>
             <tr class="border-b">
               <th class="text-left font-semibold bg-gray-100 p-2">来店日時</th>
-              <td class="p-2"><input type="datetime-local" x-model="formData.representative.visitDateTime" class="border rounded px-2 py-1 w-full"></td>
+              <td class="p-2"><input type="datetime-local" required x-model="formData.representative.visitDateTime" class="border rounded px-2 py-1 w-full"></td>
             </tr>
             <tr class="border-b">
               <th class="text-left font-semibold bg-gray-100 p-2">仕上がり時間</th>
-              <td class="p-2"><input type="time" x-model="formData.representative.finishTime" class="border rounded px-2 py-1 w-full"></td>
+              <td class="p-2"><input type="time" required x-model="formData.representative.finishTime" class="border rounded px-2 py-1 w-full"></td>
             </tr>
             <tr class="border-b">
               <th class="text-left font-semibold bg-gray-100 p-2">お戻り予定時間</th>
