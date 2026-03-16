@@ -205,6 +205,7 @@ function createInitialFormData() {
       notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
       paymentType: 'group', groupPaymentMethod: '',
+      paymentTiming: '',
       isCanceled: false,
     },
     femaleCount: 1, maleCount: 0,
