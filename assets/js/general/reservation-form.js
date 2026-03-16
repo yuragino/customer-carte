@@ -95,9 +95,74 @@ document.addEventListener('alpine:init', () => {
         const resSnap = await getDoc(this.reservationRef);
         if (resSnap.exists()) {
           Object.assign(this.form, resSnap.data());
+
+          // 顧客情報も合わせてチェックする（存在する場合のみ）
+          const customerId = this.form.customerId;
+          if (customerId) {
+            const customerSnap = await getDoc(doc(db, CUSTOMERS_COLLECTION, customerId));
+            if (customerSnap.exists()) {
+              const customer = customerSnap.data();
+
+              const mergedFields = [];
+              // name, imageUrls, contactRemark は除外
+              const fieldsToMerge = [
+                "phone",
+                "contactMethod",
+                "address",
+                "mapLinkHome", // 顧客側では mapLink
+                "familyMembers",
+                "notes",
+              ];
+
+              for (const field of fieldsToMerge) {
+                const reservationValue = this.form[field];
+                // mapLinkHome は顧客データでは mapLink なので差し替え
+                const customerField = field === "mapLinkHome" ? "mapLink" : field;
+                const customerValue = customer[customerField];
+
+                const reservationEmpty =
+                  reservationValue === "" ||
+                  reservationValue === null ||
+                  (Array.isArray(reservationValue) && reservationValue.length === 0);
+                const customerEmpty =
+                  customerValue === "" ||
+                  customerValue === null ||
+                  (Array.isArray(customerValue) && customerValue.length === 0);
+
+                // 両方空なら何もしない
+                if (reservationEmpty && customerEmpty) continue;
+
+                // 予約が空 & 顧客に値がある → 補完
+                if (reservationEmpty && !customerEmpty) {
+                  this.form[field] = customerValue;
+                  mergedFields.push(field);
+                }
+              }
+
+              // 表示名変換
+              const fieldLabels = {
+                phone: "電話番号",
+                contactMethod: "受付方法",
+                address: "住所",
+                mapLinkHome: "GoogleマップURL",
+                familyMembers: "家族構成",
+                notes: "備考",
+              };
+
+              const mergedDisplayLabels = mergedFields.map(f => fieldLabels[f] || f);
+
+              if (mergedDisplayLabels.length > 0) {
+                const message =
+                  `以下の項目を顧客情報から取得しました：\n` +
+                  `・${mergedDisplayLabels.join("\n・")}\n\n` +
+                  `内容を確認し、問題がなければ「更新」ボタンを押してください。`;
+                alert(message);
+              }
+            }
+          }
         }
       } catch (error) {
-        handleError('予約データの取得', error);
+        handleError("予約データの取得", error);
       }
     },
 
