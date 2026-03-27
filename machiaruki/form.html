@@ -217,6 +217,18 @@
               </div>
 
               <div class="table-row">
+                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">合計</div>
+                <template x-for="(c,i) in formData.customers" :key="'total'+c.id">
+                  <div class="table-cell border p-2 text-center">
+                    <span class="font-bold" x-text="formatYen(customerTotalAdjusted(c))"></span>
+                    <span class="text-gray-500 text-xs"
+                      x-text="c.discountAmount>0 ? '(値引:'+formatYen(c.discountAmount)+')' : ''"></span>
+                    <button type="button" @click="openDiscountModal(i)" class="block text-blue-500 text-xs underline mt-1 mx-auto">割引する</button>
+                  </div>
+                </template>
+              </div>
+
+              <div class="table-row">
                 <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">画像アップロード</div>
                 <template x-for="(c,i) in formData.customers" :key="'img'+c.id">
                   <div class="table-cell border p-2">
@@ -245,18 +257,6 @@
                       rows="2"
                       class="w-full border border-gray-300 rounded-md p-1 text-sm focus:ring-1 focus:ring-indigo-400"
                       placeholder="備考"></textarea>
-                  </div>
-                </template>
-              </div>
-
-              <div class="table-row">
-                <div class="table-cell bg-gray-100 font-semibold border p-2 align-top">合計</div>
-                <template x-for="(c,i) in formData.customers" :key="'total'+c.id">
-                  <div class="table-cell border p-2 text-center">
-                    <span class="font-bold" x-text="formatYen(customerTotalAdjusted(c))"></span>
-                    <span class="text-gray-500 text-xs"
-                      x-text="c.discountAmount>0 ? '(値引:'+formatYen(c.discountAmount)+')' : ''"></span>
-                    <button type="button" @click="openDiscountModal(i)" class="block text-blue-500 text-xs underline mt-1 mx-auto">割引する</button>
                   </div>
                 </template>
               </div>
