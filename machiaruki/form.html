@@ -36,7 +36,7 @@
       <a :href="`./print.html?docId=${docId}`" target="_blank" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition" x-show="docId">印刷用ページ</a>
     </div>
 
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm" @keydown.enter.prevent>
       <fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
         <div class="bg-white rounded-xl shadow p-6 space-y-6 my-3">
           <h2 class="text-lg font-semibold border-b pb-2 mb-2">代表者情報</h2>
