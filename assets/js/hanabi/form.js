@@ -213,7 +213,7 @@ function createInitialFormData() {
   return {
     representative: {
       reservationMethod: null, name: '', kana: '',
-      visitDateTime: '', finishTime: '', returnTime: '',
+      visitTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
       transportation: '', lineType: '',
       repeaterYears: [], notes: '',

@@ -29,7 +29,7 @@ document.addEventListener('alpine:init', () => {
       await this.loadConfig();  // ← 設定読み込み
       await this.load();        // ← 顧客データ読み込み
     },
-    
+
     async load() {
       this.groups = [];
       try {
@@ -38,7 +38,7 @@ document.addEventListener('alpine:init', () => {
             // キャンセルの有無 → 時間の順
             const cancelOrder = Number(a.representative.isCanceled) - Number(b.representative.isCanceled);
             if (cancelOrder !== 0) return cancelOrder;
-            return a.representative.visitDateTime.localeCompare(b.representative.visitDateTime);
+            return a.representative.visitTime.localeCompare(b.representative.visitTime);
           });
       } catch (error) {
         handleError('データの取得', error);
