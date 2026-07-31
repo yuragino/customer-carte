@@ -363,7 +363,7 @@
         </div>
 
         <div class="submit-container">
-          <button type="submit" class="submit-btn" :disabled="isSubmitting"
+          <button type="submit" class="submit-btn" :class="{ 'is-dirty': isDirty }" :disabled="isSubmitting"
             x-text="isSubmitting ? '処理中...' : (docId ? '更新' : '登録')"></button>
         </div>
         <div class="cancellation-status" x-show="docId != null">

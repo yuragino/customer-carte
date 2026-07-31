@@ -15,6 +15,7 @@ document.addEventListener('alpine:init', () => {
     activeCustomerIndex: null, // 一時的に操作中の顧客を指す共通インデックス
     docId: null,              // パラメータ
     isSubmitting: false,
+    isDirty: false,           // 保存前の未反映の変更があるかどうか
     selectedImageUrl: null,
     formData: createInitialFormData(),
     rentalModal: {
@@ -62,6 +63,21 @@ document.addEventListener('alpine:init', () => {
       this.docId = params.get('docId');
       if (this.docId) await this.load();
       else this.updateCustomerList();
+
+      // formData内のあらゆる変更（配列の追加削除やモーダル内の入力含む）を検知し、未保存状態を表す
+      let isFirstRun = true;
+      Alpine.effect(() => {
+        JSON.stringify(this.formData);
+        if (isFirstRun) { isFirstRun = false; return; }
+        this.isDirty = true;
+      });
+
+      // 未保存のまま画面遷移・タブを閉じようとした時にブラウザ標準の確認ダイアログを出す
+      window.addEventListener('beforeunload', (event) => {
+        if (!this.isDirty) return;
+        event.preventDefault();
+        event.returnValue = '';
+      });
     },
 
     async load() {
@@ -196,10 +212,12 @@ document.addEventListener('alpine:init', () => {
         if (this.docId) {
           await updateDoc(this.docRef, formDataToSave);
           await logFirestoreAction(COLLECTION_NAME, 'update', this.docId, formDataToSave);
+          this.isDirty = false;
           window.location.href = `./index.html?year=${this.selectedYear}`;
         } else {
           const newDocRef = await addDoc(collectionRef, { ...formDataToSave, createdAt: serverTimestamp() });
           await logFirestoreAction(COLLECTION_NAME, 'create', newDocRef.id, formDataToSave);
+          this.isDirty = false;
           window.location.href = `./index.html?year=${this.selectedYear}`;
         }
       } catch (error) {
