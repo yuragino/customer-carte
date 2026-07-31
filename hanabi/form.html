@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Custom Script -->
   <script type="module" src="../assets/js/hanabi/form.js"></script>
+  <!-- AutoKana（名前入力からふりがなを自動反映） -->
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
@@ -74,25 +76,27 @@
               <tr>
                 <th>代表者名</th>
                 <template x-if="!isNameSplit">
-                  <td><input type="text" x-model="formData.representative.name" required class="middle-width"></td>
+                  <td><input type="text" id="rep-name" x-model="formData.representative.name" required class="middle-width"></td>
                 </template>
                 <template x-if="isNameSplit">
                   <td>
-                    <input type="text" x-model="formData.representative.lastName" required placeholder="姓" class="small-width">
-                    <input type="text" x-model="formData.representative.firstName" required placeholder="名" class="small-width">
+                    <input type="text" id="rep-lastName" x-model="formData.representative.lastName" required placeholder="姓" class="small-width">
+                    <input type="text" id="rep-firstName" x-model="formData.representative.firstName" required placeholder="名" class="small-width">
                   </td>
                 </template>
               </tr>
               <tr>
                 <th>ふりがな</th>
                 <template x-if="!isNameSplit">
-                  <td><input type="text" x-model="formData.representative.kana" class="middle-width"></td>
+                  <td><input type="text" id="rep-kana" x-model="formData.representative.kana" class="middle-width"
+                    x-init="$nextTick(() => bindAutoKana('rep-name', 'rep-kana', formData.representative, 'kana'))"></td>
                 </template>
                 <template x-if="isNameSplit">
                   <td>
-                    <input type="text" x-model="formData.representative.lastNameKana" placeholder="せい" class="small-width">
-                    <input type="text" x-model="formData.representative.firstNameKana" placeholder="めい" class="small-width">
-                  </td>
+                    <input type="text" id="rep-lastNameKana" x-model="formData.representative.lastNameKana" placeholder="せい" class="small-width"
+                      x-init="$nextTick(() => bindAutoKana('rep-lastName', 'rep-lastNameKana', formData.representative, 'lastNameKana'))">
+                    <input type="text" id="rep-firstNameKana" x-model="formData.representative.firstNameKana" placeholder="めい" class="small-width"
+                      x-init="$nextTick(() => bindAutoKana('rep-firstName', 'rep-firstNameKana', formData.representative, 'firstNameKana'))">
                 </template>
               </tr>
               <tr>
@@ -226,21 +230,24 @@
             <div class="customer-column">
               <div class="form-cell flex flex-col">
                 <template x-if="!isNameSplit">
-                <input type="text" x-model="customer.kana" class="h-4 text-xs w-[191.8px]" pattern="[\u3041-\u3096]*" placeholder="ふりがな">
+                <input type="text" :id="'customer-kana-' + customerIndex" x-model="customer.kana" class="h-4 text-xs w-[191.8px]" placeholder="ふりがな"
+                  x-init="$nextTick(() => bindAutoKana('customer-name-' + customerIndex, 'customer-kana-' + customerIndex, customer, 'kana'))">
                 </template>
                 <template x-if="!isNameSplit">
-                <input type="text" x-model="customer.name" placeholder="名前">
+                <input type="text" :id="'customer-name-' + customerIndex" x-model="customer.name" placeholder="名前">
                 </template>
                 <template x-if="isNameSplit">
                 <div class="flex gap-1">
-                  <input type="text" x-model="customer.lastNameKana" class="h-4 text-xs small-width" pattern="[ぁ-ゖ]*" placeholder="せい">
-                  <input type="text" x-model="customer.firstNameKana" class="h-4 text-xs small-width" pattern="[ぁ-ゖ]*" placeholder="めい">
+                  <input type="text" :id="'customer-lastNameKana-' + customerIndex" x-model="customer.lastNameKana" class="h-4 text-xs small-width" placeholder="せい"
+                    x-init="$nextTick(() => bindAutoKana('customer-lastName-' + customerIndex, 'customer-lastNameKana-' + customerIndex, customer, 'lastNameKana'))">
+                  <input type="text" :id="'customer-firstNameKana-' + customerIndex" x-model="customer.firstNameKana" class="h-4 text-xs small-width" placeholder="めい"
+                    x-init="$nextTick(() => bindAutoKana('customer-firstName-' + customerIndex, 'customer-firstNameKana-' + customerIndex, customer, 'firstNameKana'))">
                 </div>
                 </template>
                 <template x-if="isNameSplit">
                 <div class="flex gap-1">
-                  <input type="text" x-model="customer.lastName" placeholder="姓" class="small-width">
-                  <input type="text" x-model="customer.firstName" placeholder="名" class="small-width">
+                  <input type="text" :id="'customer-lastName-' + customerIndex" x-model="customer.lastName" placeholder="姓" class="small-width">
+                  <input type="text" :id="'customer-firstName-' + customerIndex" x-model="customer.firstName" placeholder="名" class="small-width">
                 </div>
                 </template>
               </div>

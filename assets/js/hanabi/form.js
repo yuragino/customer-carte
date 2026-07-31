@@ -90,6 +90,20 @@ document.addEventListener('alpine:init', () => {
       toggleRadioUtil(event, modelName, this.formData.customers[customerIndex]);
     },
 
+    // 名前欄からふりがな欄へAutoKanaで自動反映する
+    bindAutoKana(nameId, kanaId, targetObj, field) {
+      if (!window.AutoKana) return;
+      const nameEl = document.getElementById(nameId);
+      const kanaEl = document.getElementById(kanaId);
+      if (!nameEl || !kanaEl) return;
+      AutoKana.bind(nameId, kanaId, { katakana: false });
+
+      let syncTimer = null;
+      const sync = () => { targetObj[field] = kanaEl.value; };
+      nameEl.addEventListener('focus', () => { syncTimer = setInterval(sync, 100); });
+      nameEl.addEventListener('blur', () => { clearInterval(syncTimer); sync(); });
+    },
+
     // 交通手段：選択し直したら追加選択肢（高速あり/なし、JR/東武）をリセット
     toggleTransportation(event) {
       toggleRadioUtil(event, 'transportation', this.formData.representative);
