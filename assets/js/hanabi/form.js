@@ -24,8 +24,7 @@ document.addEventListener('alpine:init', () => {
     discountModal: {
       isOpen: false,
       originalPrice: 0,
-      input: { amount: 0, memo: '' },
-      adjustedPrice: 0,
+      input: { amount: 0, memo: '', type: 'discount' }, // type: 'discount'（値引き） | 'surcharge'（追加請求）
     },
 
     get docRef() {
@@ -110,20 +109,21 @@ document.addEventListener('alpine:init', () => {
       this.formData.customers[customerIndex].additionalRentals.splice(itemIndex, 1);
     },
 
-    // 値引き調整
+    // 値引き・追加請求の調整
     openDiscountModal(customerIndex) {
       const customer = this.formData.customers[customerIndex];
       this.activeCustomerIndex = customerIndex;
       this.discountModal.originalPrice = this.calculateCustomerOnSitePayment(customer);
-      this.discountModal.input.amount = customer.discountAmount;
+      this.discountModal.input.type = customer.discountAmount < 0 ? 'surcharge' : 'discount';
+      this.discountModal.input.amount = Math.abs(customer.discountAmount || 0);
       this.discountModal.input.memo = customer.discountMemo;
-      this.discountModal.adjustedPrice = this.discountModal.originalPrice - this.discountModal.input.amount;
       this.discountModal.isOpen = true;
     },
     applyDiscount() {
       const customer = this.formData.customers[this.activeCustomerIndex];
-      customer.discountAmount = this.discountModal.input.amount;
-      customer.discountMemo = this.discountModal.input.memo;
+      const { type, amount, memo } = this.discountModal.input;
+      customer.discountAmount = (type === 'surcharge' ? -1 : 1) * (amount || 0);
+      customer.discountMemo = memo;
       this.discountModal.isOpen = false;
     },
 

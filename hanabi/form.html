@@ -308,12 +308,12 @@
                 </div>
                 <div x-show="calculateCustomerOnSitePayment(customer) > 0">
                   現地：
-                  <span class="discounted" x-show="customer.discountAmount > 0">
+                  <span class="discounted" x-show="customer.discountAmount">
                     <span class="old-price" x-text="formatYen(calculateCustomerOnSitePayment(customer))"></span>
                     →
-                    <span class="new-price" x-text="formatYen(calculateCustomerOnSitePaymentAdjusted(customer))"></span>
+                    <span :class="customer.discountAmount < 0 ? 'increased-price' : 'new-price'" x-text="formatYen(calculateCustomerOnSitePaymentAdjusted(customer))"></span>
                   </span>
-                  <span x-text="formatYen(calculateCustomerOnSitePayment(customer))" x-show="!customer.discountAmount || customer.discountAmount === 0"></span>
+                  <span x-text="formatYen(calculateCustomerOnSitePayment(customer))" x-show="!customer.discountAmount"></span>
                   <button type="button" class="edit-btn" @click="openDiscountModal(customerIndex)">
                     <i class="fa-solid fa-pen"></i>
                   </button>
@@ -334,13 +334,13 @@
           </span>
           <span x-show="totalOnSitePayment > 0">
             現地：
-            <!-- 値引きがある場合は線付きで表示 -->
-            <span class="discounted" x-show="formData.customers.some(c => c.discountAmount > 0)">
+            <!-- 金額調整がある場合は線付きで表示 -->
+            <span class="discounted" x-show="formData.customers.some(c => c.discountAmount)">
               <span class="old-price" x-text="formatYen(totalOnSitePayment)"></span>
               →
-              <span class="new-price" x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
+              <span :class="totalOnSitePaymentAdjusted > totalOnSitePayment ? 'increased-price' : 'new-price'" x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
             </span>
-            <span x-text="formatYen(totalOnSitePayment)" x-show="!formData.customers.some(c => c.discountAmount > 0)"></span>
+            <span x-text="formatYen(totalOnSitePayment)" x-show="!formData.customers.some(c => c.discountAmount)"></span>
           </span>
           <div class="group-payment-method" x-show="formData.representative.paymentType === 'group'">
             支払い方法：
@@ -387,14 +387,31 @@
           <span class="value" x-text="formatYen(discountModal.originalPrice)"></span>
         </div>
         <div>
-          <span class="label">値引き額</span>
+          <span class="label">区分</span>
+          <span class="value">
+            <label class="chip-radio">
+              <input type="radio" name="discountType" value="discount" @click="discountModal.input.type = 'discount'"
+                :checked="discountModal.input.type === 'discount'"> 値引き
+            </label>
+            <label class="chip-radio">
+              <input type="radio" name="discountType" value="surcharge" @click="discountModal.input.type = 'surcharge'"
+                :checked="discountModal.input.type === 'surcharge'"> 追加請求
+            </label>
+          </span>
+        </div>
+        <div>
+          <span class="label">金額</span>
           <span class="value">
             <input type="number" min="0" x-model.number="discountModal.input.amount" class="discount-input"> 円
           </span>
         </div>
         <div>
+          <span class="label">修正後の金額</span>
+          <span class="value adjusted" x-text="formatYen(discountModal.originalPrice - (discountModal.input.type === 'surcharge' ? -1 : 1) * (discountModal.input.amount || 0))"></span>
+        </div>
+        <div class="memo-row">
           <label>メモ</label>
-          <input type="text" x-model="discountModal.input.memo">
+          <textarea x-model="discountModal.input.memo" rows="3" class="memo-textarea"></textarea>
         </div>
       </div>
       <button class="submit-btn" @click="applyDiscount()">確定</button>

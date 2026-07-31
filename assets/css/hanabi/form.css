@@ -374,7 +374,13 @@ select {
 
 .new-price {
     color: #28a745;
-    /* 緑 */
+    /* 緑：値引き（減額） */
+    font-weight: bold;
+}
+
+.increased-price {
+    color: #d9534f;
+    /* 赤：追加請求（増額） */
     font-weight: bold;
 }
 
@@ -392,7 +398,7 @@ select {
 
 .discount-modal {
     text-align: center;
-    width: 320px;
+    width: 420px;
 }
 
 .discount-modal h3 {
@@ -435,6 +441,26 @@ select {
     padding: 4px 6px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.price-box .memo-row {
+    display: block;
+    text-align: left;
+}
+
+.price-box .memo-row label {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.memo-textarea {
+    width: 100%;
+    resize: vertical;
+    font-size: 1rem;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
 }
 
 .arrow {
