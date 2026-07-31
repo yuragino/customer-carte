@@ -93,6 +93,17 @@ select {
   border-radius: 4px;
 }
 
+/* 現地支払いバッジ */
+.onsite-payment-badge {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  color: #b45309;
+  background-color: #fef3c7;
+  border-radius: 4px;
+}
+
 td:last-child {
   position: relative;
 }

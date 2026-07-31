@@ -6,14 +6,16 @@ export function calculateCustomerPayment(app, customer, type, withDiscount = fal
   const isPrepayment = type === 'prepayment';
   const isOnSite = type === 'onSite' || type === 'onSiteAdjusted';
 
-  if (isPrepayment && formData.representative.reservationMethod !== null) {
+  const isOnSitePaymentMethod = formData.representative.reservationMethod === null || formData.representative.reservationMethod === 'ホームページ';
+
+  if (isPrepayment && !isOnSitePaymentMethod) {
     // 前払い（予約サイト経由など）
     if (customer.dressingType === 'レンタル&着付') total += CASUAL_PRICES.RENTAL_DRESSING;
     else if (customer.dressingType === '着付のみ') total += CASUAL_PRICES.DRESSING_ONLY;
   }
 
-  if (isOnSite && formData.representative.reservationMethod === null) {
-    // 現地払い（直接予約など）
+  if (isOnSite && isOnSitePaymentMethod) {
+    // 現地払い（直接予約・ホームページ経由など）
     if (customer.dressingType === 'レンタル&着付') total += CASUAL_PRICES.RENTAL_DRESSING;
     else if (customer.dressingType === '着付のみ') total += CASUAL_PRICES.DRESSING_ONLY;
   }

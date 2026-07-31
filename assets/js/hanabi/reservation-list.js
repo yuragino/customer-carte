@@ -6,6 +6,7 @@ import { getYearSettings } from "../common/year-selector.js";
 import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
+import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { STATUS_MAP } from "../common/constants.js";
 import { loadStaffConfig, saveStaffConfig } from "../common/utils/staff-config-utils.js";
 const COLLECTION_NAME = 'fireworks';
@@ -38,7 +39,7 @@ document.addEventListener('alpine:init', () => {
             // キャンセルの有無 → 時間の順
             const cancelOrder = Number(a.representative.isCanceled) - Number(b.representative.isCanceled);
             if (cancelOrder !== 0) return cancelOrder;
-            return a.representative.visitTime.localeCompare(b.representative.visitTime);
+            return (a.representative.visitTime ?? '').localeCompare(b.representative.visitTime ?? '');
           });
       } catch (error) {
         handleError('データの取得', error);
@@ -81,6 +82,10 @@ document.addEventListener('alpine:init', () => {
       } catch (error) {
         handleError(`${field}の更新`, error);
       }
+    },
+
+    hasOnSitePayment(group, customer) {
+      return calculateCustomerPayment({ formData: group }, customer, 'onSite') > 0;
     },
 
     async updateStatus(group, customerId) {

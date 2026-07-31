@@ -225,11 +225,13 @@ document.addEventListener('alpine:init', () => {
       try {
         const repeaterQuery = query(collection(db, COLLECTION_NAME), where('representative.phone', '==', phone));
         const snapshot = await getDocs(repeaterQuery);
-        if (snapshot.empty) return this.formData.representative.repeaterYears = [0];
-        const foundYears = snapshot.docs
-          .map(doc => doc.data().eventYear)
-          .sort((a, b) => a - b);
-        this.formData.representative.repeaterYears = foundYears;
+        const matchedDocs = snapshot.docs
+          .filter(doc => doc.id !== this.docId)
+          .sort((a, b) => a.data().eventYear - b.data().eventYear);
+        if (matchedDocs.length === 0) return this.formData.representative.repeaterYears = [0];
+        this.formData.representative.repeaterYears = matchedDocs.map(doc => doc.data().eventYear);
+        const latestNote = matchedDocs[matchedDocs.length - 1].data().representative.repeaterNote;
+        if (latestNote) this.formData.representative.repeaterNote = latestNote;
       } catch (error) {
         handleError('リピーターチェック', error);
       }
@@ -245,7 +247,7 @@ function createInitialFormData() {
       visitTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
       transportation: '', transportationDetail: null, lineType: '',
-      repeaterYears: [], notes: '',
+      repeaterYears: [], repeaterNote: '', notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
       paymentType: 'group', groupPaymentMethod: '',
       isCanceled: false,
