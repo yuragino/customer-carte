@@ -99,7 +99,9 @@
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length" x-text="group.representative.visitTime"></td>
               </template>
-              <td x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
+              <template x-if="index === 0">
+                <td :rowspan="group.customers.length" x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
+              </template>
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
                   <a
