@@ -1,14 +1,16 @@
 main {
     max-width: 800px;
     margin: 0 auto;
+    padding: 24px;
     background-color: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* フォームセクション */
 .form-section {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .section-title {
@@ -152,6 +154,7 @@ select {
     display: flex;
     border: 1px solid #e0e0e0;
     overflow-x: auto;
+    margin-bottom: 24px;
 }
 
 .customer-column-header {
@@ -332,24 +335,43 @@ select {
 }
 
 .delete-container {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
 }
 
+.delete-container .delete-btn,
+.delete-container .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .delete-container .delete-btn {
     color: #dc3545;
     border: 1px solid #dc3545;
-    padding: 8px 20px;
-    border-radius: 4px;
     background: none;
-    cursor: pointer;
 }
 
 .delete-container .delete-btn:hover {
     background: #dc3545;
+    color: #fff;
+}
+
+.delete-container .print-btn {
+    color: #3543dc;
+    border: 1px solid #3543dc;
+    background: none;
+}
+
+.delete-container .print-btn:hover {
+    background: #3543dc;
     color: #fff;
 }
 

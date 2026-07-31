@@ -40,7 +40,9 @@
       <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
         <i class="fa-regular fa-trash-can"></i> カルテを削除
       </button>
-      <a :href="`./print.html?docId=${docId}`" target="_blank" class="print-btn" x-show="docId"> 印刷用ページ</a>
+      <a :href="`./print.html?docId=${docId}`" target="_blank" class="print-btn" x-show="docId">
+        <i class="fa-solid fa-print"></i> 印刷用ページ
+      </a>
     </div>
     <form @submit.prevent="submitForm">
       <fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
