@@ -23,6 +23,10 @@ document.addEventListener('alpine:init', () => {
     settings: {
       staff: '',
     },
+    notesModal: {
+      isOpen: false,
+      content: '',
+    },
 
     async init() {
       setupAuth(this);
@@ -86,6 +90,11 @@ document.addEventListener('alpine:init', () => {
 
     hasOnSitePayment(group, customer) {
       return calculateCustomerPayment({ formData: group }, customer, 'onSite') > 0;
+    },
+
+    openNotesModal(notes) {
+      this.notesModal.content = notes;
+      this.notesModal.isOpen = true;
     },
 
     allNotStarted(group) {

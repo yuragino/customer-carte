@@ -80,6 +80,11 @@ select {
   line-height: 1.2;
 }
 
+/* ふりがなを名前の真上だけに揃えるためのラッパー */
+.name-with-furigana {
+  display: inline-block;
+}
+
 /* 性別ハイライト */
 .gender-male {
   background-color: #3498db20;
@@ -91,6 +96,17 @@ select {
   background-color: rgba(233, 30, 98, 0.094);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
+}
+
+/* 備考の省略表示（クリックでモーダル表示） */
+.notes-truncate {
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  cursor: pointer;
 }
 
 /* 来店予定時刻・実績時刻 */
