@@ -67,11 +67,27 @@
               </tr>
               <tr>
                 <th>代表者名</th>
-                <td><input type="text" x-model="formData.representative.name" required class="middle-width"></td>
+                <template x-if="!isNameSplit">
+                  <td><input type="text" x-model="formData.representative.name" required class="middle-width"></td>
+                </template>
+                <template x-if="isNameSplit">
+                  <td>
+                    <input type="text" x-model="formData.representative.lastName" required placeholder="姓" class="small-width">
+                    <input type="text" x-model="formData.representative.firstName" required placeholder="名" class="small-width">
+                  </td>
+                </template>
               </tr>
               <tr>
                 <th>ふりがな</th>
-                <td><input type="text" x-model="formData.representative.kana" class="middle-width"></td>
+                <template x-if="!isNameSplit">
+                  <td><input type="text" x-model="formData.representative.kana" class="middle-width"></td>
+                </template>
+                <template x-if="isNameSplit">
+                  <td>
+                    <input type="text" x-model="formData.representative.lastNameKana" placeholder="せい" class="small-width">
+                    <input type="text" x-model="formData.representative.firstNameKana" placeholder="めい" class="small-width">
+                  </td>
+                </template>
               </tr>
               <tr>
                 <th>来店時間</th>
@@ -186,8 +202,24 @@
           <template x-for="(customer, customerIndex) in formData.customers" :key="customer.id">
             <div class="customer-column">
               <div class="form-cell flex flex-col">
+                <template x-if="!isNameSplit">
                 <input type="text" x-model="customer.kana" class="h-4 text-xs w-[191.8px]" pattern="[\u3041-\u3096]*" placeholder="ふりがな">
+                </template>
+                <template x-if="!isNameSplit">
                 <input type="text" x-model="customer.name" placeholder="名前">
+                </template>
+                <template x-if="isNameSplit">
+                <div class="flex gap-1">
+                  <input type="text" x-model="customer.lastNameKana" class="h-4 text-xs small-width" pattern="[ぁ-ゖ]*" placeholder="せい">
+                  <input type="text" x-model="customer.firstNameKana" class="h-4 text-xs small-width" pattern="[ぁ-ゖ]*" placeholder="めい">
+                </div>
+                </template>
+                <template x-if="isNameSplit">
+                <div class="flex gap-1">
+                  <input type="text" x-model="customer.lastName" placeholder="姓" class="small-width">
+                  <input type="text" x-model="customer.firstName" placeholder="名" class="small-width">
+                </div>
+                </template>
               </div>
               <div class="form-cell">
                 <label><input type="radio" :name="'gender' + customerIndex" value="female" x-model="customer.gender"> 女</label>

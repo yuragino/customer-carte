@@ -84,6 +84,10 @@ select {
     width: 15rem;
 }
 
+.small-width {
+    width: 7rem;
+}
+
 .full-width {
     width: 90%;
 }

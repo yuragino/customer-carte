@@ -31,6 +31,11 @@ document.addEventListener('alpine:init', () => {
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
     },
+    // 2027年以降は氏名・ふりがなを姓/名で分けて入力する
+    get isNameSplit() {
+      const year = this.docId ? this.formData.eventYear : this.selectedYear;
+      return year >= 2027;
+    },
     // 各顧客の前払い金額を合計
     get totalPrepayment() {
       if (this.formData.representative.reservationMethod === null) return 0;
@@ -144,9 +149,22 @@ document.addEventListener('alpine:init', () => {
       }));
     },
 
+    // 姓/名で入力された氏名・ふりがなを結合してname/kanaに反映する
+    syncSplitNames() {
+      if (!this.isNameSplit) return;
+      const rep = this.formData.representative;
+      rep.name = `${rep.lastName} ${rep.firstName}`.trim();
+      rep.kana = `${rep.lastNameKana} ${rep.firstNameKana}`.trim();
+      this.formData.customers.forEach(customer => {
+        customer.name = `${customer.lastName} ${customer.firstName}`.trim();
+        customer.kana = `${customer.lastNameKana} ${customer.firstNameKana}`.trim();
+      });
+    },
+
     async submitForm() {
       try {
         this.isSubmitting = true;
+        this.syncSplitNames();
         if (this.docId && !confirm(`${this.formData.representative.name}さんのデータを更新しますか？`)) return;
         const customersToSave = await this.uploadCustomerImages();
         const formDataToSave = { ...this.formData, customers: customersToSave, eventYear: this.selectedYear, updatedAt: serverTimestamp() };
@@ -213,6 +231,7 @@ function createInitialFormData() {
   return {
     representative: {
       reservationMethod: null, name: '', kana: '',
+      lastName: '', firstName: '', lastNameKana: '', firstNameKana: '',
       visitTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
       transportation: '', lineType: '',
@@ -227,7 +246,8 @@ function createInitialFormData() {
 }
 function createInitialCustomerData(gender, id) {
   return {
-    id, gender, name: '',
+    id, gender, name: '', kana: '',
+    lastName: '', firstName: '', lastNameKana: '', firstNameKana: '',
     bodyShape: null, weight: null, height: null, footSize: null,
     dressingType: 'レンタル&着付',
     options: { footwear: false, obiBag: false },
