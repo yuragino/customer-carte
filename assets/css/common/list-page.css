@@ -72,6 +72,14 @@ select {
   background-color: #fd7e14;
 }
 
+/* ふりがな（名前の上に小さく表示） */
+.furigana {
+  display: block;
+  font-size: 0.7rem;
+  color: #868e96;
+  line-height: 1.2;
+}
+
 /* 性別ハイライト */
 .gender-male {
   background-color: #3498db20;

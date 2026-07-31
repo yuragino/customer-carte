@@ -104,6 +104,7 @@
               </template>
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
+                  <span class="furigana" x-text="group.representative.kana"></span>
                   <a
                     :href="`form.html?docId=${group.id}&year=${selectedYear}`"
                     class="text-blue-600 underline hover:text-blue-800"
@@ -111,7 +112,10 @@
                   </a>
                 </td>
               </template>
-              <td><span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span></td>
+              <td>
+                <span class="furigana" x-text="customer.kana"></span>
+                <span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span>
+              </td>
               <td>
                 <select x-model="customer.booth" @change="updateCustomerField(group.id, customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn || group.representative.isCanceled">
                   <option value="">--</option>
