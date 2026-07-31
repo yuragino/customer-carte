@@ -323,6 +323,8 @@
               </div>
               <!-- 個別の支払い方法 -->
               <div class="form-cell" x-show="formData.representative.paymentType==='individual'">
+                <label><input type="radio" :name="'paymentMethod' + customerIndex" value="現金" x-model="customer.paymentMethod" @click="toggleCustomerRadio($event, 'paymentMethod', customerIndex)" :checked="customer.paymentMethod === '現金'"> 現金</label>
+                <label><input type="radio" :name="'paymentMethod' + customerIndex" value="PayPay" x-model="customer.paymentMethod" @click="toggleCustomerRadio($event, 'paymentMethod', customerIndex)" :checked="customer.paymentMethod === 'PayPay'"> PayPay</label>
                 <input type="text" x-model="customer.paymentMethod">
               </div>
             </div>
@@ -346,6 +348,8 @@
           </span>
           <div class="group-payment-method" x-show="formData.representative.paymentType === 'group'">
             支払い方法：
+            <label><input type="radio" name="groupPaymentMethod" value="現金" x-model="formData.representative.groupPaymentMethod" @click="toggleRadio($event, 'groupPaymentMethod')" :checked="formData.representative.groupPaymentMethod === '現金'"> 現金</label>
+            <label><input type="radio" name="groupPaymentMethod" value="PayPay" x-model="formData.representative.groupPaymentMethod" @click="toggleRadio($event, 'groupPaymentMethod')" :checked="formData.representative.groupPaymentMethod === 'PayPay'"> PayPay</label>
             <input type="text" x-model="formData.representative.groupPaymentMethod">
           </div>
         </div>

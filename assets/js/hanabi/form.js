@@ -86,6 +86,10 @@ document.addEventListener('alpine:init', () => {
       toggleRadioUtil(event, modelName, this.formData.representative);
     },
 
+    toggleCustomerRadio(event, modelName, customerIndex) {
+      toggleRadioUtil(event, modelName, this.formData.customers[customerIndex]);
+    },
+
     // 交通手段：選択し直したら追加選択肢（高速あり/なし、JR/東武）をリセット
     toggleTransportation(event) {
       toggleRadioUtil(event, 'transportation', this.formData.representative);
