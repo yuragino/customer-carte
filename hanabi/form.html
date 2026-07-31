@@ -63,6 +63,10 @@
                     <input type="radio" name="reservationMethod" value="アソビュー" @click="toggleRadio($event, 'reservationMethod')"
                       :checked="formData.representative.reservationMethod === 'アソビュー'"> アソビュー
                   </label>
+                  <label>
+                    <input type="radio" name="reservationMethod" value="ホームページ" @click="toggleRadio($event, 'reservationMethod')"
+                      :checked="formData.representative.reservationMethod === 'ホームページ'"> ホームページ
+                  </label>
                 </td>
               </tr>
               <tr>
