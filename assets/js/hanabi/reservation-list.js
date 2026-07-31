@@ -88,6 +88,27 @@ document.addEventListener('alpine:init', () => {
       return calculateCustomerPayment({ formData: group }, customer, 'onSite') > 0;
     },
 
+    allNotStarted(group) {
+      return group.customers.every(customer => !customer.status);
+    },
+
+    async startGroupReception(group) {
+      if (!confirm('受付開始で間違いないですか？')) return;
+      try {
+        const docRef = doc(db, COLLECTION_NAME, group.id);
+        const now = new Date();
+        const timestampKey = this.statusToTimestampKey['受付開始'];
+        group.customers.forEach(customer => {
+          customer.status = this.nextStatusMap['受付開始'];
+          (customer.statusTimestamps ??= {})[timestampKey] = now;
+        });
+
+        await updateDoc(docRef, { customers: group.customers });
+      } catch (error) {
+        handleError('ステータスの更新', error);
+      }
+    },
+
     async updateStatus(group, customerId) {
       try {
         const docRef = doc(db, COLLECTION_NAME, group.id);

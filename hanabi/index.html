@@ -80,8 +80,7 @@
     <table>
       <thead>
         <tr>
-          <th>来店予定</th>
-          <th>来店時刻</th>
+          <th>来店</th>
           <th>代表者名</th>
           <th>個人名</th>
           <th>ブース</th>
@@ -97,10 +96,14 @@
           <template x-for="(customer, index) in group.customers" :key="customer.id">
             <tr :class="{'is-canceled': group.representative.isCanceled}">
               <template x-if="index === 0">
-                <td :rowspan="group.customers.length" x-text="group.representative.visitTime"></td>
-              </template>
-              <template x-if="index === 0">
-                <td :rowspan="group.customers.length" x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></td>
+                <td :rowspan="group.customers.length">
+                  <div class="visit-time-cell">
+                    <span :class="customer.statusTimestamps?.receptionStartedAt ? 'visit-time-scheduled' : 'visit-time-plain'"
+                      x-text="group.representative.visitTime"></span>
+                    <span class="visit-time-actual" x-show="customer.statusTimestamps?.receptionStartedAt"
+                      x-text="formatTimestamp(customer.statusTimestamps?.receptionStartedAt)"></span>
+                  </div>
+                </td>
               </template>
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
@@ -138,14 +141,25 @@
                   </template>
                 </div>
               </td>
-              <td>
-                <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)"
-                  x-show="customer.status !== '済' && !group.representative.isCanceled" :disabled="!isLoggedIn">
-                  <span x-text="customer.status || '受付開始'"></span>
-                </button>
-                <span x-show="customer.status === '済'">済</span>
-                <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
-              </td>
+              <!-- グループ全員が未受付の間は、1組につき1つの受付開始ボタンをまとめて表示 -->
+              <template x-if="index === 0 && allNotStarted(group)">
+                <td :rowspan="group.customers.length">
+                  <button class="status-btn status-reception-started" @click="startGroupReception(group)"
+                    x-show="!group.representative.isCanceled" :disabled="!isLoggedIn">受付開始</button>
+                  <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
+                </td>
+              </template>
+              <!-- 受付開始後は個別にステータスを進める -->
+              <template x-if="!allNotStarted(group)">
+                <td>
+                  <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)"
+                    x-show="customer.status !== '済' && !group.representative.isCanceled" :disabled="!isLoggedIn">
+                    <span x-text="customer.status || '受付開始'"></span>
+                  </button>
+                  <span x-show="customer.status === '済'">済</span>
+                  <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
+                </td>
+              </template>
             </tr>
           </template>
         </template>
