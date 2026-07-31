@@ -87,6 +87,12 @@ document.addEventListener('alpine:init', () => {
       toggleRadioUtil(event, modelName, this.formData.representative);
     },
 
+    // 交通手段：選択し直したら追加選択肢（高速あり/なし、JR/東武）をリセット
+    toggleTransportation(event) {
+      toggleRadioUtil(event, 'transportation', this.formData.representative);
+      this.formData.representative.transportationDetail = null;
+    },
+
     // 追加レンタル
     openRentalModal(customerIndex) {
       this.activeCustomerIndex = customerIndex
@@ -234,7 +240,7 @@ function createInitialFormData() {
       lastName: '', firstName: '', lastNameKana: '', firstNameKana: '',
       visitTime: '', finishTime: '', returnTime: '',
       address: '', phone: '',
-      transportation: '', lineType: '',
+      transportation: '', transportationDetail: null, lineType: '',
       repeaterYears: [], notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
       paymentType: 'group', groupPaymentMethod: '',

@@ -103,6 +103,46 @@ select {
     white-space: nowrap;
 }
 
+/* 交通手段の追加選択肢（親の選択肢に紐づくボタン風チップ） */
+.sub-option-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 15px;
+}
+
+/* 交通手段のラジオボタン同士の仕切り */
+.sub-option-group+.transport-label {
+    padding-left: 15px;
+    border-left: 1px solid #ddd;
+}
+
+.chip-radio {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0 !important;
+    padding: 4px 12px;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    background-color: #f5f5f5;
+    color: #555;
+    font-size: 0.85rem;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip-radio input {
+    /* ラジオボタン自体は非表示にし、チップ全体をボタンとして扱う */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.chip-radio:has(input:checked) {
+    background-color: #3543dc;
+    border-color: #3543dc;
+    color: #fff;
+}
+
 .small-input {
     width: 60px;
 }

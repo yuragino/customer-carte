@@ -115,20 +115,36 @@
               <tr>
                 <th>交通手段</th>
                 <td>
-                  <label>
-                    <input type="radio" name="transportation" value="車" @click="toggleRadio($event, 'transportation')"
+                  <label class="transport-label">
+                    <input type="radio" name="transportation" value="車" @click="toggleTransportation($event)"
                       :checked="formData.representative.transportation === '車'"> 車
                   </label>
-                  <label>
-                    <input type="radio" name="transportation" value="JR" @click="toggleRadio($event, 'transportation')"
-                      :checked="formData.representative.transportation === 'JR'"> JR
+                  <span class="sub-option-group" x-show="formData.representative.transportation === '車'">
+                    <label class="chip-radio">
+                      <input type="radio" name="transportationDetail" value="高速あり" @click="toggleRadio($event, 'transportationDetail')"
+                        :checked="formData.representative.transportationDetail === '高速あり'"> 高速あり
+                    </label>
+                    <label class="chip-radio">
+                      <input type="radio" name="transportationDetail" value="高速なし" @click="toggleRadio($event, 'transportationDetail')"
+                        :checked="formData.representative.transportationDetail === '高速なし'"> 高速なし
+                    </label>
+                  </span>
+                  <label class="transport-label">
+                    <input type="radio" name="transportation" value="電車" @click="toggleTransportation($event)"
+                      :checked="formData.representative.transportation === '電車'"> 電車
                   </label>
-                  <label>
-                    <input type="radio" name="transportation" value="東武" @click="toggleRadio($event, 'transportation')"
-                      :checked="formData.representative.transportation === '東武'"> 東武
-                  </label>
-                  <label>
-                    <input type="radio" name="transportation" value="送迎" @click="toggleRadio($event, 'transportation')"
+                  <span class="sub-option-group" x-show="formData.representative.transportation === '電車'">
+                    <label class="chip-radio">
+                      <input type="radio" name="transportationDetail" value="JR" @click="toggleRadio($event, 'transportationDetail')"
+                        :checked="formData.representative.transportationDetail === 'JR'"> JR
+                    </label>
+                    <label class="chip-radio">
+                      <input type="radio" name="transportationDetail" value="東武" @click="toggleRadio($event, 'transportationDetail')"
+                        :checked="formData.representative.transportationDetail === '東武'"> 東武
+                    </label>
+                  </span>
+                  <label class="transport-label">
+                    <input type="radio" name="transportation" value="送迎" @click="toggleTransportation($event)"
                       :checked="formData.representative.transportation === '送迎'"> 送迎
                   </label>
                 </td>
