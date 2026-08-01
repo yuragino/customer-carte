@@ -556,3 +556,106 @@ select {
     font-size: 1.2em;
     color: #555;
 }
+
+/* お客様に見せる会計画面を開くボタン */
+.receipt-open-btn {
+    margin-top: 12px;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.receipt-open-btn:hover {
+    background-color: #eee;
+}
+
+/* お客様向け会計画面：ヘッダー(z-index:1000)より上に出して背後を完全に覆う */
+.receipt-overlay {
+    background-color: rgba(20, 20, 20, 0.96);
+    z-index: 2000;
+}
+
+/* お客様向け会計画面（シンプルなレシート表示） */
+.receipt-modal {
+    position: relative;
+    width: 90vw;
+    max-width: 640px;
+    padding: 64px 56px;
+    text-align: left;
+}
+
+.receipt-representative {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.receipt-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.receipt-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.receipt-items li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+.receipt-item-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.receipt-item-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.receipt-item-icon-inline {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    vertical-align: -4px;
+    margin: 0 1px;
+    flex-shrink: 0;
+}
+
+.receipt-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #333;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111;
+}

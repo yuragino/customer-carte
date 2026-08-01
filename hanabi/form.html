@@ -368,6 +368,9 @@
             <label><input type="radio" name="groupPaymentMethod" value="振込" x-model="formData.representative.groupPaymentMethod" @click="toggleRadio($event, 'groupPaymentMethod')" :checked="formData.representative.groupPaymentMethod === '振込'"> 振込</label>
             <input type="text" x-model="formData.representative.groupPaymentNote" placeholder="支払いに関するメモ" class="payment-note-input">
           </div>
+          <button type="button" class="receipt-open-btn" @click="receiptModal.isOpen = true" x-show="totalOnSitePayment > 0 || totalPrepayment > 0">
+            <i class="fa-solid fa-receipt"></i> お客様に会計を見せる
+          </button>
         </div>
 
         <div class="submit-container">
@@ -437,6 +440,37 @@
         </div>
       </div>
       <button class="submit-btn" @click="applyDiscount()">確定</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay receipt-overlay" x-show="receiptModal.isOpen" @click="receiptModal.isOpen = false" x-cloak>
+    <div class="modal-content receipt-modal" @click.stop>
+      <button type="button" class="receipt-close-btn" @click="receiptModal.isOpen = false">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="receipt-representative">代表者：<span x-text="formData.representative.name"></span> 様</div>
+      <ul class="receipt-items">
+        <template x-for="item in receiptItems" :key="item.label + item.price + item.variant">
+          <li>
+            <span class="receipt-item-label">
+              <span x-text="item.label"></span>
+              <span x-show="item.variant === 'adult'">（大人）</span>
+              <span x-show="item.variant === 'child'">（子供<img src="../assets/img/child-icon.png" alt="" class="receipt-item-icon-inline">）</span>
+              <span x-show="item.qty > 1" x-text="'× ' + item.qty"></span>
+              <img src="../assets/img/geta-icon.png" alt="" class="receipt-item-icon" x-show="item.label === 'レンタル履き物'">
+            </span>
+            <span x-text="formatYen(item.price * item.qty)"></span>
+          </li>
+        </template>
+        <li x-show="totalDiscount">
+          <span x-text="totalDiscount > 0 ? '値引き' : '追加請求'"></span>
+          <span x-text="formatYen(-totalDiscount)"></span>
+        </li>
+      </ul>
+      <div class="receipt-total">
+        <span>合計</span>
+        <span x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
+      </div>
     </div>
   </div>
 

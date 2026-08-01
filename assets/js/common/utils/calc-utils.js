@@ -9,24 +9,22 @@ export function calculateCustomerPayment(app, customer, type, withDiscount = fal
 
   const isOnSitePaymentMethod = formData.representative.reservationMethod === null || formData.representative.reservationMethod === 'ホームページ';
 
+  // 基本料金：予約サイト経由なら前払い、直接予約・ホームページなら現地払い
   if (isPrepayment && !isOnSitePaymentMethod) {
-    // 前払い（予約サイト経由など）
     if (customer.dressingType === 'レンタル&着付') total += customer.isChild ? prices.childRentalDressing : prices.rentalDressing;
     else if (customer.dressingType === '着付のみ') total += prices.dressingOnly;
   }
-
   if (isOnSite && isOnSitePaymentMethod) {
-    // 現地払い（直接予約・ホームページ経由など）
     if (customer.dressingType === 'レンタル&着付') total += customer.isChild ? prices.childRentalDressing : prices.rentalDressing;
     else if (customer.dressingType === '着付のみ') total += prices.dressingOnly;
   }
 
-  // オプション料金 ----------------------
-  if (customer.options.footwear) total += prices.footwear;
-  if (customer.gender === 'female' && customer.options.obiBag) total += prices.bag;
-
-  // 追加レンタル -------------------------
-  total += customer.additionalRentals.reduce((sum, item) => sum + (item.price || 0), 0);
+  // オプション料金・追加レンタルは予約方法によらず常に現地払い
+  if (isOnSite) {
+    if (customer.options.footwear) total += prices.footwear;
+    if (customer.gender === 'female' && customer.options.obiBag) total += prices.bag;
+    total += customer.additionalRentals.reduce((sum, item) => sum + (item.price || 0), 0);
+  }
 
   // 値引き補正 --------------------------
   if (withDiscount && customer.discountAmount) {

@@ -30,6 +30,9 @@ document.addEventListener('alpine:init', () => {
       originalPrice: 0,
       input: { amount: 0, memo: '', type: 'discount' }, // type: 'discount'（値引き） | 'surcharge'（追加請求）
     },
+    receiptModal: {
+      isOpen: false,
+    },
 
     get docRef() {
       return doc(db, COLLECTION_NAME, this.docId);
@@ -57,6 +60,41 @@ document.addEventListener('alpine:init', () => {
       return this.formData.customers.reduce(
         (total, customer) => total + this.calculateCustomerOnSitePaymentAdjusted(customer), 0
       );
+    },
+    // 値引き・追加請求の合計
+    get totalDiscount() {
+      return this.formData.customers.reduce((total, customer) => total + (customer.discountAmount || 0), 0);
+    },
+    // 会計画面用：現地払い分のみ、同じ項目・単価をまとめた内訳リスト
+    get receiptItems() {
+      const isOnSitePaymentMethod = this.formData.representative.reservationMethod === null || this.formData.representative.reservationMethod === 'ホームページ';
+      const items = {};
+      const addItem = (label, price, variant = null) => {
+        if (!price) return;
+        const key = `${label}|${price}|${variant}`;
+        (items[key] ??= { label, price, variant, qty: 0 }).qty += 1;
+      };
+
+      // 基本料金（現地払い対象の予約方法の時だけ）→ オプション → 追加レンタルの順にまとめる
+      if (isOnSitePaymentMethod) {
+        this.formData.customers.forEach(customer => {
+          if (customer.dressingType === 'レンタル&着付') {
+            addItem('レンタル＆着付', customer.isChild ? this.prices.childRentalDressing : this.prices.rentalDressing, customer.isChild ? 'child' : 'adult');
+          } else if (customer.dressingType === '着付のみ') {
+            addItem('着付のみ（持込）', this.prices.dressingOnly);
+          }
+        });
+      }
+      // オプション・追加レンタルは予約方法によらず常に現地払い
+      this.formData.customers.forEach(customer => {
+        if (customer.options.footwear) addItem('レンタル履き物', this.prices.footwear);
+        if (customer.gender === 'female' && customer.options.obiBag) addItem('レンタルかごバッグ', this.prices.bag);
+      });
+      this.formData.customers.forEach(customer => {
+        customer.additionalRentals.forEach(item => addItem(item.name, item.price));
+      });
+
+      return Object.values(items);
     },
 
     async init() {
