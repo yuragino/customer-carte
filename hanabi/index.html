@@ -199,7 +199,8 @@
               </td>
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
-                  <span class="notes-truncate" x-show="group.representative.notes" x-text="group.representative.notes"
+                  <span class="notes-truncate" :class="{ 'notes-truncate-2-lines': group.customers.length > 1 }"
+                    x-show="group.representative.notes" x-text="group.representative.notes"
                     @click="openNotesModal(group.representative.notes)"></span>
                 </td>
               </template>

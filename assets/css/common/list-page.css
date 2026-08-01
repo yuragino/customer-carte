@@ -20,6 +20,13 @@ td {
   vertical-align: middle;
 }
 
+/* 担当者列は中身（チェックボックス）に合わせて縮め、余白が伸びないようにする */
+th:nth-child(5),
+td:nth-child(5) {
+  width: 1%;
+  white-space: nowrap;
+}
+
 thead th {
   background-color: #f8f9fa;
   font-weight: 600;
@@ -107,6 +114,17 @@ select {
   text-overflow: ellipsis;
   vertical-align: bottom;
   cursor: pointer;
+}
+
+/* 複数人組の場合はrowspanで高さに余裕があるので2行まで表示 */
+.notes-truncate-2-lines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  width: 200px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* 来店予定時刻・実績時刻 */
