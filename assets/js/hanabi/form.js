@@ -290,7 +290,7 @@ function createInitialFormData() {
 }
 function createInitialCustomerData(gender, id) {
   return {
-    id, gender, name: '', kana: '',
+    id, gender, isChild: false, name: '', kana: '',
     lastName: '', firstName: '', lastNameKana: '', firstNameKana: '',
     bodyShape: null, weight: null, height: null, footSize: null,
     dressingType: 'レンタル&着付',
