@@ -188,7 +188,6 @@
                 <span x-show="hasOnSitePayment(group, customer)" class="onsite-payment-badge" title="現地支払いあり">
                   現地<i class="fa-solid fa-circle-check" x-show="group.representative.isPaid" title="会計済み"></i>
                 </span>
-                <span x-show="hasExtras(customer)" class="extras-badge" x-text="extrasSummary(customer)"></span>
               </td>
               <td>
                 <select x-model="customer.booth" @change="updateCustomerField(group.id, customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn || group.representative.isCanceled">
