@@ -79,6 +79,12 @@ select {
   background-color: #fd7e14;
 }
 
+/* 着付完了後、グループ全員がそろうまでの待機表示（ボタンではないので装飾しない） */
+.status-waiting-badge {
+  color: #868e96;
+  font-size: 0.85rem;
+}
+
 /* ふりがな（名前の上に小さく表示） */
 .furigana {
   display: block;

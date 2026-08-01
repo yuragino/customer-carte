@@ -212,10 +212,10 @@
                   <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
                 </td>
               </template>
-              <!-- グループ全員が着付完了になったら、1組につき1つの見送り完了ボタンをまとめて表示 -->
+              <!-- グループ全員が着付完了になったら、1組につき1つの見送り完了ボタンをまとめて表示。押すと直接「済」になる -->
               <template x-if="index === 0 && readyForGroupSendOff(group)">
                 <td :rowspan="group.customers.length">
-                  <button class="status-btn" :class="getStatusClass('着付完了')" @click="completeGroupSendOff(group)"
+                  <button class="status-btn" :class="getStatusClass('見送り完了')" @click="completeGroupSendOff(group)"
                     x-show="!group.representative.isCanceled" :disabled="!isLoggedIn">見送り完了</button>
                   <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
                 </td>
@@ -223,10 +223,15 @@
               <!-- それ以外は個別にステータスを進める -->
               <template x-if="!allNotStarted(group) && !readyForGroupSendOff(group)">
                 <td>
-                  <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)"
-                    x-show="customer.status !== '済' && !group.representative.isCanceled" :disabled="!isLoggedIn">
+                  <button class="status-btn" :class="getStatusClass(customer.status)"
+                    @click="customer.status === '着付完了' ? confirmDressingComplete(group, customer.id) : updateStatus(group, customer.id)"
+                    x-show="customer.status !== '済' && !(customer.status === '着付完了' && customer.waitingForSendOff) && !group.representative.isCanceled"
+                    :disabled="!isLoggedIn">
                     <span x-text="customer.status || '受付開始'"></span>
                   </button>
+                  <span x-show="customer.status === '着付完了' && customer.waitingForSendOff && !group.representative.isCanceled" class="status-waiting-badge">
+                    着付完了（待ち）
+                  </span>
                   <span x-show="customer.status === '済'">済</span>
                   <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
                 </td>

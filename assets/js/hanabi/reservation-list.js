@@ -140,7 +140,19 @@ document.addEventListener('alpine:init', () => {
     },
 
     readyForGroupSendOff(group) {
-      return group.customers.every(customer => customer.status === '着付完了');
+      return group.customers.every(customer => customer.status === '着付完了' && customer.waitingForSendOff);
+    },
+
+    async confirmDressingComplete(group, customerId) {
+      if (!confirm('着付完了で間違いないですか？')) return;
+      try {
+        const docRef = doc(db, COLLECTION_NAME, group.id);
+        const customer = group.customers.find(c => c.id === customerId);
+        customer.waitingForSendOff = true;
+        await updateDoc(docRef, { customers: group.customers });
+      } catch (error) {
+        handleError('ステータスの更新', error);
+      }
     },
 
     async completeGroupSendOff(group) {
@@ -148,10 +160,10 @@ document.addEventListener('alpine:init', () => {
       try {
         const docRef = doc(db, COLLECTION_NAME, group.id);
         const now = new Date();
-        const currentStatus = '着付完了';
-        const timestampKey = this.statusToTimestampKey[currentStatus];
+        const timestampKey = this.statusToTimestampKey['見送り完了'];
         group.customers.forEach(customer => {
-          customer.status = this.nextStatusMap[currentStatus];
+          customer.status = this.nextStatusMap['見送り完了'];
+          customer.waitingForSendOff = false;
           (customer.statusTimestamps ??= {})[timestampKey] = now;
         });
 
