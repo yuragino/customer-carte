@@ -21,7 +21,6 @@ document.addEventListener('alpine:init', () => {
     boothOptions: { ...DEFAULT_BOOTH_OPTIONS },
     ...STATUS_MAP,
     openSettings: false,
-    openPriceSettings: false,
     settings: {
       staff: '',
       boothFemale: '',
@@ -88,14 +87,10 @@ document.addEventListener('alpine:init', () => {
 
       await saveStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear, staffOptions);
       await saveBoothConfig(CONFIG_COLLECTION_NAME, this.selectedYear, boothOptions);
+      await savePriceConfig(CONFIG_COLLECTION_NAME, this.selectedYear, this.prices);
       this.staffOptions = staffOptions;
       this.boothOptions = boothOptions;
       this.openSettings = false;
-    },
-
-    async savePriceConfig() {
-      await savePriceConfig(CONFIG_COLLECTION_NAME, this.selectedYear, this.prices);
-      this.openPriceSettings = false;
     },
 
     async updateCustomerField(groupId, customerId, field, value, checked = null) {

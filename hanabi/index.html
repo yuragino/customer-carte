@@ -47,14 +47,6 @@
         <button
           class="flex items-center gap-1.5 px-3 py-2 rounded-md text-gray-800 cursor-pointer
            bg-gradient-to-b from-gray-200 to-gray-400 shadow-sm border border-gray-300"
-          @click="openPriceSettings = true"
-          title="料金設定を開く">
-          <i class="fa-solid fa-yen-sign text-gray-700"></i>
-          <span class="font-medium">料金設定</span>
-        </button>
-        <button
-          class="flex items-center gap-1.5 px-3 py-2 rounded-md text-gray-800 cursor-pointer
-           bg-gradient-to-b from-gray-200 to-gray-400 shadow-sm border border-gray-300"
           @click="openSettings = true"
           title="設定を開く">
           <i class="fa-solid fa-gear text-gray-700"></i>
@@ -66,74 +58,63 @@
     <div x-show="openSettings"
       class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
       @click.self="openSettings = false" x-cloak>
-      <div class="bg-white rounded-lg shadow-lg p-6 w-[460px] max-h-[80vh] overflow-y-auto">
+      <div class="bg-white rounded-lg shadow-lg p-6 w-[900px] max-w-[95vw] max-h-[85vh] overflow-y-auto">
         <h2 class="text-lg font-semibold mb-4">
           設定（<span x-text="selectedYear"></span>年）
         </h2>
 
-        <div class="mb-6">
-          <label class="block text-sm text-gray-700 mb-1">スタッフ設定（スペース区切り）</label>
-          <textarea x-model="settings.staff"
-            class="w-full border rounded p-2 text-sm"
-            placeholder="例: 小林 矢口 大矢"></textarea>
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-sm text-gray-700 mb-1">スタッフ設定（スペース区切り）</label>
+              <textarea x-model="settings.staff"
+                class="w-full border rounded p-2 text-sm"
+                placeholder="例: 小林 矢口 大矢"></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm text-gray-700 mb-1">ブース設定（女性用・スペース区切り）</label>
+              <textarea x-model="settings.boothFemale"
+                class="w-full border rounded p-2 text-sm"
+                placeholder="例: A1 A2 A3 A4 A5 B1 B2"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">ブース設定（男性用・スペース区切り）</label>
+              <textarea x-model="settings.boothMale"
+                class="w-full border rounded p-2 text-sm"
+                placeholder="例: B1 B2"></textarea>
+            </div>
+          </div>
+
+          <div>
+            <div class="mb-4">
+              <label class="block text-sm text-gray-700 mb-1">着付のみ</label>
+              <input type="number" x-model.number="prices.dressingOnly" class="w-full border rounded p-2 text-sm">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm text-gray-700 mb-1">レンタル＆着付</label>
+              <input type="number" x-model.number="prices.rentalDressing" class="w-full border rounded p-2 text-sm">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm text-gray-700 mb-1">子供レンタル＆着付</label>
+              <input type="number" x-model.number="prices.childRentalDressing" class="w-full border rounded p-2 text-sm">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm text-gray-700 mb-1">レンタル履き物</label>
+              <input type="number" x-model.number="prices.footwear" class="w-full border rounded p-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-700 mb-1">レンタルかごバッグ</label>
+              <input type="number" x-model.number="prices.bag" class="w-full border rounded p-2 text-sm">
+            </div>
+          </div>
         </div>
 
-        <div class="mb-4">
-          <label class="block text-sm text-gray-700 mb-1">ブース設定（女性用・スペース区切り）</label>
-          <textarea x-model="settings.boothFemale"
-            class="w-full border rounded p-2 text-sm"
-            placeholder="例: A1 A2 A3 A4 A5 B1 B2"></textarea>
-        </div>
-        <div class="mb-6">
-          <label class="block text-sm text-gray-700 mb-1">ブース設定（男性用・スペース区切り）</label>
-          <textarea x-model="settings.boothMale"
-            class="w-full border rounded p-2 text-sm"
-            placeholder="例: B1 B2"></textarea>
-        </div>
-
-        <div class="flex justify-end gap-3">
+        <div class="flex justify-end gap-3 mt-6">
           <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
             @click="openSettings = false">閉じる</button>
           <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             @click="saveSettings">保存</button>
-        </div>
-      </div>
-    </div>
-    <!-- 料金設定モーダル -->
-    <div x-show="openPriceSettings"
-      class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
-      @click.self="openPriceSettings = false" x-cloak>
-      <div class="bg-white rounded-lg shadow-lg p-6 w-[460px] max-h-[80vh] overflow-y-auto">
-        <h2 class="text-lg font-semibold mb-4">
-          料金設定（<span x-text="selectedYear"></span>年）
-        </h2>
-
-        <div class="mb-4">
-          <label class="block text-sm text-gray-700 mb-1">着付のみ</label>
-          <input type="number" x-model.number="prices.dressingOnly" class="w-full border rounded p-2 text-sm">
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm text-gray-700 mb-1">レンタル＆着付</label>
-          <input type="number" x-model.number="prices.rentalDressing" class="w-full border rounded p-2 text-sm">
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm text-gray-700 mb-1">子供レンタル＆着付</label>
-          <input type="number" x-model.number="prices.childRentalDressing" class="w-full border rounded p-2 text-sm">
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm text-gray-700 mb-1">レンタル履き物</label>
-          <input type="number" x-model.number="prices.footwear" class="w-full border rounded p-2 text-sm">
-        </div>
-        <div class="mb-6">
-          <label class="block text-sm text-gray-700 mb-1">レンタルかごバッグ</label>
-          <input type="number" x-model.number="prices.bag" class="w-full border rounded p-2 text-sm">
-        </div>
-
-        <div class="flex justify-end gap-3">
-          <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            @click="openPriceSettings = false">閉じる</button>
-          <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            @click="savePriceConfig">保存</button>
         </div>
       </div>
     </div>
