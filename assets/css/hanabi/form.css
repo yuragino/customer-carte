@@ -256,6 +256,18 @@ select {
     font-size: 1.1rem;
 }
 
+.group-payment-method {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.payment-note-input {
+    flex: 1;
+    min-width: 0;
+}
+
 .payment-status-btn {
     margin-left: 10px;
     padding: 4px 10px;

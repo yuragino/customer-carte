@@ -281,7 +281,7 @@ function createInitialFormData() {
       transportation: '', transportationDetail: null, lineType: '',
       repeaterYears: [], repeaterNote: '', notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
-      paymentType: 'group', groupPaymentMethod: '',
+      paymentType: 'group', groupPaymentMethod: '', groupPaymentNote: '',
       isCanceled: false, isPaid: false,
     },
     femaleCount: 1, maleCount: 1,
@@ -299,7 +299,7 @@ function createInitialCustomerData(gender, id) {
     imageUrls: [],          // ← DBに保存済みのURL群
     newImageFiles: [],      // ← Fileオブジェクト群
     newImagePreviews: [],   // ← プレビュー表示用 blob:URL 群
-    paymentMethod: '',
+    paymentMethod: '', paymentNote: '',
     discountAmount: 0,
     discountMemo: '',
     onSitePaymentAdjusted: 0,

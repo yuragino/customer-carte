@@ -333,7 +333,8 @@
               <div class="form-cell" x-show="formData.representative.paymentType==='individual'">
                 <label><input type="radio" :name="'paymentMethod' + customerIndex" value="現金" x-model="customer.paymentMethod" @click="toggleCustomerRadio($event, 'paymentMethod', customerIndex)" :checked="customer.paymentMethod === '現金'"> 現金</label>
                 <label><input type="radio" :name="'paymentMethod' + customerIndex" value="PayPay" x-model="customer.paymentMethod" @click="toggleCustomerRadio($event, 'paymentMethod', customerIndex)" :checked="customer.paymentMethod === 'PayPay'"> PayPay</label>
-                <input type="text" x-model="customer.paymentMethod">
+                <label><input type="radio" :name="'paymentMethod' + customerIndex" value="振込" x-model="customer.paymentMethod" @click="toggleCustomerRadio($event, 'paymentMethod', customerIndex)" :checked="customer.paymentMethod === '振込'"> 振込</label>
+                <input type="text" x-model="customer.paymentNote" placeholder="支払いに関するメモ" class="payment-note-input">
               </div>
             </div>
           </template>
@@ -354,7 +355,7 @@
             </span>
             <span x-text="formatYen(totalOnSitePayment)" x-show="!formData.customers.some(c => c.discountAmount)"></span>
             <button type="button" class="payment-status-btn" :class="{ 'is-paid': formData.representative.isPaid }"
-              @click="formData.representative.isPaid = !formData.representative.isPaid">
+              @click="if (!formData.representative.isPaid || confirm('未決済に戻しますか？')) formData.representative.isPaid = !formData.representative.isPaid">
               <i class="fa-solid fa-check" x-show="formData.representative.isPaid"></i>
               <span x-text="formData.representative.isPaid ? '決済済み' : '決済済みにする'"></span>
             </button>
@@ -363,7 +364,8 @@
             支払い方法：
             <label><input type="radio" name="groupPaymentMethod" value="現金" x-model="formData.representative.groupPaymentMethod" @click="toggleRadio($event, 'groupPaymentMethod')" :checked="formData.representative.groupPaymentMethod === '現金'"> 現金</label>
             <label><input type="radio" name="groupPaymentMethod" value="PayPay" x-model="formData.representative.groupPaymentMethod" @click="toggleRadio($event, 'groupPaymentMethod')" :checked="formData.representative.groupPaymentMethod === 'PayPay'"> PayPay</label>
-            <input type="text" x-model="formData.representative.groupPaymentMethod">
+            <label><input type="radio" name="groupPaymentMethod" value="振込" x-model="formData.representative.groupPaymentMethod" @click="toggleRadio($event, 'groupPaymentMethod')" :checked="formData.representative.groupPaymentMethod === '振込'"> 振込</label>
+            <input type="text" x-model="formData.representative.groupPaymentNote" placeholder="支払いに関するメモ" class="payment-note-input">
           </div>
         </div>
 
