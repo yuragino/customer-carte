@@ -3,13 +3,6 @@ export const CLOUDINARY_CONFIG = {
   UPLOAD_PRESET: 'unsigned_preset',
 };
 
-export const CASUAL_PRICES = {
-  RENTAL_DRESSING: 6800,
-  DRESSING_ONLY: 3800,
-  FOOTWEAR: 500,
-  BAG: 500,
-};
-
 export const STATUS_MAP = {
   nextStatusMap: {
     '受付開始': '着付開始',

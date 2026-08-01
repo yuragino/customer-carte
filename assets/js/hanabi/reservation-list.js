@@ -9,6 +9,7 @@ import { handleError } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { STATUS_MAP } from "../common/constants.js";
 import { loadStaffConfig, saveStaffConfig } from "../common/utils/staff-config-utils.js";
+import { loadPriceConfig, savePriceConfig, DEFAULT_PRICES } from "../common/utils/price-config-utils.js";
 const COLLECTION_NAME = 'fireworks';
 const CONFIG_COLLECTION_NAME = 'fireworks_config';   // 年次設定関連
 document.addEventListener('alpine:init', () => {
@@ -20,9 +21,11 @@ document.addEventListener('alpine:init', () => {
     boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
     ...STATUS_MAP,
     openSettings: false,
+    openPriceSettings: false,
     settings: {
       staff: '',
     },
+    prices: { ...DEFAULT_PRICES },
     notesModal: {
       isOpen: false,
       content: '',
@@ -53,6 +56,7 @@ document.addEventListener('alpine:init', () => {
     async loadConfig() {
       this.staffOptions = await loadStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
       this.settings.staff = this.staffOptions.join(' ');
+      this.prices = await loadPriceConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
     },
 
     async saveStaffConfig() {
@@ -64,6 +68,11 @@ document.addEventListener('alpine:init', () => {
       await saveStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear, staffOptions);
       this.staffOptions = staffOptions;
       this.openSettings = false;
+    },
+
+    async savePriceConfig() {
+      await savePriceConfig(CONFIG_COLLECTION_NAME, this.selectedYear, this.prices);
+      this.openPriceSettings = false;
     },
 
     async updateCustomerField(groupId, customerId, field, value, checked = null) {
@@ -89,7 +98,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     hasOnSitePayment(group, customer) {
-      return calculateCustomerPayment({ formData: group }, customer, 'onSite') > 0;
+      return calculateCustomerPayment({ formData: group, prices: this.prices }, customer, 'onSite') > 0;
     },
 
     openNotesModal(notes) {

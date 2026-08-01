@@ -4,10 +4,12 @@ import { getYearSettings } from "../common/year-selector.js";
 import { formatYen } from "../common/utils/format-utils.js";
 import { toggleRadioUtil, handleError } from "../common/utils/ui-utils.js";
 import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
+import { loadPriceConfig, DEFAULT_PRICES } from "../common/utils/price-config-utils.js";
 import { uploadMediaArrayToCloudinary, prepareMediaPreviewUtil, removeMediaUtil } from "../common/utils/media-utils.js";
 import { logFirestoreAction } from "../common/utils/firestore-utils.js";
 import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'fireworks';
+const CONFIG_COLLECTION_NAME = 'fireworks_config';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     ...getYearSettings(),
@@ -18,6 +20,7 @@ document.addEventListener('alpine:init', () => {
     isDirty: false,           // 保存前の未反映の変更があるかどうか
     selectedImageUrl: null,
     formData: createInitialFormData(),
+    prices: { ...DEFAULT_PRICES },
     rentalModal: {
       isOpen: false,
       input: { name: '', price: null },
@@ -63,6 +66,7 @@ document.addEventListener('alpine:init', () => {
       this.docId = params.get('docId');
       if (this.docId) await this.load();
       else this.updateCustomerList();
+      this.prices = await loadPriceConfig(CONFIG_COLLECTION_NAME, this.docId ? this.formData.eventYear : this.selectedYear);
 
       // formData内のあらゆる変更（配列の追加削除やモーダル内の入力含む）を検知し、未保存状態を表す
       let isFirstRun = true;
