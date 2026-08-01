@@ -88,7 +88,7 @@ document.addEventListener('alpine:init', () => {
       // オプション・追加レンタルは予約方法によらず常に現地払い
       this.formData.customers.forEach(customer => {
         if (customer.options.footwear) addItem('レンタル履き物', this.prices.footwear);
-        if (customer.gender === 'female' && customer.options.obiBag) addItem('レンタルかごバッグ', this.prices.bag);
+        if (customer.gender === 'female' && customer.options.obiBag) addItem('レンタルバッグ', this.prices.bag);
       });
       this.formData.customers.forEach(customer => {
         customer.additionalRentals.forEach(item => addItem(item.name, item.price));

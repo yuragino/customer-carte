@@ -56,33 +56,46 @@
           class="flex items-center gap-1.5 px-3 py-2 rounded-md text-gray-800 cursor-pointer
            bg-gradient-to-b from-gray-200 to-gray-400 shadow-sm border border-gray-300"
           @click="openSettings = true"
-          title="スタッフ設定を開く">
-          <i class="fa-solid fa-user-gear text-gray-700"></i>
-          <span class="font-medium">スタッフ設定</span>
+          title="設定を開く">
+          <i class="fa-solid fa-gear text-gray-700"></i>
+          <span class="font-medium">設定</span>
         </button>
       </div>
     </div>
-    <!-- スタッフ設定モーダル -->
+    <!-- 設定モーダル -->
     <div x-show="openSettings"
       class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
       @click.self="openSettings = false" x-cloak>
       <div class="bg-white rounded-lg shadow-lg p-6 w-[460px] max-h-[80vh] overflow-y-auto">
         <h2 class="text-lg font-semibold mb-4">
-          スタッフ設定（<span x-text="selectedYear"></span>年）
+          設定（<span x-text="selectedYear"></span>年）
         </h2>
 
         <div class="mb-6">
-          <label class="block text-sm text-gray-700 mb-1">スタッフ一覧（スペース区切り）</label>
+          <label class="block text-sm text-gray-700 mb-1">スタッフ設定（スペース区切り）</label>
           <textarea x-model="settings.staff"
             class="w-full border rounded p-2 text-sm"
             placeholder="例: 小林 矢口 大矢"></textarea>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm text-gray-700 mb-1">ブース設定（女性用・スペース区切り）</label>
+          <textarea x-model="settings.boothFemale"
+            class="w-full border rounded p-2 text-sm"
+            placeholder="例: A1 A2 A3 A4 A5 B1 B2"></textarea>
+        </div>
+        <div class="mb-6">
+          <label class="block text-sm text-gray-700 mb-1">ブース設定（男性用・スペース区切り）</label>
+          <textarea x-model="settings.boothMale"
+            class="w-full border rounded p-2 text-sm"
+            placeholder="例: B1 B2"></textarea>
         </div>
 
         <div class="flex justify-end gap-3">
           <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
             @click="openSettings = false">閉じる</button>
           <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            @click="saveStaffConfig">保存</button>
+            @click="saveSettings">保存</button>
         </div>
       </div>
     </div>
@@ -179,7 +192,7 @@
               <td>
                 <select x-model="customer.booth" @change="updateCustomerField(group.id, customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn || group.representative.isCanceled">
                   <option value="">--</option>
-                  <template x-for="booth in customer.gender === 'female'  ? boothOptionsFemale : boothOptionsMale" :key="booth">
+                  <template x-for="booth in customer.gender === 'female' ? boothOptions.female : boothOptions.male" :key="booth">
                     <option :value="booth" x-text="booth" :selected="booth === customer.booth"></option>
                   </template>
                 </select>

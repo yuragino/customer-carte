@@ -10,6 +10,7 @@ import { calculateCustomerPayment } from "../common/utils/calc-utils.js";
 import { STATUS_MAP } from "../common/constants.js";
 import { loadStaffConfig, saveStaffConfig } from "../common/utils/staff-config-utils.js";
 import { loadPriceConfig, savePriceConfig, DEFAULT_PRICES } from "../common/utils/price-config-utils.js";
+import { loadBoothConfig, saveBoothConfig, DEFAULT_BOOTH_OPTIONS } from "../common/utils/booth-config-utils.js";
 const COLLECTION_NAME = 'fireworks';
 const CONFIG_COLLECTION_NAME = 'fireworks_config';   // 年次設定関連
 document.addEventListener('alpine:init', () => {
@@ -17,13 +18,14 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings(),
     formatTimestamp,
     groups: [],
-    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
-    boothOptionsMale: ['C1', 'C2', 'B1', 'B2'],
+    boothOptions: { ...DEFAULT_BOOTH_OPTIONS },
     ...STATUS_MAP,
     openSettings: false,
     openPriceSettings: false,
     settings: {
       staff: '',
+      boothFemale: '',
+      boothMale: '',
     },
     prices: { ...DEFAULT_PRICES },
     eventMemo: '',
@@ -57,6 +59,9 @@ document.addEventListener('alpine:init', () => {
     async loadConfig() {
       this.staffOptions = await loadStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
       this.settings.staff = this.staffOptions.join(' ');
+      this.boothOptions = await loadBoothConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
+      this.settings.boothFemale = this.boothOptions.female.join(' ');
+      this.settings.boothMale = this.boothOptions.male.join(' ');
       this.prices = await loadPriceConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
       const configs = await getDocsByYear(CONFIG_COLLECTION_NAME, this.selectedYear);
       this.eventMemo = configs[0]?.eventMemo ?? '';
@@ -71,14 +76,20 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    async saveStaffConfig() {
+    async saveSettings() {
       const staffOptions = this.settings.staff
         .split(/\s+/)
         .map(s => s.trim())
         .filter(Boolean);
+      const boothOptions = {
+        female: this.settings.boothFemale.split(/\s+/).map(s => s.trim()).filter(Boolean),
+        male: this.settings.boothMale.split(/\s+/).map(s => s.trim()).filter(Boolean),
+      };
 
       await saveStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear, staffOptions);
+      await saveBoothConfig(CONFIG_COLLECTION_NAME, this.selectedYear, boothOptions);
       this.staffOptions = staffOptions;
+      this.boothOptions = boothOptions;
       this.openSettings = false;
     },
 
