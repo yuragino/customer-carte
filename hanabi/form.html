@@ -46,7 +46,7 @@
         <i class="fa-solid fa-print"></i> 印刷用ページ
       </a>
     </div>
-    <form @submit.prevent="submitForm" @keydown.enter="$event.target.tagName !== 'TEXTAREA' && $event.preventDefault()">
+    <form @submit.prevent="submitForm" @keydown.enter="($event.metaKey || $event.ctrlKey) ? ($event.preventDefault(), $el.requestSubmit()) : ($event.target.tagName !== 'TEXTAREA' && $event.preventDefault())">
       <fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
         <div class="form-section">
           <h2 class="section-title">代表者情報</h2>
