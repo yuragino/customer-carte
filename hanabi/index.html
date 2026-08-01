@@ -39,8 +39,10 @@
   </header>
 
   <main>
-    <!-- 設定ボタン -->
-    <div class="flex justify-end items-center mb-4">
+    <!-- 大会メモ＋設定ボタン -->
+    <div class="flex items-center gap-2 mb-4">
+      <input type="text" x-model="eventMemo" @input.debounce.800ms="saveEventMemo" @blur="saveEventMemo"
+        placeholder="花火大会に関するメモ（注意事項・共有事項）" class="flex-1 min-w-0 border rounded px-3 py-2 text-sm">
       <div x-show="isLoggedIn" class="flex gap-2">
         <button
           class="flex items-center gap-1.5 px-3 py-2 rounded-md text-gray-800 cursor-pointer

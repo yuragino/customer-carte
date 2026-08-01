@@ -26,6 +26,7 @@ document.addEventListener('alpine:init', () => {
       staff: '',
     },
     prices: { ...DEFAULT_PRICES },
+    eventMemo: '',
     notesModal: {
       isOpen: false,
       content: '',
@@ -57,6 +58,17 @@ document.addEventListener('alpine:init', () => {
       this.staffOptions = await loadStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
       this.settings.staff = this.staffOptions.join(' ');
       this.prices = await loadPriceConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
+      const configs = await getDocsByYear(CONFIG_COLLECTION_NAME, this.selectedYear);
+      this.eventMemo = configs[0]?.eventMemo ?? '';
+    },
+
+    async saveEventMemo() {
+      try {
+        const docRef = doc(db, CONFIG_COLLECTION_NAME, String(this.selectedYear));
+        await setDoc(docRef, { eventYear: this.selectedYear, eventMemo: this.eventMemo, updatedAt: new Date() }, { merge: true });
+      } catch (error) {
+        handleError('メモの保存', error);
+      }
     },
 
     async saveStaffConfig() {
