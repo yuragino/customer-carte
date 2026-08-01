@@ -255,6 +255,10 @@ table .is-canceled {
   color: #a0a0a0;
 }
 
+table .is-finished {
+  background-color: #eeeeee;
+}
+
 .booth-radios label.disabled,
 .staff-checkboxes label.disabled {
   opacity: 0.6;

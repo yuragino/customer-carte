@@ -154,6 +154,10 @@ document.addEventListener('alpine:init', () => {
       return group.customers.every(customer => customer.status === '着付完了' && customer.waitingForSendOff);
     },
 
+    isGroupFinished(group) {
+      return group.customers.every(customer => customer.status === '済');
+    },
+
     async confirmDressingComplete(group, customerId) {
       if (!confirm('着付完了で間違いないですか？')) return;
       try {

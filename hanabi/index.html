@@ -156,7 +156,7 @@
         </tr>
         <template x-for="group in groups.toReversed()" :key="group.id">
           <template x-for="(customer, index) in group.customers" :key="customer.id">
-            <tr :class="{'is-canceled': group.representative.isCanceled}">
+            <tr :class="{'is-canceled': group.representative.isCanceled, 'is-finished': !group.representative.isCanceled && isGroupFinished(group)}">
               <template x-if="index === 0">
                 <td :rowspan="group.customers.length">
                   <div class="visit-time-cell">
