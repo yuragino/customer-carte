@@ -142,6 +142,11 @@ select {
   border-radius: 4px;
 }
 
+.onsite-payment-badge .fa-circle-check {
+  margin-left: 0.2rem;
+  color: #2f9e44;
+}
+
 td:last-child {
   position: relative;
 }

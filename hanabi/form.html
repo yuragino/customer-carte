@@ -353,6 +353,11 @@
               <span :class="totalOnSitePaymentAdjusted > totalOnSitePayment ? 'increased-price' : 'new-price'" x-text="formatYen(totalOnSitePaymentAdjusted)"></span>
             </span>
             <span x-text="formatYen(totalOnSitePayment)" x-show="!formData.customers.some(c => c.discountAmount)"></span>
+            <button type="button" class="payment-status-btn" :class="{ 'is-paid': formData.representative.isPaid }"
+              @click="formData.representative.isPaid = !formData.representative.isPaid">
+              <i class="fa-solid fa-check" x-show="formData.representative.isPaid"></i>
+              <span x-text="formData.representative.isPaid ? '決済済み' : '決済済みにする'"></span>
+            </button>
           </span>
           <div class="group-payment-method" x-show="formData.representative.paymentType === 'group'">
             支払い方法：

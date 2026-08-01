@@ -121,7 +121,9 @@
                   <span class="furigana" x-text="customer.kana"></span>
                   <span :class="customer.gender === 'male' ? 'gender-male' : 'gender-female'" x-text="customer.name"></span>
                 </span>
-                <span x-show="hasOnSitePayment(group, customer)" class="onsite-payment-badge" title="現地支払いあり">現地</span>
+                <span x-show="hasOnSitePayment(group, customer)" class="onsite-payment-badge" title="現地支払いあり">
+                  現地<i class="fa-solid fa-circle-check" x-show="group.representative.isPaid" title="会計済み"></i>
+                </span>
               </td>
               <td>
                 <select x-model="customer.booth" @change="updateCustomerField(group.id, customer.id, 'booth', customer.booth)" :disabled="!isLoggedIn || group.representative.isCanceled">
@@ -158,8 +160,16 @@
                   <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
                 </td>
               </template>
-              <!-- 受付開始後は個別にステータスを進める -->
-              <template x-if="!allNotStarted(group)">
+              <!-- グループ全員が着付完了になったら、1組につき1つの見送り完了ボタンをまとめて表示 -->
+              <template x-if="index === 0 && readyForGroupSendOff(group)">
+                <td :rowspan="group.customers.length">
+                  <button class="status-btn" :class="getStatusClass('着付完了')" @click="completeGroupSendOff(group)"
+                    x-show="!group.representative.isCanceled" :disabled="!isLoggedIn">見送り完了</button>
+                  <span x-show="group.representative.isCanceled"><i class="fa-solid fa-user-xmark"></i></span>
+                </td>
+              </template>
+              <!-- それ以外は個別にステータスを進める -->
+              <template x-if="!allNotStarted(group) && !readyForGroupSendOff(group)">
                 <td>
                   <button class="status-btn" :class="getStatusClass(customer.status)" @click="updateStatus(group, customer.id)"
                     x-show="customer.status !== '済' && !group.representative.isCanceled" :disabled="!isLoggedIn">

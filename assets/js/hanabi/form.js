@@ -282,7 +282,7 @@ function createInitialFormData() {
       repeaterYears: [], repeaterNote: '', notes: '',
       checkpoints: { rentalPage: false, footwearBag: false, price: false, location: false, parking: false },
       paymentType: 'group', groupPaymentMethod: '',
-      isCanceled: false,
+      isCanceled: false, isPaid: false,
     },
     femaleCount: 1, maleCount: 1,
     customers: []
