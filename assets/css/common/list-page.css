@@ -182,6 +182,17 @@ select {
   color: #2f9e44;
 }
 
+/* オプション・追加レンタルありバッジ */
+.extras-badge {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  color: #5f3dc4;
+  background-color: #eee6ff;
+  border-radius: 4px;
+}
+
 td:last-child {
   position: relative;
 }

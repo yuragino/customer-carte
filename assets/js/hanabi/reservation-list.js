@@ -124,6 +124,18 @@ document.addEventListener('alpine:init', () => {
       return calculateCustomerPayment({ formData: group, prices: this.prices }, customer, 'onSite') > 0;
     },
 
+    hasExtras(customer) {
+      return customer.options.footwear || customer.options.obiBag || customer.additionalRentals.length > 0;
+    },
+
+    extrasSummary(customer) {
+      const items = [];
+      if (customer.options.footwear) items.push('履き物');
+      if (customer.options.obiBag) items.push('バッグ');
+      customer.additionalRentals.forEach(item => items.push(item.name));
+      return items.join('、');
+    },
+
     openNotesModal(notes) {
       this.notesModal.content = notes;
       this.notesModal.isOpen = true;
