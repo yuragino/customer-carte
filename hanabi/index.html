@@ -20,7 +20,11 @@
 <body x-data="app">
   <header class="header">
     <div class="header-inner">
-      <h1 class="header-title"><a href="../index.html">着付予約管理</a></h1>
+      <div class="header-title-group">
+        <h1 class="header-title"><a href="../index.html">着付予約管理</a></h1>
+        <span class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'"
+          x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
+      </div>
       <div class="header-controls">
         <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
         <span>花火大会</span>
@@ -35,12 +39,8 @@
   </header>
 
   <main>
-    <!-- ログイン状態＋設定ボタン -->
-    <div class="flex justify-between items-center mb-4">
-      <div class="login-status" :class="isLoggedIn ? 'text-green-600' : 'text-orange-400'">
-        <span x-show="isLoggedIn" x-text="user?.displayName + ' としてログイン中'"></span>
-      </div>
-
+    <!-- 設定ボタン -->
+    <div class="flex justify-end items-center mb-4">
       <div x-show="isLoggedIn" class="flex gap-2">
         <button
           class="flex items-center gap-1.5 px-3 py-2 rounded-md text-gray-800 cursor-pointer
