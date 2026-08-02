@@ -159,6 +159,8 @@ document.addEventListener('alpine:init', () => {
         const docRef = doc(db, COLLECTION_NAME, group.id);
         const customer = group.customers.find(c => c.id === customerId);
         customer.waitingForSendOff = true;
+        const timestampKey = this.statusToTimestampKey['着付完了'];
+        (customer.statusTimestamps ??= {})[timestampKey] = new Date();
         await updateDoc(docRef, { customers: group.customers });
       } catch (error) {
         handleError('ステータスの更新', error);
