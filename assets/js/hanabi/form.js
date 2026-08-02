@@ -128,7 +128,7 @@ document.addEventListener('alpine:init', () => {
         if (docSnap.exists()) {
           this.formData = docSnap.data();
         } else {
-          handleError('データの読み込み', error);
+          alert('データが見つかりませんでした。');
           this.docId = null;
         }
       } catch (error) {

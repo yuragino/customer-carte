@@ -134,7 +134,7 @@
       </thead>
       <tbody>
         <tr x-show="groups.length === 0">
-          <td colspan="9" class="text-center p-4">該当するデータがありません</td>
+          <td colspan="7" class="text-center p-4">該当するデータがありません</td>
         </tr>
         <template x-for="group in groups.toReversed()" :key="group.id">
           <template x-for="(customer, index) in group.customers" :key="customer.id">
@@ -178,7 +178,6 @@
                     <option :value="booth" x-text="booth" :selected="booth === customer.booth"></option>
                   </template>
                 </select>
-                </div>
               </td>
               <td>
                 <div class="staff-checkboxes">

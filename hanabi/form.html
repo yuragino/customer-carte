@@ -98,6 +98,7 @@
                       x-init="$nextTick(() => bindAutoKana('rep-lastName', 'rep-lastNameKana', formData.representative, 'lastNameKana'))">
                     <input type="text" id="rep-firstNameKana" x-model="formData.representative.firstNameKana" placeholder="めい" class="small-width"
                       x-init="$nextTick(() => bindAutoKana('rep-firstName', 'rep-firstNameKana', formData.representative, 'firstNameKana'))">
+                  </td>
                 </template>
               </tr>
               <tr>
@@ -384,7 +385,7 @@
             <span>キャンセルの時はここにチェックをつけて更新</span>
           </label>
         </div>
-      </fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
+      </fieldset>
     </form>
   </main>
 

@@ -182,7 +182,7 @@ select {
 .customer-column-header,
 .customer-column {
     display: grid;
-    grid-template-rows: 80px repeat(8, 60px);
+    grid-template-rows: 80px repeat(9, 60px);
 }
 
 .form-cell {
