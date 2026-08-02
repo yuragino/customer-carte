@@ -259,9 +259,15 @@
                 <label><input type="checkbox" x-model="customer.isChild"> 子供</label>
               </div>
               <div class="form-cell">
-                <label><input type="radio" :name="'bodyShape' + customerIndex" value="S" x-model="customer.bodyShape"> S</label>
-                <label><input type="radio" :name="'bodyShape' + customerIndex" value="M" x-model="customer.bodyShape"> M</label>
-                <label><input type="radio" :name="'bodyShape' + customerIndex" value="L" x-model="customer.bodyShape"> L</label>
+                <select x-model="customer.bodyShape" class="body-shape-select">
+                  <option value="">--</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="2L">2L</option>
+                  <option value="3L">3L</option>
+                  <option value="5L">5L</option>
+                </select>
                 <input type="number" class="small-input" x-model.number="customer.weight" min="0">
                 <span x-text="customer.gender === 'female' ? '号' : 'kg'"></span>
               </div>
