@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>花火大会清算</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Custom Script -->
+  <script type="module" src="../assets/js/hanabi/settlement.js"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <!-- Styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
+  <link rel="stylesheet" href="../assets/css/common/layout.css">
+  <link rel="stylesheet" href="../assets/css/common/statistics.css">
+</head>
+
+<body x-data="app">
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="header-title"><a href="../index.html">着付予約管理</a></h1>
+      <div class="header-controls">
+        <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
+        <span>花火大会</span>
+      </div>
+      <nav class="header-nav">
+        <a :href="`./settlement.html?year=${selectedYear}`" class="active">清算</a>
+        <a :href="`./statistics.html?year=${selectedYear}`">統計情報</a>
+        <a :href="`./index.html?year=${selectedYear}`">予約一覧</a>
+        <a :href="`./image-list.html?year=${selectedYear}`">画像一覧</a>
+        <a :href="`./form.html?year=${selectedYear}`" x-show="user">新規登録</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="settlement-layout">
+      <div class="settlement-column">
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>代表者名</th>
+              <th>個人名</th>
+              <th>現地金額（現金）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr x-show="cashEntries.length === 0">
+              <td colspan="3" class="no-data">現金払いの現地金額はありません</td>
+            </tr>
+            <template x-for="entry in cashEntries" :key="entry.id">
+              <tr>
+                <td>
+                  <a :href="`form.html?docId=${entry.docId}&year=${selectedYear}`" class="text-blue-600 underline hover:text-blue-800"
+                    x-text="entry.representative"></a>
+                </td>
+                <td x-text="entry.name"></td>
+                <td x-text="formatYen(entry.amount)"></td>
+              </tr>
+            </template>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2" class="settlement-total-label">合計</th>
+              <th x-text="formatYen(totalCash)" class="settlement-total-value"></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="settlement-column">
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>代表者名</th>
+              <th>個人名</th>
+              <th>現地金額（PayPay）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr x-show="paypayEntries.length === 0">
+              <td colspan="3" class="no-data">PayPay払いの現地金額はありません</td>
+            </tr>
+            <template x-for="entry in paypayEntries" :key="entry.id">
+              <tr>
+                <td>
+                  <a :href="`form.html?docId=${entry.docId}&year=${selectedYear}`" class="text-blue-600 underline hover:text-blue-800"
+                    x-text="entry.representative"></a>
+                </td>
+                <td x-text="entry.name"></td>
+                <td x-text="formatYen(entry.amount)"></td>
+              </tr>
+            </template>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2" class="settlement-total-label">合計</th>
+              <th x-text="formatYen(totalPaypay)" class="settlement-total-value"></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="cash-count-section">
+      <div class="cash-count-grid">
+        <div class="cash-count-box">
+          <h3>事前に用意していたお金</h3>
+          <table class="cash-count-table">
+            <thead>
+              <tr>
+                <th>金種</th>
+                <th>枚数</th>
+                <th>小計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="denom in denominations" :key="'prepared-' + denom">
+                <tr>
+                  <td x-text="formatYen(denom)"></td>
+                  <td><input type="number" min="0" x-model.number="preparedCounts[denom]" class="cash-count-input"></td>
+                  <td x-text="formatYen(denom * (preparedCounts[denom] || 0))"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <div class="cash-count-total">
+            合計：<span x-text="formatYen(preparedTotal)"></span>
+          </div>
+        </div>
+
+        <div class="cash-count-box">
+          <h3 class="cash-count-heading">
+            現在の金額
+            <span class="cash-count-note">※元から用意していたお金も含めて、今レジにある金額をそのまま数えてください</span>
+          </h3>
+          <table class="cash-count-table">
+            <thead>
+              <tr>
+                <th>金種</th>
+                <th>枚数</th>
+                <th>小計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="denom in denominations" :key="'current-' + denom">
+                <tr>
+                  <td x-text="formatYen(denom)"></td>
+                  <td><input type="number" min="0" x-model.number="currentCounts[denom]" class="cash-count-input"></td>
+                  <td x-text="formatYen(denom * (currentCounts[denom] || 0))"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <div class="cash-count-total">
+            合計：<span x-text="formatYen(currentTotal)"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cash-count-summary">
+        <div>
+          <span>現在 − 事前（本日の現金収入）</span>
+          <span x-text="formatYen(currentTotal - preparedTotal)"></span>
+        </div>
+        <div>
+          <span>予想現金合計との差</span>
+          <span x-text="formatYen((currentTotal - preparedTotal) - totalCash)"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>

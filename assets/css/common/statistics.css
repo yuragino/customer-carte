@@ -72,3 +72,142 @@
   font-size: 0.95rem;
   background: #fafafa;
 }
+
+/* 清算画面の合計行 */
+.settlement-total-label {
+  text-align: right;
+  font-size: 1.05rem;
+}
+
+.settlement-total-value {
+  font-size: 1.3rem;
+  color: #111;
+  background: #fafbfc;
+}
+
+/* 清算画面：現金・PayPay一覧を左右2カラムレイアウト */
+.settlement-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem;
+}
+
+.settlement-column .stats-table {
+  margin: 0;
+  width: 100%;
+}
+
+/* 現金の枚数カウントは一覧の下に全幅で表示 */
+.cash-count-section {
+  margin: 0 1.5rem 1.5rem;
+}
+
+/* お金の枚数入力 */
+.cash-count-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cash-count-box {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.2rem;
+}
+
+.cash-count-box h3 {
+  font-size: 1rem;
+  margin: 0 0 0.8rem 0;
+  color: #444;
+  font-weight: 600;
+}
+
+.cash-count-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.cash-count-note {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #d9480f;
+  background: #fff4e6;
+  border: 1px solid #ffd8a8;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+}
+
+.cash-count-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cash-count-table th {
+  font-size: 0.8rem;
+  color: #777;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.3rem 0.2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.cash-count-table td {
+  padding: 0.3rem 0.2rem;
+  font-size: 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.cash-count-input {
+  width: 60px;
+  padding: 0.3rem;
+  text-align: right;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.cash-count-total {
+  margin-top: 0.8rem;
+  text-align: right;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.cash-count-summary {
+  margin-top: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.2rem;
+}
+
+.cash-count-summary div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 1rem;
+}
+
+.cash-count-summary div:not(:last-child) {
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.cash-count-summary span:last-child {
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .settlement-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cash-count-grid {
+    grid-template-columns: 1fr;
+  }
+}
