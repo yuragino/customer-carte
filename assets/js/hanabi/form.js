@@ -334,7 +334,7 @@ function createInitialCustomerData(gender, id) {
   return {
     id, gender, isChild: false, name: '', kana: '',
     lastName: '', firstName: '', lastNameKana: '', firstNameKana: '',
-    bodyShape: null, weight: null, height: null, footSize: null,
+    bodyShape: null, bodyShapeMemo: '', weight: null, height: null, footSize: null,
     dressingType: 'レンタル&着付',
     options: { footwear: false, obiBag: false },
     additionalRentals: [],

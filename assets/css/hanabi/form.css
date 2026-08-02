@@ -154,6 +154,16 @@ select {
     margin-right: 4px;
 }
 
+.body-shape-cell {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+}
+
+.body-shape-memo-input {
+    width: 100%;
+}
+
 /* 顧客詳細グリッド */
 .customer-details-grid {
     display: flex;
@@ -187,7 +197,8 @@ select {
 .customer-column-header,
 .customer-column {
     display: grid;
-    grid-template-rows: 80px repeat(8, 60px) auto;
+    /* 名前, 性別, 体型(2行分), 身長, 着付種別, オプション, 追加レンタル, 画像, 合計, 支払い方法(可変) */
+    grid-template-rows: 80px 60px 90px 60px 60px 60px 60px 60px 60px auto;
 }
 
 .form-cell {
