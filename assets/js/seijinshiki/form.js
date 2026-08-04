@@ -64,6 +64,20 @@ document.addEventListener('alpine:init', () => {
       toggleRadioUtil(event, modelName, this.formData.basicInfo);
     },
 
+    // 名前欄からふりがな欄へAutoKanaで自動反映する
+    bindAutoKana(nameId, kanaId, targetObj, field) {
+      if (!window.AutoKana) return;
+      const nameEl = document.getElementById(nameId);
+      const kanaEl = document.getElementById(kanaId);
+      if (!nameEl || !kanaEl) return;
+      AutoKana.bind(nameId, kanaId, { katakana: false });
+
+      let syncTimer = null;
+      const sync = () => { targetObj[field] = kanaEl.value; };
+      nameEl.addEventListener('focus', () => { syncTimer = setInterval(sync, 100); });
+      nameEl.addEventListener('blur', () => { clearInterval(syncTimer); sync(); });
+    },
+
     async uploadAllMedia() {
       const newImageUrls = await uploadMediaArrayToCloudinary(this.formData.media.newImageFiles, COLLECTION_NAME);
       const newVideoUrls = await uploadMediaArrayToCloudinary(this.formData.media.newVideoFiles, COLLECTION_NAME);

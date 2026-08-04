@@ -6,6 +6,8 @@
   <title>成人式登録フォーム</title>
   <!-- Custom Script -->
   <script type="module" src="../assets/js/seijinshiki/form.js"></script>
+  <!-- AutoKana（名前入力からふりがなを自動反映） -->
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-autokana/dist/autokana.min.js" defer></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
   <!-- Styles -->
@@ -55,11 +57,12 @@
             </tr>
             <tr>
               <th>名前</th>
-              <td><input type="text" x-model="formData.basicInfo.name" required></td>
+              <td><input type="text" id="basicInfo-name" x-model="formData.basicInfo.name" required></td>
             </tr>
             <tr>
               <th>ふりがな</th>
-              <td><input type="text" x-model="formData.basicInfo.kana"></td>
+              <td><input type="text" id="basicInfo-kana" x-model="formData.basicInfo.kana"
+                x-init="$nextTick(() => bindAutoKana('basicInfo-name', 'basicInfo-kana', formData.basicInfo, 'kana'))"></td>
             </tr>
             <tr>
               <th>紹介者</th>
