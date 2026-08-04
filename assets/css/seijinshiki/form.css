@@ -148,11 +148,11 @@ label:has(input[type="radio"]) {
   cursor: pointer;
 }
 
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"],
-input[type="number"],
-input[type="tel"] {
+main input[type="date"],
+main input[type="time"],
+main input[type="datetime-local"],
+main input[type="number"],
+main input[type="tel"] {
   width: 15rem;
   padding: 0.4rem;
   border: 1px solid #cbd5e1;
