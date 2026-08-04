@@ -21,7 +21,9 @@
     <div class="header-inner">
       <h1 class="header-title"><a href="../index.html">着付予約管理</a></h1>
       <div class="header-controls">
+        <button type="button" @click="prevYear()" class="year-nav-btn" aria-label="前年度">&lsaquo;</button>
         <input type="number" min="2025" max="2060" step="1" x-model.number="selectedYear" @change="changeYear" class="text-black">
+        <button type="button" @click="nextYear()" class="year-nav-btn" aria-label="次年度">&rsaquo;</button>
         <span>花火大会</span>
       </div>
       <nav class="header-nav">

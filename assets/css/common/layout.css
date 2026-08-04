@@ -61,12 +61,37 @@ body {
   white-space: nowrap;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .header-controls input {
   padding: 0.4rem 0.6rem;
   border-radius: 6px;
   background: #fff;
   font-size: 0.9rem;
   width: 100px;
+}
+
+.year-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.year-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .header-nav {

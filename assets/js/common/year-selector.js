@@ -37,4 +37,14 @@ export const getYearSettings = (eventType = "") => ({
     window.history.pushState({}, "", url);
     this.init();
   },
+
+  prevYear() {
+    this.selectedYear -= 1;
+    this.changeYear();
+  },
+
+  nextYear() {
+    this.selectedYear += 1;
+    this.changeYear();
+  },
 });
