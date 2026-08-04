@@ -208,6 +208,67 @@ td:last-child {
   color: #ff0022a5;
 }
 
+/* 一般着付の操作ボタン（予約・編集・履歴） */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.action-btn-green {
+  background: #eafaf1;
+  border-color: #b8ecd1;
+  color: #2f9e6e;
+}
+
+.action-btn-green:hover {
+  background: #dbf6e8;
+}
+
+.action-btn-amber {
+  background: #fff3e0;
+  border-color: #ffd9a8;
+  color: #d98a2b;
+}
+
+.action-btn-amber:hover {
+  background: #ffe9c9;
+}
+
+.action-btn-blue {
+  background: #eaf2ff;
+  border-color: #bcd7ff;
+  color: #3f7fd9;
+}
+
+.action-btn-blue:hover {
+  background: #dcebff;
+}
+
+.action-btn-sm {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+}
+
 input[type="radio"],
 input[type="checkbox"] {
   -webkit-appearance: none;

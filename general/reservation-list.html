@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://unpkg.com/sanitize.css">
   <link rel="stylesheet" href="../assets/css/common/layout.css">
   <link rel="stylesheet" href="../assets/css/common/list-page.css">
+  <link rel="stylesheet" href="../assets/css/general/reservation-list.css">
 </head>
 
 <body x-data="app" x-init="init">
@@ -53,14 +54,14 @@
         <template x-for="reserve in reservations" :key="reserve.docId">
           <tr class="border-b" :class="reserve.isPast ? 'bg-gray-100 text-gray-500' : 'bg-white'">
             <td>
-              <a :href="`./customer-form.html?customerId=${reserve.customerId}`" target="_blank" class="hover:text-blue-700">
+              <a :href="`./customer-form.html?customerId=${reserve.customerId}`" target="_blank" class="customer-name-link">
                 <span x-text="reserve.name"></span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[14px] opacity-60"></i>
+                <i class="fa-solid fa-arrow-up-right-from-square link-icon"></i>
               </a>
             </td>
             <td>
               <span x-text="formatDateOnly(reserve.pickupDate)"></span>
-              <div x-show="reserve.hasPickup">
+              <div class="time-row" x-show="reserve.hasPickup">
                 <span x-text="formatTime(reserve.pickupStartTime)"></span>
                 <span x-show="reserve.endTime">～</span>
                 <span x-text="formatTime(reserve.pickupEndTime)"></span>
@@ -68,20 +69,18 @@
             </td>
             <td>
               <span x-text="formatDateOnly(reserve.date)"></span>
-              <div>
+              <div class="time-row">
                 <span x-text="formatTime(reserve.startTime)"></span>
                 <span x-show="reserve.endTime">～</span>
                 <span x-text="formatTime(reserve.endTime)"></span>
-                <span class="text-pink-400 font-bold" x-show="reserve.isProvisional">(仮)</span>
+                <span class="provisional-badge" x-show="reserve.isProvisional">仮</span>
               </div>
             </td>
             <td x-text="reserve.locationLabel === '自宅' ? reserve.address : reserve.location"></td>
             <td>
               <a :href="`./reservation-form.html?reservationId=${reserve.docId}`"
                 target="_blank"
-                class="inline-flex items-center gap-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs transition">
-                <i class="fa-solid fa-pen"></i> 予約編集
-              </a>
+                class="action-btn action-btn-blue">予約編集</a>
             </td>
           </tr>
         </template>

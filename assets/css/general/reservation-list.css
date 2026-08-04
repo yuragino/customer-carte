@@ -1,0 +1,64 @@
+/* 予約一覧：行の高さやテキストの向きを整えて見た目を揃える（thにも同じpaddingを揃える） */
+table th,
+table td {
+  padding: 1rem 1.2rem;
+}
+
+table td {
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+table th:nth-child(4),
+table td:nth-child(4) {
+  text-align: left;
+}
+
+table th:first-child,
+table td:first-child {
+  padding-left: 1.5rem;
+}
+
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+tbody tr:not(.bg-gray-100):hover {
+  background-color: #f7faff;
+}
+
+td .time-row {
+  margin-top: 0.15rem;
+}
+
+/* 仮予約バッジ */
+.provisional-badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #db2777;
+  background-color: #fce7f3;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+/* 顧客名リンク */
+.customer-name-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.customer-name-link:hover {
+  color: #2563eb;
+}
+
+.customer-name-link .link-icon {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
