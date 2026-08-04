@@ -33,11 +33,6 @@
     </div>
   </header>
   <div class="cancellation-status" x-show="formData.isCanceled === true" x-cloak>この予約はすでにキャンセルされています</div>
-  <div class="delete-container">
-    <button type="button" class="delete-btn" x-show="docId" @click="deleteForm">
-      <i class="fa-regular fa-trash-can"></i> カルテを削除
-    </button>
-  </div>
   <main>
     <form @submit.prevent="submitForm">
       <fieldset :disabled="!user" class="border-0 p-0 m-0 min-w-0">
@@ -46,6 +41,9 @@
             <span x-text="`${selectedYear}年成人式`" class="font-bold text-2xl text-blue-700"></span>
             <div class="title-actions" x-show="docId">
               <a :href="`print.html?year=${selectedYear}&docId=${docId}`" target="_blank" class="text-blue-500 underline underline-offset-3">印刷用ページ</a>
+              <button type="button" class="delete-btn" @click="deleteForm">
+                <i class="fa-regular fa-trash-can"></i> カルテを削除
+              </button>
             </div>
           </h2>
           <table>
