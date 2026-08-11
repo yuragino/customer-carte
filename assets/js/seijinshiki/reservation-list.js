@@ -7,7 +7,8 @@ import { getDocsByYear } from "../common/utils/firestore-utils.js";
 import { formatTimestamp } from '../common/utils/format-utils.js';
 import { handleError } from "../common/utils/ui-utils.js";
 import { STATUS_MAP } from "../common/constants.js";
-import { loadStaffConfig, saveStaffConfig } from "../common/utils/staff-config-utils.js";
+import { saveStaffConfig } from "../common/utils/staff-config-utils.js";
+import { saveBoothConfig } from "../common/utils/booth-config-utils.js";
 const COLLECTION_NAME = 'seijinshiki';                 // 予約関連
 const CONFIG_COLLECTION_NAME = 'seijinshiki_config';   // 年次設定関連
 document.addEventListener('alpine:init', () => {
@@ -15,14 +16,15 @@ document.addEventListener('alpine:init', () => {
     ...getYearSettings("seijinshiki"),
     formatTimestamp,
     customers: [],
-    boothOptionsFemale: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
-    boothOptionsMale: ['B1', 'B2', 'C1', 'C2'],
+    boothOptions: { female: [], male: [] },
     staffOptions: [],
     ...STATUS_MAP,
 
     openSettings: false,
     settings: {
       staff: '',
+      boothFemale: '',
+      boothMale: '',
     },
 
     async init() {
@@ -47,19 +49,42 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // 設定はデフォルト値を持たせず、今年まだ編集されていなければ前年度の設定を踏襲する
     async loadConfig() {
-      this.staffOptions = await loadStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear);
-      this.settings.staff = this.staffOptions.join(' ');
+      const currentConfigs = await getDocsByYear(CONFIG_COLLECTION_NAME, this.selectedYear);
+      const currentConfig = currentConfigs[0];
+
+      let staffOptions = currentConfig?.staffOptions;
+      let boothOptions = currentConfig?.boothOptions;
+
+      if (!staffOptions || !boothOptions) {
+        const prevConfigs = await getDocsByYear(CONFIG_COLLECTION_NAME, this.selectedYear - 1);
+        const prevConfig = prevConfigs[0];
+        if (!staffOptions) staffOptions = prevConfig?.staffOptions ?? [];
+        if (!boothOptions) boothOptions = prevConfig?.boothOptions ?? { female: [], male: [] };
+      }
+
+      this.staffOptions = staffOptions;
+      this.settings.staff = staffOptions.join(' ');
+      this.boothOptions = boothOptions;
+      this.settings.boothFemale = (boothOptions.female ?? []).join(' ');
+      this.settings.boothMale = (boothOptions.male ?? []).join(' ');
     },
 
-    async saveStaffConfig() {
+    async saveSettings() {
       const staffOptions = this.settings.staff
         .split(/\s+/)
         .map(s => s.trim())
         .filter(Boolean);
+      const boothOptions = {
+        female: this.settings.boothFemale.split(/\s+/).map(s => s.trim()).filter(Boolean),
+        male: this.settings.boothMale.split(/\s+/).map(s => s.trim()).filter(Boolean),
+      };
 
       await saveStaffConfig(CONFIG_COLLECTION_NAME, this.selectedYear, staffOptions);
+      await saveBoothConfig(CONFIG_COLLECTION_NAME, this.selectedYear, boothOptions);
       this.staffOptions = staffOptions;
+      this.boothOptions = boothOptions;
       this.openSettings = false;
     },
 
