@@ -15,7 +15,7 @@ const COLLECTION_NAME = 'fireworks';
 const CONFIG_COLLECTION_NAME = 'fireworks_config';   // 年次設定関連
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("hanabi"),
     formatTimestamp,
     groups: [],
     boothOptions: { ...DEFAULT_BOOTH_OPTIONS },

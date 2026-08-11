@@ -26,6 +26,21 @@ export const getYearSettings = (eventType = "") => ({
 
       // その日以降なら来年をデフォルトにする
       this.selectedYear = now >= thresholdDate ? currentYear + 1 : currentYear;
+    } else if (eventType === "hanabi") {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+
+      // 8月の第1土曜日を求める
+      const aug1 = new Date(currentYear, 7, 1);
+      const firstSaturdayOffset = (6 - aug1.getDay() + 7) % 7;
+      const firstSaturday = new Date(currentYear, 7, 1 + firstSaturdayOffset);
+
+      // 第1土曜日の3日後
+      const thresholdDate = new Date(firstSaturday);
+      thresholdDate.setDate(firstSaturday.getDate() + 3);
+
+      // その日以降なら来年をデフォルトにする
+      this.selectedYear = now >= thresholdDate ? currentYear + 1 : currentYear;
     } else {
       this.selectedYear = new Date().getFullYear();
     }

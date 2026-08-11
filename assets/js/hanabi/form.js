@@ -12,7 +12,7 @@ const COLLECTION_NAME = 'fireworks';
 const CONFIG_COLLECTION_NAME = 'fireworks_config';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("hanabi"),
     formatYen,
     activeCustomerIndex: null, // 一時的に操作中の顧客を指す共通インデックス
     docId: null,              // パラメータ

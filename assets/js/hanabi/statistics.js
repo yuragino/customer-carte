@@ -6,7 +6,7 @@ import { setupAuth } from "../common/utils/auth-utils.js";
 const COLLECTION_NAME = 'fireworks';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("hanabi"),
     formatTimestamp,
     customers: [],
 

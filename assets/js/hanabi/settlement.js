@@ -11,7 +11,7 @@ const COLLECTION_NAME = 'fireworks';
 const CONFIG_COLLECTION_NAME = 'fireworks_config';
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
-    ...getYearSettings(),
+    ...getYearSettings("hanabi"),
     formatYen,
     prices: { ...DEFAULT_PRICES },
     cashEntries: [],
